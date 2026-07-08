@@ -45,7 +45,7 @@ export const products: Product[] = [
     category: 'connectors',
     price: 0.25,
     rating: 4.8,
-    image: '/src/assets/product/WhatsApp Image 2026-07-04 at 10.56.44 AM.jpeg',
+    image: '/assets/product/WhatsApp Image 2026-07-04 at 10.56.44 AM.jpeg',
     description: 'Dual-in-line (DIP) 14-pin IC socket with a 2.54mm pitch. Features high-quality tin-plated alloy contacts, rigid thermoplastic body, and standard solder tail pins. Essential for IC prototyping and PCB boards.',
     specifications: ['14-Pin DIP Configuration', '2.54mm (0.1") pitch', 'Tin-plated copper alloy pins', 'Operating Temp: -55°C to +105°C'],
     isHot: true
@@ -56,7 +56,7 @@ export const products: Product[] = [
     category: 'cables',
     price: 4.99,
     rating: 4.9,
-    image: '/src/assets/product/WhatsApp Image 2026-07-04 at 10.56.45 AM.jpeg',
+    image: '/assets/product/WhatsApp Image 2026-07-04 at 10.56.45 AM.jpeg',
     description: 'Shivam Electronic World standard computer power cord (AE-101) manufactured by Anjali. Heavy-duty 1.5-meter cable featuring a standard 3-pin Indian/European plug on one end and IEC female C13 plug on the other. 100% OK tested copper core with robust outer insulation.',
     specifications: ['Length: 1.5 Meters', 'Model: AE-101', 'IEC C13 to 3-Pin Plug', '100% Copper Core / Certified ISO 9001'],
     isNew: true
@@ -67,7 +67,7 @@ export const products: Product[] = [
     category: 'switches',
     price: 0.95,
     rating: 4.7,
-    image: '/src/assets/product/WhatsApp Image 2026-07-04 at 10.56.46 AM (1).jpeg',
+    image: '/assets/product/WhatsApp Image 2026-07-04 at 10.56.46 AM (1).jpeg',
     description: 'High-current dual-position (I/O) rocker switch (KCD4 model). Rated for 15A 250VAC / 20A 125VAC. Features a 4-pin double-pole single-throw (DPST) design, standard snap-in mount size, and copper contacts.',
     specifications: ['KCD4 Series', '4-Pin DPST I/O Switch', 'Rating: 15A 250V / 20A 125V AC', 'Snap-in Panel Mount'],
     isNew: true
@@ -78,7 +78,7 @@ export const products: Product[] = [
     category: 'switches',
     price: 1.25,
     rating: 4.8,
-    image: '/src/assets/product/WhatsApp Image 2026-07-04 at 10.56.46 AM.jpeg',
+    image: '/assets/product/WhatsApp Image 2026-07-04 at 10.56.46 AM.jpeg',
     description: 'Red neon-lit 4-pin double-pole single-throw (DPST) rocker switch. Features built-in indicator neon light that illuminates when switched ON. Rated for 15A 250V AC and 20A 125V AC. Ideal for water dispensers, power strips, and instrumentation.',
     specifications: ['Built-in Neon Light Indicator', '4-Pin DPST Configuration', 'Rating: 15A 250VAC / 20A 125VAC', 'Snap-in mount'],
     isHot: true
@@ -89,7 +89,7 @@ export const products: Product[] = [
     category: 'hardware',
     price: 0.15,
     rating: 4.6,
-    image: '/src/assets/product/WhatsApp Image 2026-07-04 at 10.56.47 AM (1).jpeg',
+    image: '/assets/product/WhatsApp Image 2026-07-04 at 10.56.47 AM (1).jpeg',
     description: 'Conical double-sided black rubber grommet designed for cable protection and strain relief. Restricts wire bending and protects cables from chafing against sharp metal chassis holes. Inner diameter 8mm, outer slot diameter fits standard 12mm panel cutouts.',
     specifications: ['Synthetic Black Rubber', 'Conical Shape for Strain Relief', 'Fits 12mm Chassis Holes', 'Protects cables from metal edges']
   },
@@ -99,7 +99,7 @@ export const products: Product[] = [
     category: 'cables',
     price: 3.49,
     rating: 4.7,
-    image: '/src/assets/product/WhatsApp Image 2026-07-04 at 10.56.47 AM.jpeg',
+    image: '/assets/product/WhatsApp Image 2026-07-04 at 10.56.47 AM.jpeg',
     description: '2-pin AC power cord featuring a right-angle 2-slot figure-8 IEC 60320 C7 connector and Europlug Type C (CEBEC certified). Designed with high-durability H03VVH2-F cable, perfect for space-constrained outlets behind TVs, consoles, and chargers.',
     specifications: ['IEC 60320 C7 Connector', 'Right-Angle Space Saving', 'Cable Type: H03VVH2-F', 'Europlug Type C CEBEC certified'],
     isNew: true
@@ -110,7 +110,7 @@ export const products: Product[] = [
     category: 'optoelectronics',
     price: 2.99,
     rating: 4.9,
-    image: '/src/assets/product/WhatsApp Image 2026-07-04 at 10.56.48 AM (1).jpeg',
+    image: '/assets/product/WhatsApp Image 2026-07-04 at 10.56.48 AM (1).jpeg',
     description: 'Pack of 50 standard 5mm through-hole diffusing red Light Emitting Diodes (LEDs). Perfect for indicator lights, DIY electrical projects, and breadboard testing. Features low power consumption, high brightness, and long lead terminals.',
     specifications: ['Quantity: 50 Pieces', 'Size: 5mm (T1-3/4)', 'Forward Voltage: 1.8V - 2.2V', 'Lens: Red Diffused / 20mA current'],
     isHot: true
@@ -121,7 +121,7 @@ export const products: Product[] = [
     category: 'switches',
     price: 0.60,
     rating: 4.7,
-    image: '/src/assets/product/WhatsApp Image 2026-07-04 at 10.56.48 AM.jpeg',
+    image: '/assets/product/WhatsApp Image 2026-07-04 at 10.56.48 AM.jpeg',
     description: 'PBS-110 panel-mount momentary push button switch. Features a red button top, normally open (NO) action, and 2 solder terminal pins. Small footprint makes it ideal for doorbells, custom project controllers, and dashboard panels.',
     specifications: ['Model: PBS-110', 'Momentary Action (Self-Reset)', 'Normally Open (NO)', 'Mounting Hole: 7mm / Rating: 1A 250VAC'],
     isNew: true
@@ -132,7 +132,7 @@ export const products: Product[] = [
     category: 'connectors',
     price: 1.99,
     rating: 4.8,
-    image: '/src/assets/product/WhatsApp Image 2026-07-04 at 10.56.49 AM (1).jpeg',
+    image: '/assets/product/WhatsApp Image 2026-07-04 at 10.56.49 AM (1).jpeg',
     description: 'A complete power connector pairing including one Rewireable IEC 320 C13 female plug connector (screw terminals, straight cable entry) and one Panel-Mount IEC 320 C14 male socket inlet. Rated for 10A 250V. Ideal for power distribution units and DIY computer cases.',
     specifications: ['IEC 320 C13 Female Plug', 'IEC 320 C14 Male Socket', 'Rating: 10A 250V AC', 'Heavy-Duty Thermoplastic Body']
   },
@@ -142,7 +142,7 @@ export const products: Product[] = [
     category: 'connectors',
     price: 1.49,
     rating: 4.7,
-    image: '/src/assets/product/WhatsApp Image 2026-07-04 at 10.56.49 AM.jpeg',
+    image: '/assets/product/WhatsApp Image 2026-07-04 at 10.56.49 AM.jpeg',
     description: 'D-Sub 9-pin serial interface connector pair containing one DB9 Male connector (gold-plated pins) and one DB9 Female connector (solder cups). Features a blue insulator block and solid metal shell. Used for serial RS232 communications and custom micro-controller cables.',
     specifications: ['9-Pin D-Sub Configuration', 'Includes 1 Male + 1 Female', 'Solder Cup Terminations', 'RS232 / Serial DB9 standard'],
     isNew: true
@@ -153,7 +153,7 @@ export const products: Product[] = [
     category: 'hardware',
     price: 1.99,
     rating: 4.8,
-    image: '/src/assets/product/WhatsApp Image 2026-07-04 at 10.56.50 AM (1).jpeg',
+    image: '/assets/product/WhatsApp Image 2026-07-04 at 10.56.50 AM (1).jpeg',
     description: 'Pack of 10 cylindrical black rubber feet and chassis spacers. Provides excellent anti-vibration damping, non-slip grip, and height clearance for electronic enclosures, speaker boxes, and power supplies. Features a center screw hole for easy M3 or M4 screw mounting.',
     specifications: ['Quantity: 10 Spacers', 'Anti-Vibration Rubber Material', 'Center screw mounting hole', 'Non-slip cylindrical design']
   },
@@ -163,7 +163,7 @@ export const products: Product[] = [
     category: 'connectors',
     price: 2.49,
     rating: 4.9,
-    image: '/src/assets/product/WhatsApp Image 2026-07-04 at 10.56.50 AM.jpeg',
+    image: '/assets/product/WhatsApp Image 2026-07-04 at 10.56.50 AM.jpeg',
     description: 'Heavy-duty GX16 4-pin male/female thread-locking metal aviation connector set. Includes one panel-mount male socket and one cable-end female plug. Designed for industrial control panels, automation, data acquisition, and audio systems. Provides waterproof IP55 rating and excellent signal conductivity.',
     specifications: ['GX16 Series Aviation Joint', '4-Pin Male & Female Set', 'Thread-locking design / IP55', 'Rating: 5A 125V / Contact Resistance < 0.005 ohm'],
     isHot: true
@@ -194,7 +194,7 @@ export const products: Product[] = [
     category: 'switches',
     price: 0.85,
     rating: 4.8,
-    image: '/src/assets/product/WhatsApp Image 2026-07-04 at 10.56.46 AM.jpeg',
+    image: '/assets/product/WhatsApp Image 2026-07-04 at 10.56.46 AM.jpeg',
     description: 'Panel snap-in 3-pin single-pole single-throw (SPST) KCD1 rocker switch. Features an integrated green neon bulb indicator that glows under 220V operation. Rated for 6A 250VAC / 10A 125VAC.',
     specifications: ['KCD1 Series Switch', '3-Pin SPST design', 'Integrated green neon bulb', 'Rating: 6A 250V / 10A 125VAC'],
     isNew: true
@@ -216,7 +216,7 @@ export const products: Product[] = [
     category: 'optoelectronics',
     price: 2.99,
     rating: 4.8,
-    image: '/src/assets/product/WhatsApp Image 2026-07-04 at 10.56.48 AM (1).jpeg',
+    image: '/assets/product/WhatsApp Image 2026-07-04 at 10.56.48 AM (1).jpeg',
     description: 'Pack of 50 standard 5mm through-hole diffusing green Light Emitting Diodes (LEDs). Features vibrant green illumination, low thermal resistance, and long metal pin terminals. Excellent for signal control panels.',
     specifications: ['Quantity: 50 Pieces', 'Size: 5mm (T1-3/4)', 'Forward Voltage: 2.0V - 2.4V', 'Lens: Green Diffused / 20mA']
   },
@@ -237,7 +237,7 @@ export const products: Product[] = [
     category: 'cables',
     price: 11.99,
     rating: 4.9,
-    image: '/src/assets/product/WhatsApp Image 2026-07-04 at 10.56.45 AM.jpeg',
+    image: '/assets/product/WhatsApp Image 2026-07-04 at 10.56.45 AM.jpeg',
     description: 'Shivam Electronic World specialized shielded dual-conductor cable designed for audio and sensitive signal transmissions. Wrapped in flexible PVC insulation jacket with copper mesh shielding to eliminate crosstalk.',
     specifications: ['Conductors: 2 Core Shielded', 'Length: 10 Meter roll', 'Insulation: Heavy Duty PVC', 'Shielding: Copper Braided Mesh'],
     isHot: true
@@ -248,7 +248,7 @@ export const products: Product[] = [
     category: 'switches',
     price: 2.25,
     rating: 4.7,
-    image: '/src/assets/product/WhatsApp Image 2026-07-04 at 10.56.48 AM.jpeg',
+    image: '/assets/product/WhatsApp Image 2026-07-04 at 10.56.48 AM.jpeg',
     description: 'Industrial grade 2-pole 6-position rotary band selector switch with a 6mm shaft. Features durable silver-plated contacts, robust phenolic resin body, and positive click-stop feedback. Perfect for audio mixers and power controls.',
     specifications: ['Model: RS26 Band Switch', '2-Pole 6-Position', 'Rating: 0.3A 125VAC', 'Shaft Diameter: 6mm']
   }

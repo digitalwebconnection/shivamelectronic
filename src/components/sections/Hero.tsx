@@ -22,7 +22,7 @@ export const Hero: React.FC<HeroProps> = ({ onSelectProduct, onNavigateToProduct
       gradient: 'from-blue-600 to-indigo-500',
       shadowColor: 'rgba(59,130,246,0.25)',
       tagline: 'Heavy-duty GX16 aviation plugs, DB9 serial ports, and IC sockets. Engineered for reliable signal and power transmission.',
-      bannerImage: '/src/assets/hero_banner_1.png'
+      bannerImage: '/assets/hero_banner_1.png'
     },
     {
       product: products[1], // Anjali Power Cord
@@ -33,7 +33,7 @@ export const Hero: React.FC<HeroProps> = ({ onSelectProduct, onNavigateToProduct
       gradient: 'from-rose-600 to-amber-500',
       shadowColor: 'rgba(225,29,72,0.25)',
       tagline: 'Standard 1.5m computer cords, right-angle figure-8 cables, and insulated copper conductors. 100% certified safety.',
-      bannerImage: '/src/assets/hero_banner_2.png'
+      bannerImage: '/assets/hero_banner_2.png'
     },
     {
       product: products[3], // Illuminated Rocker Switch
@@ -44,7 +44,7 @@ export const Hero: React.FC<HeroProps> = ({ onSelectProduct, onNavigateToProduct
       gradient: 'from-emerald-600 to-teal-500',
       shadowColor: 'rgba(5,150,105,0.25)',
       tagline: 'Durable KCD4 rocker switches, PBS-110 push buttons, and bright 5mm diffusing red LEDs for smart electrical panels.',
-      bannerImage: '/src/assets/hero_banner_3.png'
+      bannerImage: '/assets/hero_banner_3.png'
     }
   ];
 
