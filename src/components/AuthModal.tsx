@@ -76,7 +76,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLoginSu
               </div>
               <button
                 onClick={() => setMode('login')}
-                className="w-full py-3 px-4 bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-500 hover:to-cyan-400 text-white font-semibold rounded-xl transition-all duration-300 shadow-lg shadow-blue-500/20 active:scale-[0.98] text-sm text-center"
+                className="w-full py-3 px-4 bg-linear-to-r from-blue-600 to-cyan-500 hover:from-blue-500 hover:to-cyan-400 text-white font-semibold rounded-xl transition-all duration-300 shadow-lg shadow-blue-500/20 active:scale-[0.98] text-sm text-center"
               >
                 Back to Login
               </button>
@@ -152,7 +152,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLoginSu
 
               <button
                 type="submit"
-                className="w-full py-3 px-4 mt-2 bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-500 hover:to-cyan-400 text-white font-semibold rounded-xl transition-all duration-300 shadow-lg shadow-blue-500/20 active:scale-[0.98] text-sm"
+                className="w-full py-3 px-4 mt-2 bg-linear-to-r from-blue-600 to-cyan-500 hover:from-blue-500 hover:to-cyan-400 text-white font-semibold rounded-xl transition-all duration-300 shadow-lg shadow-blue-500/20 active:scale-[0.98] text-sm"
               >
                 {mode === 'login' && 'Log In'}
                 {mode === 'signup' && 'Create Account'}
@@ -185,9 +185,9 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLoginSu
           {(mode === 'login' || mode === 'signup') && (
             <>
               <div className="relative flex py-4 items-center">
-                <div className="flex-grow border-t border-slate-150"></div>
-                <span className="flex-shrink mx-4 text-slate-400 text-[10px] uppercase font-bold tracking-widest">Demo Sandbox Logins</span>
-                <div className="flex-grow border-t border-slate-150"></div>
+                <div className="grow border-t border-slate-150"></div>
+                <span className="shrink mx-4 text-slate-400 text-[10px] uppercase font-bold tracking-widest">Demo Sandbox Logins</span>
+                <div className="grow border-t border-slate-150"></div>
               </div>
 
               <div className="flex gap-2">

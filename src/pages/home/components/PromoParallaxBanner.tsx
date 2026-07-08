@@ -43,7 +43,7 @@ export const PromoParallaxBanner: React.FC<PromoParallaxBannerProps> = ({ onNavi
           <div className="mt-6">
             <button
               onClick={onNavigateToProducts}
-              className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-500 hover:to-cyan-400 text-white text-xs font-black rounded-xl transition-all duration-300 shadow-lg shadow-blue-500/20 active:scale-95 group"
+              className="inline-flex items-center gap-2 px-6 py-3 bg-linear-to-r from-blue-600 to-cyan-500 hover:from-blue-500 hover:to-cyan-400 text-white text-xs font-black rounded-xl transition-all duration-300 shadow-lg shadow-blue-500/20 active:scale-95 group"
             >
               <span>Explore Deals Now</span>
               <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />

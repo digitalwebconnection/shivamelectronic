@@ -7,7 +7,7 @@ interface FooterProps {
 
 export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
   return (
-    <footer className="bg-gradient-to-b from-slate-950 via-slate-900 to-black border-t border-slate-800 pt-16 pb-8 mt-auto relative overflow-hidden text-slate-400">
+    <footer className="bg-linear-to-b from-slate-950 via-slate-900 to-black border-t border-slate-800 pt-16 pb-8 mt-auto relative overflow-hidden text-slate-400">
       {/* Ambient background tech glow spheres */}
       <div className="absolute top-0 left-1/4 -translate-x-1/2 w-[500px] h-[250px] bg-blue-500/5 rounded-full blur-[100px] pointer-events-none" />
       <div className="absolute bottom-0 right-10 w-80 h-80 bg-cyan-500/5 rounded-full blur-[100px] pointer-events-none" />
@@ -27,7 +27,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
               }}
               className="flex items-center gap-2 group"
             >
-              <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-blue-600 to-cyan-400 flex items-center justify-center transition-transform group-hover:scale-105">
+              <div className="w-8 h-8 rounded-lg bg-linear-to-tr from-blue-600 to-cyan-400 flex items-center justify-center transition-transform group-hover:scale-105">
                 <Cpu className="w-4 h-4 text-white" />
               </div>
               <span className="text-sm font-black tracking-widest text-white uppercase group-hover:text-blue-400 transition-colors">Shivam Electronics</span>
@@ -78,7 +78,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
                       onNavigate('products');
                     }
                   }}
-                  className="text-slate-400 hover:text-white transition-colors flex items-center gap-1 hover:translate-x-0.5 transition-transform"
+                  className="text-slate-400 hover:text-white flex items-center gap-1 hover:translate-x-0.5 transition-transform"
                 >
                   Catalog Products
                 </a>
@@ -92,13 +92,13 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
                       onNavigate('about');
                     }
                   }}
-                  className="text-slate-400 hover:text-white transition-colors flex items-center gap-1 hover:translate-x-0.5 transition-transform"
+                  className="text-slate-400 hover:text-white transition-colors flex items-center gap-1 hover:translate-x-0.5"
                 >
                   About Company
                 </a>
               </li>
-              <li><a href="#" className="text-slate-400 hover:text-white transition-colors flex items-center gap-1 hover:translate-x-0.5 transition-transform">Returns & Refunds Policy</a></li>
-              <li><a href="#" className="text-slate-400 hover:text-white transition-colors flex items-center gap-1 hover:translate-x-0.5 transition-transform">Warranty Support</a></li>
+              <li><a href="#" className="text-slate-400 hover:text-white flex items-center gap-1 hover:translate-x-0.5 transition-transform">Returns & Refunds Policy</a></li>
+              <li><a href="#" className="text-slate-400 hover:text-white flex items-center gap-1 hover:translate-x-0.5 transition-transform">Warranty Support</a></li>
             </ul>
           </div>
 
@@ -109,15 +109,15 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
             </h4>
             <ul className="space-y-3 text-xs text-slate-400">
               <li className="flex gap-2">
-                <MapPin className="w-4.5 h-4.5 text-blue-450 flex-shrink-0 mt-0.5" />
+                <MapPin className="w-4.5 h-4.5 text-blue-450 shrink-0 mt-0.5" />
                 <span>102 Electronics Market, Shivam Complex, Sector 4, New Delhi, India</span>
               </li>
               <li className="flex gap-2">
-                <Phone className="w-4.5 h-4.5 text-blue-450 flex-shrink-0 mt-0.5" />
+                <Phone className="w-4.5 h-4.5 text-blue-450 shrink-0 mt-0.5" />
                 <span>+91 98765 43210</span>
               </li>
               <li className="flex gap-2">
-                <Mail className="w-4.5 h-4.5 text-blue-450 flex-shrink-0 mt-0.5" />
+                <Mail className="w-4.5 h-4.5 text-blue-450 shrink-0 mt-0.5" />
                 <span>support@shivamelectronics.com</span>
               </li>
             </ul>

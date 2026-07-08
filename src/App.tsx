@@ -247,7 +247,7 @@ function App() {
       />
 
       {/* MAIN ROUTED PAGES */}
-      <main className="flex-grow">
+      <main className="grow">
         {currentPage === 'home' && (
           <Home 
             products={products}

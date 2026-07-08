@@ -153,17 +153,17 @@ export const Navbar: React.FC<NavbarProps> = ({
   // Reusable search bar render helper
   const renderSearchBar = (isCompact: boolean) => {
     return (
-      <div className={`relative flex-grow flex items-center bg-white border border-slate-200 hover:border-slate-300 focus-within:border-blue-500 focus-within:ring-4 focus-within:ring-blue-500/10 focus-within:shadow-md rounded-full transition-all duration-300 ${isCompact
+      <div className={`relative grow flex items-center bg-white border border-slate-200 hover:border-slate-300 focus-within:border-blue-500 focus-within:ring-4 focus-within:ring-blue-500/10 focus-within:shadow-md rounded-full transition-all duration-300 ${isCompact
         ? 'h-9 pl-3 pr-3.5 max-w-[280px] lg:max-w-sm'
         : 'h-11 pl-4 pr-1.5 w-full shadow-sm'
         }`}>
-        <span className="text-slate-400 mr-2 flex-shrink-0">
+        <span className="text-slate-400 mr-2 shrink-0">
           <Search className="w-3.5 h-3.5" />
         </span>
 
         {/* Tag inside search box if a category is selected */}
         {selectedCategory !== 'All' && (
-          <div className="flex items-center gap-1 bg-gradient-to-r from-blue-50 to-[#0057ff]/10 border border-[#0057ff]/20 text-[#0057ff] text-[10px] font-extrabold px-2 py-0.5 rounded-full mr-2 select-none flex-shrink-0 animate-in zoom-in-95 duration-150">
+          <div className="flex items-center gap-1 bg-linear-to-r from-blue-50 to-[#0057ff]/10 border border-[#0057ff]/20 text-[#0057ff] text-[10px] font-extrabold px-2 py-0.5 rounded-full mr-2 select-none shrink-0 animate-in zoom-in-95 duration-150">
             <Tag className="w-2.5 h-2.5" />
             <span>{getShortCategoryName(selectedCategory)}</span>
             <button
@@ -186,7 +186,7 @@ export const Navbar: React.FC<NavbarProps> = ({
         {searchQuery && (
           <button
             onClick={() => setSearchQuery('')}
-            className="text-slate-400 hover:text-black flex-shrink-0 mr-2"
+            className="text-slate-400 hover:text-black shrink-0 mr-2"
           >
             <X className="w-3.5 h-3.5" />
           </button>
@@ -196,10 +196,10 @@ export const Navbar: React.FC<NavbarProps> = ({
         {!isCompact && (
           <>
             {/* Vertical separator */}
-            <div className="hidden md:block border-l border-slate-250 h-5 mx-2.5 flex-shrink-0" />
+            <div className="hidden md:block border-l border-slate-250 h-5 mx-2.5 shrink-0" />
 
             {/* Inner Category Tabs */}
-            <div className="hidden md:flex items-center gap-1.5 flex-shrink-0 mr-1">
+            <div className="hidden md:flex items-center gap-1.5 shrink-0 mr-1">
               <button
                 onClick={() => setSelectedCategory('All')}
                 className={`px-3 py-1 rounded-full transition-all text-xs font-bold ${selectedCategory === 'All'
@@ -224,7 +224,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             </div>
 
             {/* Camera / Image search icon (matches cloud-upload icon in Behance) */}
-            <button className="h-8 w-8 rounded-full text-slate-400 hover:text-blue-600 hover:bg-blue-50 transition-all flex-shrink-0 flex items-center justify-center mr-0.5 tooltip" title="Search by Image">
+            <button className="h-8 w-8 rounded-full text-slate-400 hover:text-blue-600 hover:bg-blue-50 transition-all shrink-0 flex items-center justify-center mr-0.5 tooltip" title="Search by Image">
               <Camera className="w-4 h-4" />
             </button>
           </>
@@ -242,7 +242,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                 className="flex items-center justify-between p-2 hover:bg-blue-50/50 rounded-xl transition-all duration-200 gap-3"
               >
                 <div className="flex items-center gap-3">
-                  <div className="w-9 h-9 rounded-lg overflow-hidden bg-slate-50 border border-slate-200 flex-shrink-0">
+                  <div className="w-9 h-9 rounded-lg overflow-hidden bg-slate-50 border border-slate-200 shrink-0">
                     <img src={product.image} alt={product.name} className="w-full h-full object-cover" />
                   </div>
                   <div className="text-left">
@@ -257,7 +257,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                     onProductClick(product);
                     setSearchQuery('');
                   }}
-                  className="px-2.5 py-1.5 bg-blue-600 hover:bg-blue-500 text-white text-[10px] font-bold rounded-lg transition-all flex-shrink-0 hover:shadow-sm"
+                  className="px-2.5 py-1.5 bg-blue-600 hover:bg-blue-500 text-white text-[10px] font-bold rounded-lg transition-all shrink-0 hover:shadow-sm"
                 >
                   View
                 </button>
@@ -274,14 +274,14 @@ export const Navbar: React.FC<NavbarProps> = ({
       {/* Sticky Top Bar (Row 1) */}
       <header
         className={`sticky top-0 z-30 w-full transition-[background-color,border-color,box-shadow] duration-200 border-gray-300 ${isScrolled
-          ? 'bg-gradient-to-r from-white/95 via-blue-50/20 to-slate-50/50 backdrop-blur-md shadow-md shadow-slate-600/40 border-slate-200/85 border-b'
-          : 'bg-gradient-to-r from-slate-50/80 via-white to-blue-50/30 border-slate-150 border-b'
+          ? 'bg-linear-to-r from-white/95 via-blue-50/20 to-slate-50/50 backdrop-blur-md shadow-md shadow-slate-600/40 border-slate-200/85 border-b'
+          : 'bg-linear-to-r from-slate-50/80 via-white to-blue-50/30 border-slate-150 border-b'
           }`}
       >
         <div className="relative max-w-7xl mx-auto px-0 h-16 flex items-center justify-between gap-4">
 
           {/* Left Side: Logo & Primary Links */}
-          <div className="flex items-center gap-8 flex-shrink-0">
+          <div className="flex items-center gap-8 shrink-0">
 
 
             {/* Primary Nav Links */}
@@ -294,7 +294,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                   e.preventDefault();
                   if (setCurrentPage) setCurrentPage('about');
                 }}
-                className={`relative h-full flex items-center text-sm font-bold py-2 after:absolute after:bottom-0 after:left-0 after:w-full after:h-[3px] after:bg-gradient-to-r after:from-[#e11d48] after:to-[#0057ff] after:transition-transform after:duration-300 ${currentPage === 'about'
+                className={`relative h-full flex items-center text-sm font-bold py-2 after:absolute after:bottom-0 after:left-0 after:w-full after:h-[3px] after:bg-linear-to-r after:from-[#e11d48] after:to-[#0057ff] after:transition-transform after:duration-300 ${currentPage === 'about'
                   ? 'text-slate-950 after:scale-x-100'
                   : 'text-slate-800 hover:text-slate-900 after:scale-x-0 hover:after:scale-x-100 after:origin-left'
                   }`}
@@ -309,7 +309,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                   e.preventDefault();
                   if (setCurrentPage) setCurrentPage('contact');
                 }}
-                className={`relative h-full flex items-center text-sm font-bold py-2 after:absolute after:bottom-0 after:left-0 after:w-full after:h-[3px] after:bg-gradient-to-r after:from-[#e11d48] after:to-[#0057ff] after:transition-transform after:duration-300 ${currentPage === 'contact'
+                className={`relative h-full flex items-center text-sm font-bold py-2 after:absolute after:bottom-0 after:left-0 after:w-full after:h-[3px] after:bg-linear-to-r after:from-[#e11d48] after:to-[#0057ff] after:transition-transform after:duration-300 ${currentPage === 'contact'
                   ? 'text-slate-950 after:scale-x-100'
                   : 'text-slate-800 hover:text-slate-900 after:scale-x-0 hover:after:scale-x-100 after:origin-left'
                   }`}
@@ -321,7 +321,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               <div ref={categoryRef} className="relative h-full flex items-center">
                 <button
                   onClick={() => setIsCategoryDropdownOpen(!isCategoryDropdownOpen)}
-                  className={`relative h-full flex items-center gap-1.5 text-sm font-bold transition-all cursor-pointer py-2 after:absolute after:bottom-0 after:left-0 after:w-full after:h-[3px] after:bg-gradient-to-r after:from-[#e11d48] after:to-[#0057ff] after:transition-transform after:duration-300 ${isCategoryDropdownOpen || currentPage === 'products'
+                  className={`relative h-full flex items-center gap-1.5 text-sm font-bold transition-all cursor-pointer py-2 after:absolute after:bottom-0 after:left-0 after:w-full after:h-[3px] after:bg-linear-to-r after:from-[#e11d48] after:to-[#0057ff] after:transition-transform after:duration-300 ${isCategoryDropdownOpen || currentPage === 'products'
                     ? 'text-slate-950 after:scale-x-100'
                     : 'text-slate-800 hover:text-slate-900 after:scale-x-0 hover:after:scale-x-100 after:origin-left'
                     }`}
@@ -434,7 +434,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           </a>
           {/* Center: Search Bar (ONLY shown when scrolled - making it clean single line) */}
           {isScrolled && (
-            <div className="hidden md:flex flex-grow justify-center max-w-sm mx-4 animate-in fade-in duration-200">
+            <div className="hidden md:flex grow justify-center max-w-sm mx-4 animate-in fade-in duration-200">
               {renderSearchBar(true)}
             </div>
           )}
@@ -450,7 +450,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           </div>
 
           {/* Right Side Buttons */}
-          <div className="flex items-center gap-3 flex-shrink-0">
+          <div className="flex items-center gap-3 shrink-0">
             {/* Wishlist Icon button (Only after login) */}
             {user && (
               <button
@@ -470,7 +470,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             {/* Cart Icon button */}
             <button
               onClick={onOpenCart}
-              className="bg-blue-50 hover:bg-blue-100/90 text-blue-600 rounded-full px-5 py-2.5 text-xs font-bold transition-all duration-300 flex items-center gap-1.5 border border-blue-100 hover:shadow-md hover:shadow-blue-500/5 hover:-translate-y-[1px] active:translate-y-0 active:scale-95"
+              className="bg-blue-50 hover:bg-blue-100/90 text-blue-600 rounded-full px-5 py-2.5 text-xs font-bold transition-all duration-300 flex items-center gap-1.5 border border-blue-100 hover:shadow-md hover:shadow-blue-500/5 hover:-translate-y-px active:translate-y-0 active:scale-95"
               title="Cart Drawer"
             >
               <ShoppingCart className="w-3.5 h-3.5" />
@@ -498,7 +498,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             ) : (
               <button
                 onClick={onOpenAuth}
-                className="bg-gradient-to-r from-[#e11d48] to-[#0057ff] hover:opacity-90 hover:scale-102 text-white rounded-full px-5 py-2.5 text-xs font-bold transition-all shadow-md shadow-blue-500/10 hover:shadow-lg hover:shadow-blue-500/20 hover:-translate-y-[1px] active:translate-y-0 active:scale-95"
+                className="bg-linear-to-r from-[#e11d48] to-[#0057ff] hover:opacity-90 hover:scale-102 text-white rounded-full px-5 py-2.5 text-xs font-bold transition-all shadow-md shadow-blue-500/10 hover:shadow-lg hover:shadow-blue-500/20 hover:-translate-y-px active:translate-y-0 active:scale-95"
               >
                 Sign In
               </button>
@@ -629,10 +629,10 @@ export const Navbar: React.FC<NavbarProps> = ({
           <div className="max-w-7xl mx-auto px-6 py-3 flex items-center justify-between gap-3 w-full">
 
             {/* Filter button with dropdown */}
-            <div ref={filterRef} className="relative flex-shrink-0">
+            <div ref={filterRef} className="relative shrink-0">
               <button
                 onClick={() => setIsFilterDropdownOpen(!isFilterDropdownOpen)}
-                className={`flex items-center gap-1.5 px-4 py-2.5 border text-xs font-bold rounded-full transition-all duration-300 cursor-pointer shadow-sm select-none flex-shrink-0 active:scale-95 ${isFilterDropdownOpen || selectedCategory !== 'All'
+                className={`flex items-center gap-1.5 px-4 py-2.5 border text-xs font-bold rounded-full transition-all duration-300 cursor-pointer shadow-sm select-none shrink-0 active:scale-95 ${isFilterDropdownOpen || selectedCategory !== 'All'
                   ? 'bg-blue-600 border-blue-600 text-white shadow-md shadow-blue-500/20'
                   : 'bg-white border-slate-200 hover:border-blue-200 hover:bg-blue-50/50 hover:text-blue-600 text-slate-700'
                   }`}
@@ -691,7 +691,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             </div>
 
             {/* Right Side: Sort Dropdown */}
-            <div ref={sortRef} className="relative flex-shrink-0">
+            <div ref={sortRef} className="relative shrink-0">
               <button
                 onClick={() => setIsSortDropdownOpen(!isSortDropdownOpen)}
                 className="flex items-center gap-1.5 bg-white border border-slate-200 hover:border-slate-300 px-4 py-2.5 rounded-full text-xs font-bold whitespace-nowrap cursor-pointer select-none transition-all duration-300 shadow-sm active:scale-95 text-slate-700 hover:text-blue-600 hover:bg-slate-50"
@@ -734,7 +734,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                   setSearchQuery(tag.query);
                   document.getElementById('products')?.scrollIntoView({ behavior: 'smooth' });
                 }}
-                className="inline-block bg-slate-900 border border-slate-800 text-slate-200 hover:text-white hover:bg-gradient-to-r hover:from-[#e11d48] hover:to-[#0057ff] text-[10px] font-extrabold px-4.5 py-2 rounded-full cursor-pointer transition-all duration-300 hover:-translate-y-[1.5px] hover:shadow-lg hover:shadow-blue-500/20 active:scale-95 select-none"
+                className="inline-block bg-slate-900 border border-slate-800 text-slate-200 hover:text-white hover:bg-linear-to-r hover:from-[#e11d48] hover:to-[#0057ff] text-[10px] font-extrabold px-4.5 py-2 rounded-full cursor-pointer transition-all duration-300 hover:translate-y-[-1.5px] hover:shadow-lg hover:shadow-blue-500/20 active:scale-95 select-none"
               >
                 {tag.label}
               </button>

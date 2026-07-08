@@ -85,7 +85,7 @@ export const AboutPage: React.FC = () => {
             <Star className="w-3.5 h-3.5 fill-current" />
             <span>Pioneering Electronics Since 2016</span>
           </div>
-          <h1 className="text-4xl sm:text-6xl font-black font-serif tracking-tight leading-none bg-gradient-to-r from-white via-slate-100 to-blue-200 bg-clip-text text-transparent">
+          <h1 className="text-4xl sm:text-6xl font-black font-serif tracking-tight leading-none bg-linear-to-r from-white via-slate-100 to-blue-200 bg-clip-text text-transparent">
             Technology Meets <br />Human Craftsmanship
           </h1>
           <p className="text-sm sm:text-lg text-slate-400 max-w-2xl mx-auto leading-relaxed font-medium">
@@ -123,7 +123,7 @@ export const AboutPage: React.FC = () => {
             
             {/* Visual Frame */}
             <div className="lg:col-span-6 relative group">
-              <div className="absolute inset-0 bg-gradient-to-r from-blue-650 to-indigo-600 rounded-3xl blur-xl opacity-20 group-hover:opacity-30 transition-opacity duration-500" />
+              <div className="absolute inset-0 bg-linear-to-r from-blue-650 to-indigo-600 rounded-3xl blur-xl opacity-20 group-hover:opacity-30 transition-opacity duration-500" />
               <div className="relative border border-slate-200 bg-white p-3 rounded-3xl shadow-2xl">
                 <img 
                   src="/electronics_showroom.png" 
@@ -197,7 +197,7 @@ export const AboutPage: React.FC = () => {
                 </div>
 
                 {/* Timeline node icon */}
-                <span className="absolute -left-[17px] top-1.5 w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center shadow-lg shadow-blue-500/20 border-4 border-slate-50">
+                <span className="absolute left-[-17px] top-1.5 w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center shadow-lg shadow-blue-500/20 border-4 border-slate-50">
                   {m.icon}
                 </span>
 

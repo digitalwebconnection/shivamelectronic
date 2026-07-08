@@ -83,12 +83,12 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
               className="w-[80%] h-[80%] object-contain transition-transform duration-700 hover:scale-105 drop-shadow-[0_15px_30px_rgba(0,0,0,0.08)]"
             />
             {product.isHot && (
-              <span className="absolute top-4 left-4 bg-gradient-to-r from-red-600 to-rose-500 text-white text-[9px] font-black uppercase tracking-widest px-3 py-1 rounded-lg shadow-md shadow-red-500/10">
+              <span className="absolute top-4 left-4 bg-linear-to-r from-red-600 to-rose-500 text-white text-[9px] font-black uppercase tracking-widest px-3 py-1 rounded-lg shadow-md shadow-red-500/10">
                 Hot Seller
               </span>
             )}
             {product.isNew && (
-              <span className="absolute top-4 left-4 bg-gradient-to-r from-blue-600 to-indigo-500 text-white text-[9px] font-black uppercase tracking-widest px-3 py-1 rounded-lg shadow-md shadow-blue-500/10">
+              <span className="absolute top-4 left-4 bg-linear-to-r from-blue-600 to-indigo-500 text-white text-[9px] font-black uppercase tracking-widest px-3 py-1 rounded-lg shadow-md shadow-blue-500/10">
                 New Release
               </span>
             )}
@@ -140,7 +140,7 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
                 <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                   {product.specifications.map((spec, idx) => (
                     <li key={idx} className="text-xs text-slate-700 flex items-center gap-2">
-                      <span className="w-1.5 h-1.5 rounded-full bg-blue-500 flex-shrink-0" />
+                      <span className="w-1.5 h-1.5 rounded-full bg-blue-500 shrink-0" />
                       <span>{spec}</span>
                     </li>
                   ))}
@@ -168,7 +168,7 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
             <div className="flex gap-3 pt-6">
               <button
                 onClick={() => onAddToCart(product)}
-                className="flex-1 py-3.5 px-6 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold rounded-xl shadow-lg shadow-blue-500/15 transition-all duration-300 flex items-center justify-center gap-2 text-sm cursor-pointer active:scale-95"
+                className="flex-1 py-3.5 px-6 bg-linear-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold rounded-xl shadow-lg shadow-blue-500/15 transition-all duration-300 flex items-center justify-center gap-2 text-sm cursor-pointer active:scale-95"
               >
                 <ShoppingCart className="w-4 h-4" />
                 <span>Add to Cart</span>

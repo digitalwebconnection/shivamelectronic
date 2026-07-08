@@ -147,21 +147,21 @@ export const Hero: React.FC<HeroProps> = ({ onSelectProduct, onNavigateToProduct
           {slides.map((slide, index) => (
             <div
               key={index}
-              className="w-full flex-shrink-0 relative min-h-[480px] sm:min-h-[520px] lg:min-h-[580px] flex items-center py-12 lg:py-20"
+              className="w-full shrink-0 relative min-h-[480px] sm:min-h-[520px] lg:min-h-[580px] flex items-center py-12 lg:py-20"
             >
               {/* Full Background Image */}
               <img
                 src={slide.bannerImage}
                 alt={slide.product.name}
-                className="absolute inset-0 w-full h-full object-cover transition-transform duration-[12000ms] ease-out select-none z-0"
+                className="absolute inset-0 w-full h-full object-cover transition-transform duration-12000 ease-out select-none z-0"
                 style={{
                   transform: currentSlide === index ? 'scale(1.06)' : 'scale(1)',
                 }}
               />
 
               {/* Rich Overlay Gradients for content contrast */}
-              <div className="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-950/85 to-transparent z-10" />
-              <div className="absolute inset-0 bg-gradient-to-t from-slate-950/60 via-transparent to-slate-950/30 z-10" />
+              <div className="absolute inset-0 bg-linear-to-r from-slate-950 via-slate-950/85 to-transparent z-10" />
+              <div className="absolute inset-0 bg-linear-to-t from-slate-950/60 via-transparent to-slate-950/30 z-10" />
 
               {/* Slide Content container */}
               <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-20 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
@@ -175,7 +175,7 @@ export const Hero: React.FC<HeroProps> = ({ onSelectProduct, onNavigateToProduct
 
                   <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black text-white font-serif tracking-tight leading-tight">
                     {slide.titleLine1} <br />
-                    <span className={`bg-gradient-to-r ${slide.gradient} bg-clip-text text-transparent`}>
+                    <span className={`bg-linear-to-r ${slide.gradient} bg-clip-text text-transparent`}>
                       {slide.titleLine2}
                     </span>
                   </h1>
@@ -187,7 +187,7 @@ export const Hero: React.FC<HeroProps> = ({ onSelectProduct, onNavigateToProduct
                   <div className="flex flex-col sm:flex-row gap-3 justify-center lg:justify-start pt-2">
                     <button
                       onClick={() => onSelectProduct(slide.product)}
-                      className={`px-6 py-3.5 bg-gradient-to-r ${slide.gradient} hover:opacity-90 text-white text-xs font-bold rounded-xl shadow-lg transition-all text-center flex items-center justify-center gap-2 cursor-pointer active:scale-95`}
+                      className={`px-6 py-3.5 bg-linear-to-r ${slide.gradient} hover:opacity-90 text-white text-xs font-bold rounded-xl shadow-lg transition-all text-center flex items-center justify-center gap-2 cursor-pointer active:scale-95`}
                       style={{ boxShadow: `0 10px 25px -5px ${slide.shadowColor}` }}
                     >
                       <ShoppingBag className="w-4 h-4" />
@@ -206,19 +206,19 @@ export const Hero: React.FC<HeroProps> = ({ onSelectProduct, onNavigateToProduct
                   {/* Trust guarantees badges */}
                   <div className="grid grid-cols-3 gap-4 pt-6 max-w-sm mx-auto lg:mx-0 text-left border-t border-white/10 mt-6">
                     <div className="flex items-center gap-2">
-                      <div className="w-7 h-7 rounded-lg bg-white/10 border border-white/10 flex items-center justify-center text-white flex-shrink-0">
+                      <div className="w-7 h-7 rounded-lg bg-white/10 border border-white/10 flex items-center justify-center text-white shrink-0">
                         <ShieldCheck className="w-3.5 h-3.5 text-blue-400" />
                       </div>
                       <span className="text-[10px] font-bold text-slate-300">Genuine Pick</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <div className="w-7 h-7 rounded-lg bg-white/10 border border-white/10 flex items-center justify-center text-white flex-shrink-0">
+                      <div className="w-7 h-7 rounded-lg bg-white/10 border border-white/10 flex items-center justify-center text-white shrink-0">
                         <Zap className="w-3.5 h-3.5 text-blue-400" />
                       </div>
                       <span className="text-[10px] font-bold text-slate-300">Fast Shipping</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <div className="w-7 h-7 rounded-lg bg-white/10 border border-white/10 flex items-center justify-center text-white flex-shrink-0">
+                      <div className="w-7 h-7 rounded-lg bg-white/10 border border-white/10 flex items-center justify-center text-white shrink-0">
                         <Award className="w-3.5 h-3.5 text-blue-400" />
                       </div>
                       <span className="text-[10px] font-bold text-slate-300">Full Warranty</span>
@@ -241,7 +241,7 @@ export const Hero: React.FC<HeroProps> = ({ onSelectProduct, onNavigateToProduct
               key={i}
               onClick={() => setSlide(i)}
               className={`h-2 rounded-full transition-all duration-300 cursor-pointer ${i === currentSlide
-                  ? `w-6 bg-gradient-to-r ${slide.gradient}`
+                  ? `w-6 bg-linear-to-r ${slide.gradient}`
                   : 'w-2 bg-white/30 hover:bg-white/55'
                 }`}
               aria-label={`Go to slide ${i + 1}`}

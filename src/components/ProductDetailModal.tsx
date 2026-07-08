@@ -111,7 +111,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
               <ul className="grid grid-cols-1 gap-1.5">
                 {product.specifications.map((spec, index) => (
                   <li key={index} className="text-xs text-slate-700 flex items-center gap-2">
-                    <span className="w-1.5 h-1.5 rounded-full bg-blue-500 flex-shrink-0" />
+                    <span className="w-1.5 h-1.5 rounded-full bg-blue-500 shrink-0" />
                     {spec}
                   </li>
                 ))}

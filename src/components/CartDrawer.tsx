@@ -273,7 +273,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                 className="flex gap-4 p-3 bg-slate-50/50 border border-slate-200 rounded-xl hover:border-slate-300 transition-colors text-left"
               >
                 {/* Product Image */}
-                <div className="w-20 h-20 rounded-lg overflow-hidden bg-white flex-shrink-0 border border-slate-150">
+                <div className="w-20 h-20 rounded-lg overflow-hidden bg-white shrink-0 border border-slate-150">
                   <img 
                     src={item.product.image} 
                     alt={item.product.name} 
@@ -345,7 +345,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
               <button 
                 type="submit"
                 form="checkout-form"
-                className="w-full py-3 bg-gradient-to-r from-emerald-600 to-green-500 hover:from-emerald-500 hover:to-green-400 text-white font-bold rounded-xl transition-all duration-300 shadow-lg shadow-green-500/20 active:scale-[0.98] flex items-center justify-center gap-2 cursor-pointer text-sm"
+                className="w-full py-3 bg-linear-to-r from-emerald-600 to-green-500 hover:from-emerald-500 hover:to-green-400 text-white font-bold rounded-xl transition-all duration-300 shadow-lg shadow-green-500/20 active:scale-[0.98] flex items-center justify-center gap-2 cursor-pointer text-sm"
               >
                 <MessageSquare className="w-4 h-4 fill-white text-emerald-600" />
                 <span>Send Inquiry on WhatsApp</span>
@@ -359,7 +359,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                     setIsCheckingOut(true);
                   }
                 }}
-                className="w-full py-3 bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-500 hover:to-cyan-400 text-white font-bold rounded-xl transition-all duration-300 shadow-lg shadow-blue-500/20 active:scale-[0.98] text-sm cursor-pointer"
+                className="w-full py-3 bg-linear-to-r from-blue-600 to-cyan-500 hover:from-blue-500 hover:to-cyan-400 text-white font-bold rounded-xl transition-all duration-300 shadow-lg shadow-blue-500/20 active:scale-[0.98] text-sm cursor-pointer"
               >
                 Proceed to Checkout
               </button>

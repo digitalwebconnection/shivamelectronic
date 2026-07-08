@@ -74,12 +74,12 @@ export const ProductGrid: React.FC<ProductGridProps> = ({
               {/* Badges (Hot / New) */}
               <div className="absolute top-3 left-3 z-10 flex flex-col gap-1.5">
                 {product.isHot && (
-                  <span className="bg-gradient-to-r from-rose-600 to-red-500 text-white text-[8px] font-black uppercase tracking-widest px-2 py-0.5 rounded-md shadow-md shadow-red-500/10">
+                  <span className="bg-linear-to-r from-rose-600 to-red-500 text-white text-[8px] font-black uppercase tracking-widest px-2 py-0.5 rounded-md shadow-md shadow-red-500/10">
                     Hot
                   </span>
                 )}
                 {product.isNew && (
-                  <span className="bg-gradient-to-r from-blue-600 to-indigo-500 text-white text-[8px] font-black uppercase tracking-widest px-2 py-0.5 rounded-md shadow-md shadow-blue-500/10">
+                  <span className="bg-linear-to-r from-blue-600 to-indigo-500 text-white text-[8px] font-black uppercase tracking-widest px-2 py-0.5 rounded-md shadow-md shadow-blue-500/10">
                     New
                   </span>
                 )}
@@ -156,7 +156,7 @@ export const ProductGrid: React.FC<ProductGridProps> = ({
 
                   <button
                     onClick={() => onAddToCart(product)}
-                    className="flex items-center justify-center gap-1 py-1.5 px-3.5 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white text-[10px] font-black shadow-md shadow-blue-600/10 active:scale-95 transition-all duration-300 cursor-pointer"
+                    className="flex items-center justify-center gap-1 py-1.5 px-3.5 rounded-xl bg-linear-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white text-[10px] font-black shadow-md shadow-blue-600/10 active:scale-95 transition-all duration-300 cursor-pointer"
                     title="Add to Cart"
                   >
                     <ShoppingCart className="w-3 h-3" />
@@ -175,7 +175,7 @@ export const ProductGrid: React.FC<ProductGridProps> = ({
         <div className="flex justify-center mt-12">
           <button
             onClick={onNavigateToProducts}
-            className="flex items-center gap-1.5 px-7 py-3.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white text-xs font-black rounded-xl shadow-lg hover:shadow-xl hover:shadow-blue-500/25 active:scale-95 transition-all duration-300 cursor-pointer"
+            className="flex items-center gap-1.5 px-7 py-3.5 bg-linear-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white text-xs font-black rounded-xl shadow-lg hover:shadow-xl hover:shadow-blue-500/25 active:scale-95 transition-all duration-300 cursor-pointer"
           >
             <span>View All Products</span>
             <ArrowRight className="w-4 h-4" />

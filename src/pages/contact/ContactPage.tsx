@@ -60,7 +60,7 @@ export const ContactPage: React.FC = () => {
           {/* Left Column: Contact Cards */}
           <div className="lg:col-span-5 space-y-6">
             <div className="bg-white border border-slate-200 p-6 rounded-3xl shadow-sm flex gap-4">
-              <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center text-blue-600 flex-shrink-0">
+              <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center text-blue-600 shrink-0">
                 <MapPin className="w-5 h-5" />
               </div>
               <div className="space-y-1">
@@ -72,7 +72,7 @@ export const ContactPage: React.FC = () => {
             </div>
 
             <div className="bg-white border border-slate-200 p-6 rounded-3xl shadow-sm flex gap-4">
-              <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center text-blue-600 flex-shrink-0">
+              <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center text-blue-600 shrink-0">
                 <Phone className="w-5 h-5" />
               </div>
               <div className="space-y-1">
@@ -84,7 +84,7 @@ export const ContactPage: React.FC = () => {
             </div>
 
             <div className="bg-white border border-slate-200 p-6 rounded-3xl shadow-sm flex gap-4">
-              <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center text-blue-600 flex-shrink-0">
+              <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center text-blue-600 shrink-0">
                 <Mail className="w-5 h-5" />
               </div>
               <div className="space-y-1">
@@ -149,7 +149,7 @@ export const ContactPage: React.FC = () => {
 
                   <button 
                     type="submit"
-                    className="w-full bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-500 hover:to-cyan-400 text-white font-bold text-xs py-3.5 rounded-xl flex items-center justify-center gap-2 transition-all cursor-pointer shadow-lg shadow-blue-500/10 active:scale-[0.99]"
+                    className="w-full bg-linear-to-r from-blue-600 to-cyan-500 hover:from-blue-500 hover:to-cyan-400 text-white font-bold text-xs py-3.5 rounded-xl flex items-center justify-center gap-2 transition-all cursor-pointer shadow-lg shadow-blue-500/10 active:scale-[0.99]"
                   >
                     <Send className="w-3.5 h-3.5" />
                     <span>Submit Inquiry Message</span>

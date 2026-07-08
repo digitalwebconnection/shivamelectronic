@@ -215,7 +215,7 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
           
           <div className="flex flex-col sm:flex-row items-center gap-6 z-10">
             <div className="relative group">
-              <div className="absolute inset-0 rounded-full bg-gradient-to-r from-blue-600 to-rose-600 blur-md opacity-20 group-hover:opacity-40 transition-opacity duration-300" />
+              <div className="absolute inset-0 rounded-full bg-linear-to-r from-blue-600 to-rose-600 blur-md opacity-20 group-hover:opacity-40 transition-opacity duration-300" />
               <img 
                 src={currentUser.avatar} 
                 alt={currentUser.name} 
@@ -225,7 +225,7 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
             <div className="text-center sm:text-left space-y-1.5">
               <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2">
                 <h1 className="text-2xl font-black text-slate-900">{currentUser.name}</h1>
-                <span className="bg-gradient-to-r from-[#e11d48]/10 to-[#0057ff]/10 text-blue-650 border border-blue-100 text-[10px] font-black px-2.5 py-0.5 rounded-full uppercase tracking-wider">
+                <span className="bg-linear-to-r from-[#e11d48]/10 to-[#0057ff]/10 text-blue-650 border border-blue-100 text-[10px] font-black px-2.5 py-0.5 rounded-full uppercase tracking-wider">
                   {currentUser.role || 'Member'}
                 </span>
               </div>
@@ -423,7 +423,7 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
                   </div>
 
                   {/* Tier status rewards */}
-                  <div className="border border-slate-200 rounded-2xl p-5 space-y-3 bg-gradient-to-r from-blue-50/20 to-rose-50/10">
+                  <div className="border border-slate-200 rounded-2xl p-5 space-y-3 bg-linear-to-r from-blue-50/20 to-rose-50/10">
                     <div className="flex items-center justify-between border-b border-slate-100 pb-2">
                       <span className="text-xs font-bold text-slate-900 flex items-center gap-1.5">
                         <Shield className="w-4 h-4 text-amber-600" /> Tier Rewards & Benefits
@@ -612,7 +612,7 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
                           {order.items.map((item, itemIdx) => (
                             <div key={itemIdx} className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                               <div className="flex items-center gap-3">
-                                <div className="w-16 h-16 bg-white border border-slate-200 rounded-xl overflow-hidden p-2 flex-shrink-0 flex items-center justify-center">
+                                <div className="w-16 h-16 bg-white border border-slate-200 rounded-xl overflow-hidden p-2 shrink-0 flex items-center justify-center">
                                   <img src={item.product.image} className="w-full h-full object-contain" />
                                 </div>
                                 <div className="space-y-0.5">
@@ -900,11 +900,11 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
                         onClick={() => onProductClick(prod)}
                         className="flex items-center gap-4 p-3 bg-white border border-slate-200 hover:border-slate-350 rounded-2xl shadow-sm hover:shadow-md cursor-pointer transition-all duration-300 relative group"
                       >
-                        <div className="w-16 h-16 bg-slate-50 border border-slate-100 rounded-xl overflow-hidden p-1.5 flex items-center justify-center flex-shrink-0">
+                        <div className="w-16 h-16 bg-slate-50 border border-slate-100 rounded-xl overflow-hidden p-1.5 flex items-center justify-center shrink-0">
                           <img src={prod.image} alt={prod.name} className="w-full h-full object-contain" />
                         </div>
                         
-                        <div className="flex-grow space-y-1.5 min-w-0 pr-4">
+                        <div className="grow space-y-1.5 min-w-0 pr-4">
                           <h4 className="text-xs font-black text-slate-900 truncate group-hover:text-blue-600 transition-colors">
                             {prod.name}
                           </h4>

@@ -39,7 +39,7 @@ export const FlashSale: React.FC<FlashSaleProps> = ({
   return (
     <section className="py-16 bg-white border-b border-slate-100 scroll-mt-20 relative overflow-hidden">
       <div className=" px-4 sm:px-6 lg:px-0">
-        <div className="bg-gradient-to-br from-slate-900 via-slate-950 to-slate-900 border border-slate-800  p-6 md:p-8 shadow-2xl relative overflow-hidden">
+        <div className="bg-linear-to-br from-slate-900 via-slate-950 to-slate-900 border border-slate-800  p-6 md:p-8 shadow-2xl relative overflow-hidden">
           {/* Background elements */}
           <div className="absolute top-0 right-0 w-[300px] h-[300px] bg-red-600/10 rounded-full blur-[100px] pointer-events-none" />
           <div className="absolute bottom-0 left-10 w-[250px] h-[250px] bg-amber-600/5 rounded-full blur-[80px] pointer-events-none" />
@@ -96,16 +96,16 @@ export const FlashSale: React.FC<FlashSaleProps> = ({
                     className="group bg-slate-950/45 backdrop-blur-md border border-slate-800/80 hover:border-red-500/40 rounded-2xl p-5 flex gap-5 transition-all duration-300 hover:shadow-2xl hover:shadow-red-950/20 hover:-translate-y-0.5 cursor-pointer relative"
                   >
                     {/* Glowing Accent Ring on Hover */}
-                    <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-red-600/0 via-red-600/0 to-red-600/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+                    <div className="absolute inset-0 rounded-2xl bg-linear-to-r from-red-600/0 via-red-600/0 to-red-600/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
 
                     {/* Discount Badge */}
-                    <span className="absolute -top-2.5 left-3 bg-gradient-to-r from-red-600 to-rose-500 text-white text-[9px] font-black uppercase tracking-widest px-2.5 py-1 rounded-full shadow-[0_4px_12px_rgba(220,38,38,0.25)] border border-red-500/20 z-10">
+                    <span className="absolute -top-2.5 left-3 bg-linear-to-r from-red-600 to-rose-500 text-white text-[9px] font-black uppercase tracking-widest px-2.5 py-1 rounded-full shadow-[0_4px_12px_rgba(220,38,38,0.25)] border border-red-500/20 z-10">
                       HOT FLASH DEAL
                     </span>
 
                     {/* Image panel */}
-                    <div className="w-24 h-24 rounded-xl bg-slate-900 border border-slate-800/70  flex items-center justify-center flex-shrink-0 relative overflow-hidden group-hover:border-red-950 transition-colors">
-                      <div className="absolute inset-0 bg-gradient-to-br from-red-500/5 to-transparent pointer-events-none" />
+                    <div className="w-24 h-24 rounded-xl bg-slate-900 border border-slate-800/70  flex items-center justify-center shrink-0 relative overflow-hidden group-hover:border-red-950 transition-colors">
+                      <div className="absolute inset-0 bg-linear-to-br from-red-500/5 to-transparent pointer-events-none" />
                       <img 
                         src={p.image} 
                         alt={p.name} 
@@ -141,7 +141,7 @@ export const FlashSale: React.FC<FlashSaleProps> = ({
                         </div>
                         <div className="w-full h-2 rounded-full bg-slate-900 border border-slate-800 overflow-hidden">
                           <div 
-                            className="h-full bg-gradient-to-r from-red-600 via-orange-500 to-yellow-400 transition-all duration-500 rounded-full shadow-[0_0_8px_rgba(239,68,68,0.4)]" 
+                            className="h-full bg-linear-to-r from-red-600 via-orange-500 to-yellow-400 transition-all duration-500 rounded-full shadow-[0_0_8px_rgba(239,68,68,0.4)]" 
                             style={{ width: `${claimedPercent}%` }}
                           />
                         </div>
@@ -153,7 +153,7 @@ export const FlashSale: React.FC<FlashSaleProps> = ({
                           e.stopPropagation();
                           onAddToCart(p);
                         }}
-                        className="mt-3.5 py-2 px-3 w-full bg-gradient-to-r from-red-600 to-orange-600 hover:from-red-500 hover:to-orange-500 text-white font-black text-[9px] rounded-xl tracking-widest flex items-center justify-center gap-1.5 active:scale-95 transition-all shadow-md shadow-red-950/20 cursor-pointer"
+                        className="mt-3.5 py-2 px-3 w-full bg-linear-to-r from-red-600 to-orange-600 hover:from-red-500 hover:to-orange-500 text-white font-black text-[9px] rounded-xl tracking-widest flex items-center justify-center gap-1.5 active:scale-95 transition-all shadow-md shadow-red-950/20 cursor-pointer"
                       >
                         <ShoppingCart className="w-3.5 h-3.5" />
                         <span>CLAIM DEAL</span>
