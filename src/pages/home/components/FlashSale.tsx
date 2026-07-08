@@ -38,8 +38,8 @@ export const FlashSale: React.FC<FlashSaleProps> = ({
 
   return (
     <section className="py-16 bg-white border-b border-slate-100 scroll-mt-20 relative overflow-hidden">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-0">
-        <div className="bg-gradient-to-br from-slate-900 via-slate-950 to-slate-900 border border-slate-800 rounded-3xl p-6 md:p-8 shadow-2xl relative overflow-hidden">
+      <div className=" px-4 sm:px-6 lg:px-0">
+        <div className="bg-gradient-to-br from-slate-900 via-slate-950 to-slate-900 border border-slate-800  p-6 md:p-8 shadow-2xl relative overflow-hidden">
           {/* Background elements */}
           <div className="absolute top-0 right-0 w-[300px] h-[300px] bg-red-600/10 rounded-full blur-[100px] pointer-events-none" />
           <div className="absolute bottom-0 left-10 w-[250px] h-[250px] bg-amber-600/5 rounded-full blur-[80px] pointer-events-none" />
