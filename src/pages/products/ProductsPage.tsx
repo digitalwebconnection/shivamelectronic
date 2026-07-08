@@ -34,11 +34,11 @@ export const ProductsPage: React.FC<ProductsPageProps> = ({
             <Sparkles className="w-3 h-3" />
             <span>Shivam Electronic Catalog</span>
           </div>
-          <h1 className="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight">
+          <h1 className="text-3xl sm:text-4xl font-black text-slate-900 font-serif tracking-tight">
             {selectedCategory === 'All' ? 'Explore Our Full Collection' : `Premium ${selectedCategory}`}
           </h1>
           <p className="text-sm text-slate-500 max-w-xl mx-auto">
-            Browse our verified inventory of high-performance tech gadgets. Every item comes with an official brand warranty and secure shipping.
+            Browse our verified inventory of high-grade electronic components. Every item comes with official specifications, quality testing, and secure packaging.
           </p>
         </div>
 

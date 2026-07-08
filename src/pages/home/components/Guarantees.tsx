@@ -5,7 +5,7 @@ export const Guarantees: React.FC = () => {
   const guaranteeItems = [
     {
       title: "Free Express Delivery",
-      description: "Free home delivery on all purchases above $200. Shipped within 24 hours.",
+      description: "Free home delivery on all bulk industrial product inquiries. Shipped within 24 hours.",
       icon: <Truck className="w-8 h-8" />,
       iconBg: "bg-blue-50 border-blue-100 text-blue-600",
       hoverBorder: "hover:border-blue-400/80",
@@ -65,7 +65,7 @@ export const Guarantees: React.FC = () => {
       <div className="absolute -bottom-16 right-1/4 w-80 h-80 rounded-full bg-violet-300/25 blur-[100px] pointer-events-none animate-float-reverse" />
       <div className="absolute top-1/2 left-2/3 w-64 h-64 rounded-full bg-rose-200/15 blur-[90px] pointer-events-none animate-float-slow" />
 
-      <div className="max-w-7xl mx-auto px-6 lg:px-8 relative z-10">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-0 relative z-10">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {guaranteeItems.map((item, idx) => (
             <div 

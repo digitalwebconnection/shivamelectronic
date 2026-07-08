@@ -23,3 +23,17 @@ export interface User {
   avatar: string;
   role: string;
 }
+
+export interface OrderItem {
+  product: Product;
+  quantity: number;
+}
+
+export interface Order {
+  id: string;
+  date: string;
+  status: 'Processing' | 'In Transit' | 'Delivered' | 'Cancelled';
+  total: number;
+  paymentMethod: string;
+  items: OrderItem[];
+}

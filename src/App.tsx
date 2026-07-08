@@ -18,7 +18,7 @@ import { ProfilePage } from './pages/profile/ProfilePage';
 // Footer (globally at bottom of active page layout)
 import { Footer } from './components/sections/Footer';
 
-import type { Product, CartItem, User } from './types';
+import type { Product, CartItem, User, Order } from './types';
 import { products } from './data/products';
 import './App.css';
 
@@ -80,12 +80,58 @@ function App() {
   const [user, setUser] = useState<User | null>(null);
   const [cartItems, setCartItems] = useState<CartItem[]>([
     // Start with a default item for illustration
-    { product: products[2], quantity: 1 } // Sony Headphones
+    { product: products[2], quantity: 1 } // KCD4 Rocker Switch
   ]);
   const [wishlist, setWishlist] = useState<Product[]>([
-    products[0], // MacBook Pro
-    products[1]  // iPhone 15 Pro
+    products[0], // 14-Pin IC Socket
+    products[1]  // Anjali Power Cord
   ]);
+  const [orders, setOrders] = useState<Order[]>([
+    {
+      id: 'ORD-984310',
+      date: 'July 04, 2026',
+      status: 'Delivered',
+      total: products[0].price,
+      paymentMethod: 'Credit Card',
+      items: [
+        {
+          product: products[0],
+          quantity: 1
+        }
+      ]
+    },
+    {
+      id: 'ORD-874291',
+      date: 'June 20, 2026',
+      status: 'In Transit',
+      total: products[2].price,
+      paymentMethod: 'UPI / GooglePay',
+      items: [
+        {
+          product: products[2],
+          quantity: 1
+        }
+      ]
+    },
+    {
+      id: 'ORD-731092',
+      date: 'May 12, 2026',
+      status: 'Delivered',
+      total: products[1].price,
+      paymentMethod: 'Bank Transfer',
+      items: [
+        {
+          product: products[1],
+          quantity: 1
+        }
+      ]
+    }
+  ]);
+
+  const handlePlaceOrder = (newOrder: Order) => {
+    setOrders(prev => [newOrder, ...prev]);
+    setCartItems([]);
+  };
 
   // Drawer / Modal triggers
   const [isAuthOpen, setIsAuthOpen] = useState(false);
@@ -112,8 +158,6 @@ function App() {
       return matchesSearch && matchesCategory;
     })
     .sort((a, b) => {
-      if (sortBy === 'low') return a.price - b.price;
-      if (sortBy === 'high') return b.price - a.price;
       if (sortBy === 'rating') return b.rating - a.rating;
       return 0;
     });
@@ -248,6 +292,7 @@ function App() {
             onProductClick={handleSelectProduct}
             onLogout={() => setUser(null)}
             onPromptAuth={() => setIsAuthOpen(true)}
+            orders={orders}
           />
         )}
 
@@ -286,6 +331,7 @@ function App() {
         onRemoveItem={handleRemoveCartItem}
         user={user}
         onPromptAuth={() => setIsAuthOpen(true)}
+        onPlaceOrder={handlePlaceOrder}
       />
 
       <WishlistDrawer 

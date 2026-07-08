@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { X, Plus, Minus, Trash2, ShoppingCart, ShoppingBag, ArrowLeft, MessageSquare } from 'lucide-react';
-import type { CartItem, User as UserType } from '../types';
+import { X, Plus, Minus, Trash2, ShoppingCart, ShoppingBag, ArrowLeft, MessageSquare, CheckCircle2 } from 'lucide-react';
+import type { CartItem, User as UserType, Order } from '../types';
 
 interface CartDrawerProps {
   isOpen: boolean;
@@ -10,6 +10,7 @@ interface CartDrawerProps {
   onRemoveItem: (productId: string) => void;
   user: UserType | null;
   onPromptAuth: () => void;
+  onPlaceOrder: (order: Order) => void;
 }
 
 export const CartDrawer: React.FC<CartDrawerProps> = ({
@@ -20,12 +21,16 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
   onRemoveItem,
   user,
   onPromptAuth,
+  onPlaceOrder,
 }) => {
   const [isCheckingOut, setIsCheckingOut] = useState(false);
   const [customerName, setCustomerName] = useState(user?.name || '');
   const [customerPhone, setCustomerPhone] = useState('');
   const [customerAddress, setCustomerAddress] = useState('');
   const [customerNote, setCustomerNote] = useState('');
+  const [orderSuccessId, setOrderSuccessId] = useState<string | null>(null);
+
+  const cartSubtotal = cartItems.reduce((sum, item) => sum + (item.product.price * item.quantity), 0);
 
   // Sync user details if logged in
   useEffect(() => {
@@ -40,6 +45,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
   useEffect(() => {
     if (!isOpen) {
       setIsCheckingOut(false);
+      setOrderSuccessId(null);
     }
   }, [isOpen]);
 
@@ -50,14 +56,32 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
       return;
     }
 
+    const newOrderId = `ORD-${Math.floor(100000 + Math.random() * 900000)}`;
+
+    const newOrder: Order = {
+      id: newOrderId,
+      date: new Date().toLocaleDateString('en-US', { month: 'long', day: '2-digit', year: 'numeric' }),
+      status: 'Processing',
+      total: cartSubtotal,
+      paymentMethod: 'Cash on Delivery',
+      items: cartItems.map(item => ({ product: item.product, quantity: item.quantity }))
+    };
+
+    // Store in global order history
+    onPlaceOrder(newOrder);
+
+    // Show success view
+    setOrderSuccessId(newOrderId);
+
     const storePhone = '919601072015'; // Flagship Hotline from Contact Center
     let itemsText = '';
     cartItems.forEach((item, idx) => {
-      itemsText += `${idx + 1}. *${item.product.name}*\n   Qty: ${item.quantity}\n`;
+      itemsText += `${idx + 1}. *${item.product.name}* (Qty: ${item.quantity})\n`;
     });
 
-    const message = `🛍️ *NEW ORDER INQUIRY - Shivam Electronic World*\n` +
+    const message = `🛍️ *NEW ORDER - Shivam Electronic World*\n` +
       `-----------------------------------------\n` +
+      `🆔 *Order ID:* ${newOrderId}\n` +
       `👤 *Customer Name:* ${customerName}\n` +
       `📞 *Phone Number:* ${customerPhone}\n` +
       `📍 *Delivery Address:* ${customerAddress}\n` +
@@ -66,7 +90,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
       `🛒 *Items:* \n${itemsText}\n` +
       `-----------------------------------------\n` +
       `🚚 *Shipping:* FREE\n` +
-      `💵 *Pricing:* On Request via WhatsApp\n\n` +
+      `💵 *Order Total:* Pricing on request\n\n` +
       `Please confirm availability and dispatch details. Thank you!`;
 
     const encodedText = encodeURIComponent(message);
@@ -123,7 +147,53 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
 
         {/* Drawer Body */}
         <div className="flex-1 overflow-y-auto p-5 space-y-4 custom-scrollbar">
-          {isCheckingOut ? (
+          {orderSuccessId ? (
+            <div className="h-full flex flex-col items-center justify-center text-center py-8 space-y-4">
+              <div className="w-16 h-16 rounded-full bg-emerald-50 border border-emerald-100 flex items-center justify-center text-emerald-600 mb-2 animate-bounce">
+                <CheckCircle2 className="w-8 h-8" />
+              </div>
+              <h3 className="text-xl font-serif font-black text-slate-900">Order Placed!</h3>
+              <p className="text-xs text-slate-500 max-w-[280px] leading-relaxed font-medium">
+                Thank you for your order. Your components have been reserved, and your order has been logged in your profile history.
+              </p>
+              
+              <div className="bg-slate-50 border border-slate-200 rounded-2xl p-4 w-full text-left space-y-2.5">
+                <div className="flex justify-between text-xs text-slate-400 font-bold">
+                  <span>ORDER ID</span>
+                  <span className="text-slate-800 font-mono">{orderSuccessId}</span>
+                </div>
+                <div className="flex justify-between text-xs text-slate-400 font-bold">
+                  <span>TOTAL AMOUNT</span>
+                  <span className="text-blue-600 font-extrabold uppercase tracking-wide">Quote on Request</span>
+                </div>
+                <div className="flex justify-between text-xs text-slate-400 font-bold">
+                  <span>PAYMENT METHOD</span>
+                  <span className="text-slate-800 font-medium">Cash on Delivery / Request Quote</span>
+                </div>
+              </div>
+
+              <div className="pt-4 w-full space-y-2">
+                <button
+                  onClick={() => {
+                    const storePhone = '919601072015';
+                    const message = `🛍️ *Order Inquiry:* ${orderSuccessId}\nName: ${customerName}`;
+                    const whatsappUrl = `https://api.whatsapp.com/send?phone=${storePhone}&text=${encodeURIComponent(message)}`;
+                    window.open(whatsappUrl, '_blank');
+                  }}
+                  className="w-full py-2.5 bg-emerald-650 hover:bg-emerald-600 text-white text-xs font-bold rounded-xl transition-all flex items-center justify-center gap-2 cursor-pointer shadow-md shadow-emerald-500/20 active:scale-95"
+                >
+                  <MessageSquare className="w-4 h-4 fill-white text-emerald-600 animate-pulse" />
+                  <span>Open WhatsApp Details</span>
+                </button>
+                <button
+                  onClick={onClose}
+                  className="w-full py-2.5 bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold rounded-xl transition-all cursor-pointer active:scale-95 border border-slate-800"
+                >
+                  Continue Shopping
+                </button>
+              </div>
+            </div>
+          ) : isCheckingOut ? (
             <form id="checkout-form" onSubmit={handleWhatsAppCheckout} className="space-y-4 text-left">
               <div>
                 <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1.5">
@@ -187,7 +257,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
               </div>
               <h3 className="text-base font-semibold text-slate-900 mb-1">Your cart is empty</h3>
               <p className="text-sm text-slate-500 max-w-[250px] mb-6 font-medium">
-                Looks like you haven't added any electronic goodies to your cart yet.
+                Looks like you haven't added any electronic components to your cart yet.
               </p>
               <button 
                 onClick={onClose}
@@ -258,12 +328,16 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
         </div>
 
         {/* Drawer Footer */}
-        {cartItems.length > 0 && (
+        {cartItems.length > 0 && !orderSuccessId && (
           <div className="p-5 border-t border-slate-200 bg-slate-50/90 backdrop-blur-md">
             <div className="space-y-3 mb-6 text-left">
               <div className="flex justify-between text-sm text-slate-500">
-                <span className="font-semibold">Inquiry Order</span>
-                <span className="text-blue-600 font-extrabold uppercase tracking-wide">Price On Request</span>
+                <span className="font-semibold text-slate-700">Wholesale Order</span>
+                <span className="text-blue-600 font-extrabold uppercase tracking-wide">Quote on Request</span>
+              </div>
+              <div className="flex justify-between text-[11px] text-slate-400 font-bold uppercase tracking-wider">
+                <span>Shipping Info</span>
+                <span className="text-emerald-600">Calculated on confirmation</span>
               </div>
             </div>
 

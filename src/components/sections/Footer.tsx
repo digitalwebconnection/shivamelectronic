@@ -33,7 +33,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
               <span className="text-sm font-black tracking-widest text-white uppercase group-hover:text-blue-400 transition-colors">Shivam Electronics</span>
             </a>
             <p className="text-xs text-slate-400 leading-relaxed max-w-sm">
-              Your absolute hub for premium computer components, smart mobiles, noise-cancelling audiophile gear, and accessories. Experience high-tech with Shivam.
+              Your absolute hub for premium connectors, cables, switches, optoelectronic components, and hardware accessories. Experience industrial grade reliability with Shivam.
             </p>
             
             {/* Social links */}

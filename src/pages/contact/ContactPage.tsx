@@ -21,7 +21,7 @@ export const ContactPage: React.FC = () => {
   const faqs = [
     {
       q: "Are the products genuinely brand new?",
-      a: "Yes, 100%. We source every laptop, mobile phone, and audio gadget directly from authorized brand distributors. All boxes are shipped in factory-sealed condition with genuine brand warranty cards."
+      a: "Yes, 100%. We source every connector, cable, switch, and LED component directly from authorized manufacturing lines. All items are shipped in factory-packaged condition with genuine specifications."
     },
     {
       q: "How long does domestic shipping take?",
@@ -32,8 +32,8 @@ export const ContactPage: React.FC = () => {
       a: "We offer a 7-day hassle-free replacement period in case of transit damages or manufacturer defects. Please keep the original retail packaging box intact to verify direct brand exchanges."
     },
     {
-      q: "Can I choose interest-free monthly financing?",
-      a: "Yes, we partner with major credit card providers and digital wallets to offer zero-percent EMI interest payment plans at checkout for eligible devices."
+      q: "Do you offer bulk pricing or wholesale accounts?",
+      a: "Yes! We specialize in bulk volume distribution for manufacturing lines and engineering firms. Please contact our sales mailbox with your bill of materials (BOM) for a custom volume quote."
     }
   ];
 
@@ -46,11 +46,11 @@ export const ContactPage: React.FC = () => {
           <span className="text-xs font-extrabold text-blue-600 uppercase tracking-widest block">
             Customer Support Center
           </span>
-          <h1 className="text-4xl font-black text-slate-900 tracking-tight">
+          <h1 className="text-4xl font-black text-slate-900 font-serif tracking-tight">
             Connect With Our Team
           </h1>
           <p className="text-sm text-slate-500 max-w-xl mx-auto">
-            Have questions about gadget specifications, custom PC components, order tracking, or warranty support? Contact us today.
+            Have questions about component parameters, bulk industrial orders, wire harness assemblies, or custom parts? Contact us today.
           </p>
         </div>
 
@@ -102,7 +102,7 @@ export const ContactPage: React.FC = () => {
           {/* Right Column: Contact Form */}
           <div className="lg:col-span-7">
             <div className="bg-white border border-slate-200 rounded-3xl p-8 shadow-sm">
-              <h2 className="text-xl font-bold text-slate-950 mb-6">Send Us a Direct Message</h2>
+              <h2 className="text-xl font-bold text-slate-900 font-serif mb-6">Send Us a Direct Message</h2>
               
               {submitted ? (
                 <div className="bg-green-50 border border-green-200 text-green-700 text-xs font-bold p-4 rounded-xl text-center">
@@ -142,7 +142,7 @@ export const ContactPage: React.FC = () => {
                       required
                       value={message}
                       onChange={(e) => setMessage(e.target.value)}
-                      placeholder="Hi, I am interested in building a custom PC workstation..."
+                      placeholder="Hi, I am interested in ordering bulk GX16 aviation plugs and custom rocker switches..."
                       className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-xs text-slate-905 outline-none focus:border-blue-500 focus:bg-white transition-all resize-none"
                     />
                   </div>
@@ -164,7 +164,7 @@ export const ContactPage: React.FC = () => {
         {/* FAQs Accordion */}
         <div className="max-w-4xl mx-auto mt-16">
           <div className="text-center mb-10">
-            <h2 className="text-2xl font-black text-slate-900 tracking-tight flex items-center justify-center gap-2">
+            <h2 className="text-2xl sm:text-3xl font-black text-slate-900 font-serif tracking-tight flex items-center justify-center gap-2">
               <HelpCircle className="w-6 h-6 text-blue-600" />
               <span>Frequently Asked Questions</span>
             </h2>

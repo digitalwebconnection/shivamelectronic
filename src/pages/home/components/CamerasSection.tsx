@@ -1,5 +1,5 @@
 import React from 'react';
-import { Camera, ArrowRight, Star, Heart, ShoppingCart, Sparkles, CheckCircle2 } from 'lucide-react';
+import { Sun, ArrowRight, Star, Heart, ShoppingCart, Sparkles, CheckCircle2 } from 'lucide-react';
 import type { Product } from '../../../types';
 
 interface CamerasSectionProps {
@@ -23,42 +23,42 @@ export const CamerasSection: React.FC<CamerasSectionProps> = ({
   onPromptAuth,
   onViewAll
 }) => {
-  const cameras = products.filter(p => p.category === 'cameras');
+  const optoelectronics = products.filter(p => p.category === 'optoelectronics');
 
   return (
     <section 
-      id="category-cameras" 
+      id="category-optoelectronics" 
       className="py-16 bg-slate-50/50 border-b border-slate-100 scroll-mt-20 relative overflow-hidden"
     >
       {/* Background design elements */}
       <div className="absolute top-1/4 left-1/4 w-[450px] h-[450px] bg-amber-500/5 rounded-full blur-[130px] pointer-events-none" />
       <div className="absolute bottom-10 right-10 w-[300px] h-[300px] bg-yellow-500/5 rounded-full blur-[100px] pointer-events-none" />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-0 relative z-10">
         
         {/* Section Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-12 border-b border-slate-200/80 pb-6">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-10 border-b border-slate-100 pb-6">
           <div className="flex items-center gap-3.5">
             <div className="w-12 h-12 rounded-2xl bg-amber-50 border border-amber-100 flex items-center justify-center text-amber-600 shadow-sm shadow-amber-100">
-              <Camera className="w-6 h-6 animate-pulse" />
+              <Sun className="w-6 h-6 animate-pulse" />
             </div>
             <div>
-              <h2 className="text-2xl font-black text-slate-900 tracking-tight">Spotlight Camera Gear</h2>
-              <p className="text-xs text-slate-400 mt-0.5">Professional bodies, action cameras, and specialized lenses for cinematic production.</p>
+              <h2 className="text-2xl sm:text-3xl font-black text-slate-900 font-serif tracking-tight">Spotlight Optoelectronics</h2>
+              <p className="text-xs text-slate-400 mt-0.5">High luminosity diffusing red Light Emitting Diodes (LEDs) and dashboard signals.</p>
             </div>
           </div>
           <button 
-            onClick={() => onViewAll('cameras')}
-            className="flex items-center gap-1.5 px-4 py-2 border border-slate-200 hover:border-amber-500 hover:text-amber-600 rounded-xl text-xs font-bold text-slate-600 transition-all bg-white cursor-pointer shadow-sm self-start sm:self-auto"
+            onClick={() => onViewAll('optoelectronics')}
+            className="flex items-center gap-1.5 px-4 py-2 border border-slate-200 hover:border-amber-550 hover:text-amber-650 rounded-xl text-xs font-bold text-slate-650 transition-all bg-white cursor-pointer shadow-sm self-start sm:self-auto"
           >
-            <span>View All Gear</span>
+            <span>View Indicators</span>
             <ArrowRight className="w-3.5 h-3.5" />
           </button>
         </div>
 
         {/* Alternating Spotlight Rows */}
         <div className="space-y-10">
-          {cameras.slice(0, 3).map((p, idx) => {
+          {optoelectronics.slice(0, 3).map((p, idx) => {
             const isWishlisted = wishlist.some(item => item.id === p.id);
             const isEven = idx % 2 === 0;
 
@@ -95,7 +95,7 @@ export const CamerasSection: React.FC<CamerasSectionProps> = ({
                     <div className="flex items-center justify-between">
                       <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-50 border border-amber-100 text-amber-600 text-[9px] font-black uppercase tracking-wider shadow-sm">
                         <Sparkles className="w-3 h-3 text-amber-550" />
-                        SPOTLIGHT ITEM {idx + 1}
+                        LED COMPONENT {idx + 1}
                       </span>
                       
                       <div className="flex items-center gap-1.5">
@@ -108,14 +108,14 @@ export const CamerasSection: React.FC<CamerasSectionProps> = ({
                       <h3 className="text-xl sm:text-2xl font-black text-slate-900 leading-snug group-hover:text-amber-655 transition-colors">
                         {p.name}
                       </h3>
-                      <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest block">{p.category} CONFIGURATION</span>
+                      <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest block">OPTOELECTRONICS CONFIGURATION</span>
                     </div>
 
                     {/* Check list of specifications */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-2 border-t border-slate-100">
                       {p.specifications.slice(0, 4).map((s, sIdx) => (
                         <div key={sIdx} className="flex items-center gap-2 text-xs font-bold text-slate-500">
-                          <CheckCircle2 className="w-4.5 h-4.5 text-amber-500 flex-shrink-0" />
+                          <CheckCircle2 className="w-4.5 h-4.5 text-amber-500 shrink-0" />
                           <span>{s}</span>
                         </div>
                       ))}
@@ -126,7 +126,7 @@ export const CamerasSection: React.FC<CamerasSectionProps> = ({
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-4 border-t border-slate-150">
                     <div>
                       <span className="text-[9px] text-slate-400 font-bold block uppercase tracking-wider">PRICING</span>
-                      <span className="text-xs sm:text-sm font-extrabold text-amber-600 bg-amber-50 border border-amber-100 px-2.5 py-1 rounded-lg uppercase tracking-wider inline-block mt-0.5">Price on Request</span>
+                      <span className="text-xs sm:text-sm font-extrabold text-amber-600 bg-amber-50 border border-amber-100 px-2.5 py-1 rounded-lg uppercase tracking-wider inline-block mt-0.5">Bulk Quote</span>
                     </div>
 
                     <div className="flex items-center gap-3">

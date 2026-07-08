@@ -2,12 +2,12 @@ import React from 'react';
 
 export const BrandMarquee: React.FC = () => {
   return (
-    <section className="py-12 bg-slate-50 border-b border-slate-100 overflow-hidden">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-6 text-center">
+    <section className="py-16 bg-slate-50 border-b border-slate-100 overflow-hidden">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-0 mb-6 text-center">
         <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-1">
           Certified Dealer
         </span>
-        <h2 className="text-xl sm:text-2xl font-black text-slate-800 tracking-tight">
+        <h2 className="text-2xl sm:text-3xl font-black text-slate-900 font-serif tracking-tight">
           Official Brand Partners
         </h2>
       </div>
@@ -24,46 +24,46 @@ export const BrandMarquee: React.FC = () => {
           }
         `}</style>
         <div className="flex animate-marquee whitespace-nowrap gap-12 text-slate-400 text-lg font-black tracking-wider uppercase select-none items-center py-2">
-          <span>Apple</span>
+          <span>TE Connectivity</span>
           <span className="text-blue-500/20 text-2xl">•</span>
-          <span>Samsung</span>
+          <span>Molex</span>
           <span className="text-blue-500/20 text-2xl">•</span>
-          <span>Sony</span>
+          <span>Amphenol</span>
           <span className="text-blue-500/20 text-2xl">•</span>
-          <span>Bose</span>
+          <span>Omron</span>
           <span className="text-blue-500/20 text-2xl">•</span>
-          <span>Dell</span>
+          <span>Siemens</span>
           <span className="text-blue-500/20 text-2xl">•</span>
-          <span>Lenovo</span>
+          <span>Schneider Electric</span>
           <span className="text-blue-500/20 text-2xl">•</span>
-          <span>Fujifilm</span>
+          <span>Panasonic</span>
           <span className="text-blue-500/20 text-2xl">•</span>
-          <span>GoPro</span>
+          <span>Delta Electronics</span>
           <span className="text-blue-500/20 text-2xl">•</span>
-          <span>Nintendo</span>
+          <span>Phoenix Contact</span>
           <span className="text-blue-500/20 text-2xl">•</span>
-          <span>Asus</span>
+          <span>Honeywell</span>
           <span className="text-blue-500/20 text-2xl">•</span>
           {/* Duplication */}
-          <span>Apple</span>
+          <span>TE Connectivity</span>
           <span className="text-blue-500/20 text-2xl">•</span>
-          <span>Samsung</span>
+          <span>Molex</span>
           <span className="text-blue-500/20 text-2xl">•</span>
-          <span>Sony</span>
+          <span>Amphenol</span>
           <span className="text-blue-500/20 text-2xl">•</span>
-          <span>Bose</span>
+          <span>Omron</span>
           <span className="text-blue-500/20 text-2xl">•</span>
-          <span>Dell</span>
+          <span>Siemens</span>
           <span className="text-blue-500/20 text-2xl">•</span>
-          <span>Lenovo</span>
+          <span>Schneider Electric</span>
           <span className="text-blue-500/20 text-2xl">•</span>
-          <span>Fujifilm</span>
+          <span>Panasonic</span>
           <span className="text-blue-500/20 text-2xl">•</span>
-          <span>GoPro</span>
+          <span>Delta Electronics</span>
           <span className="text-blue-500/20 text-2xl">•</span>
-          <span>Nintendo</span>
+          <span>Phoenix Contact</span>
           <span className="text-blue-500/20 text-2xl">•</span>
-          <span>Asus</span>
+          <span>Honeywell</span>
           <span className="text-blue-500/20 text-2xl">•</span>
         </div>
       </div>

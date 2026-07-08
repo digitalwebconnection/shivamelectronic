@@ -47,7 +47,7 @@ export const ProductGrid: React.FC<ProductGridProps> = ({
             <span className="text-[10px] font-black text-blue-600 uppercase tracking-widest block mb-1">
               Featured Catalog
             </span>
-            <h2 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
+            <h2 className="text-2xl sm:text-3xl font-black text-slate-900 font-serif tracking-tight">
               Latest Hot Electronics
             </h2>
             <p className="mt-2 text-slate-505 text-xs sm:text-sm leading-relaxed">
@@ -150,8 +150,8 @@ export const ProductGrid: React.FC<ProductGridProps> = ({
                 </div>
 
                 <div className="flex items-center justify-between mt-auto pt-3.5 border-t border-slate-100">
-                  <span className="text-[10px] font-extrabold text-blue-600 uppercase tracking-wider bg-blue-50 border border-blue-100 px-2 py-0.5 rounded-lg">
-                    Price on Request
+                  <span className="text-[10px] font-extrabold uppercase tracking-wider text-slate-400">
+                    Quote on Request
                   </span>
 
                   <button

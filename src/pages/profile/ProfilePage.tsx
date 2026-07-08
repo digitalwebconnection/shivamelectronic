@@ -4,7 +4,7 @@ import {
   ChevronRight, Plus, Edit2, Trash2, CheckCircle2, Truck, Box, 
   Bell, Shield, Key, Mail, Phone, Calendar, Globe
 } from 'lucide-react';
-import type { Product, User as UserType } from '../../types';
+import type { Product, User as UserType, Order } from '../../types';
 import { products } from '../../data/products';
 
 interface ProfilePageProps {
@@ -15,6 +15,7 @@ interface ProfilePageProps {
   onProductClick: (product: Product) => void;
   onLogout: () => void;
   onPromptAuth: () => void;
+  orders: Order[];
 }
 
 interface Address {
@@ -36,7 +37,8 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
   onAddToCart,
   onProductClick,
   onLogout,
-  onPromptAuth
+  onPromptAuth,
+  orders
 }) => {
   // Fallback demo user details for guest view or instant preview
   const demoUser: UserType = {
@@ -91,7 +93,7 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
   });
 
   // Mock Order History Data
-  const mockOrders = [
+  const mockOrders = orders && orders.length > 0 ? orders : [
     {
       id: 'ORD-984310',
       date: 'July 04, 2026',
@@ -100,7 +102,7 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
       paymentMethod: 'Credit Card',
       items: [
         {
-          product: products[0], // MacBook Pro
+          product: products[0], // 14-Pin DIP IC Socket
           quantity: 1
         }
       ]
@@ -113,7 +115,7 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
       paymentMethod: 'UPI / GooglePay',
       items: [
         {
-          product: products[2], // Sony WH-1000XM5
+          product: products[2], // KCD4 Rocker Switch (Black)
           quantity: 1
         }
       ]
@@ -126,7 +128,7 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
       paymentMethod: 'Bank Transfer',
       items: [
         {
-          product: products[1], // Samsung Odyssey
+          product: products[1], // Anjali Power Cord
           quantity: 1
         }
       ]

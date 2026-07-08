@@ -75,7 +75,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
             </div>
 
             {/* Title */}
-            <h2 className="text-xl md:text-2xl font-black text-slate-900 leading-tight mb-2">
+            <h2 className="text-xl md:text-2xl font-black text-slate-900 font-serif leading-tight mb-2">
               {product.name}
             </h2>
 
@@ -94,8 +94,8 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
               <span className="text-xs font-bold text-green-600">In Stock</span>
             </div>
 
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-50 border border-blue-200 text-blue-600 text-xs font-extrabold uppercase tracking-wider mb-4">
-              Pricing Available on Request
+            <div className="text-lg font-black text-blue-600 mb-4">
+              Quote on Request
             </div>
 
             {/* Description */}

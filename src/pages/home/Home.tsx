@@ -11,7 +11,6 @@ import { SmartphonesSection } from './components/SmartphonesSection';
 import { AudioSection } from './components/AudioSection';
 import { WearablesSection } from './components/WearablesSection';
 import { CamerasSection } from './components/CamerasSection';
-import { GamingSection } from './components/GamingSection';
 import { BrandMarquee } from './components/BrandMarquee';
 import { Guarantees } from './components/Guarantees';
 import { PromoParallaxBanner } from './components/PromoParallaxBanner';
@@ -77,7 +76,7 @@ export const Home: React.FC<HomeProps> = ({
         onSelectProduct={onSelectProduct}
       />
 
-      {/* 1. Laptops & Computers */}
+      {/* 1. Connectors & Sockets */}
       <LaptopsSection 
         products={products}
         wishlist={wishlist}
@@ -89,7 +88,7 @@ export const Home: React.FC<HomeProps> = ({
         onViewAll={handleCategoryViewAll}
       />
 
-      {/* 2. Smartphones & Tablets */}
+      {/* 2. Cables & Power Cords */}
       <SmartphonesSection 
         products={products}
         wishlist={wishlist}
@@ -104,7 +103,7 @@ export const Home: React.FC<HomeProps> = ({
       {/* Mid-page Promo Parallax Banner */}
       <PromoParallaxBanner onNavigateToProducts={onNavigateToProducts} />
 
-      {/* 3. Audio & Headphones */}
+      {/* 3. Switches & Push Buttons */}
       <AudioSection 
         products={products}
         wishlist={wishlist}
@@ -116,7 +115,7 @@ export const Home: React.FC<HomeProps> = ({
         onViewAll={handleCategoryViewAll}
       />
 
-      {/* 4. Smartwatches & Wearables */}
+      {/* 4. Hardware & Accessories */}
       <WearablesSection 
         products={products}
         wishlist={wishlist}
@@ -128,20 +127,8 @@ export const Home: React.FC<HomeProps> = ({
         onViewAll={handleCategoryViewAll}
       />
 
-      {/* 5. Cameras & Imaging */}
+      {/* 5. Spotlight Optoelectronics */}
       <CamerasSection 
-        products={products}
-        wishlist={wishlist}
-        onToggleWishlist={onToggleWishlist}
-        onAddToCart={onAddToCart}
-        onSelectProduct={onSelectProduct}
-        isLoggedIn={isLoggedIn}
-        onPromptAuth={onPromptAuth}
-        onViewAll={handleCategoryViewAll}
-      />
-
-      {/* 6. Gaming & Gear */}
-      <GamingSection 
         products={products}
         wishlist={wishlist}
         onToggleWishlist={onToggleWishlist}
@@ -157,7 +144,6 @@ export const Home: React.FC<HomeProps> = ({
 
       {/* Service Guarantees */}
       <Guarantees />
-
 
     </div>
   );

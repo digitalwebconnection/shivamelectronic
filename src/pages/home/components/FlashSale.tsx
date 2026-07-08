@@ -13,7 +13,7 @@ export const FlashSale: React.FC<FlashSaleProps> = ({
   onAddToCart,
   onSelectProduct
 }) => {
-  const flashProducts = products.filter(p => p.id === 'p11' || p.id === 'p20');
+  const flashProducts = products.filter(p => p.id === 'p11' || p.id === 'p12');
   const actualFlashProducts = flashProducts.length >= 2 ? flashProducts.slice(0, 2) : products.slice(1, 3);
 
   // Countdown timer state
@@ -37,9 +37,9 @@ export const FlashSale: React.FC<FlashSaleProps> = ({
   }, []);
 
   return (
-    <section className="py-8 bg-white =">
-      <div className="">
-        <div className="bg-gradient-to-br from-slate-900 via-slate-950 to-slate-900 border border-slate-800  p-6 md:p-8 shadow-2xl relative overflow-hidden">
+    <section className="py-16 bg-white border-b border-slate-100 scroll-mt-20 relative overflow-hidden">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-0">
+        <div className="bg-gradient-to-br from-slate-900 via-slate-950 to-slate-900 border border-slate-800 rounded-3xl p-6 md:p-8 shadow-2xl relative overflow-hidden">
           {/* Background elements */}
           <div className="absolute top-0 right-0 w-[300px] h-[300px] bg-red-600/10 rounded-full blur-[100px] pointer-events-none" />
           <div className="absolute bottom-0 left-10 w-[250px] h-[250px] bg-amber-600/5 rounded-full blur-[80px] pointer-events-none" />
@@ -52,7 +52,7 @@ export const FlashSale: React.FC<FlashSaleProps> = ({
                 <Flame className="w-3.5 h-3.5 animate-pulse" />
                 <span>Limited Flash Deals</span>
               </div>
-              <h2 className="text-2xl sm:text-3xl font-black text-white tracking-tight leading-tight">
+              <h2 className="text-2xl sm:text-3xl font-black text-white font-serif tracking-tight leading-tight">
                 Super Hot Deals <br/>Of The Day
               </h2>
               <p className="text-xs text-slate-400 max-w-sm leading-relaxed mx-auto lg:mx-0">
@@ -125,8 +125,8 @@ export const FlashSale: React.FC<FlashSaleProps> = ({
                           {p.name}
                         </h3>
                         
-                        <div className="flex items-baseline gap-2 mt-1.5">
-                          <span className="text-xs font-bold text-red-400 bg-red-950/30 px-2.5 py-0.5 rounded border border-red-900/20 uppercase tracking-wider">Limited Deal Offer</span>
+                        <div className="flex items-center flex-wrap gap-2 mt-2">
+                          <span className="text-[10px] font-extrabold uppercase tracking-wider text-red-400">Bulk Discount</span>
                         </div>
                       </div>
 

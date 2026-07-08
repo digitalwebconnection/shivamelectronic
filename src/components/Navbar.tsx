@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import {
   Search, ShoppingCart, Heart,  LogOut, ChevronDown,
-  Menu, X, Laptop, Smartphone, Headphones, Watch, Camera,
-  Gamepad2, Cpu,  ShoppingBag, SlidersHorizontal, Tag
+  Menu, X, Camera, Cpu,  ShoppingBag, SlidersHorizontal, Tag,
+  Power, Cable, Settings, Sun
 } from 'lucide-react';
 import type { Product, CartItem, User as UserType } from '../types';
 import { categories, products } from '../data/products';
@@ -32,24 +32,16 @@ interface NavbarProps {
 
 const getShortCategoryName = (slug: string) => {
   switch (slug.toLowerCase()) {
-    case 'laptops':
-    case 'laptops-computers':
-      return 'Laptops';
-    case 'mobiles':
-    case 'smartphones-tablets':
-      return 'Mobiles';
-    case 'audio':
-    case 'audio-headphones':
-      return 'Audio';
-    case 'wearables':
-    case 'smartwatches-wearables':
-      return 'Watches';
-    case 'cameras':
-    case 'cameras-imaging':
-      return 'Cameras';
-    case 'gaming':
-    case 'gaming-accessories':
-      return 'Gaming';
+    case 'connectors':
+      return 'Connectors';
+    case 'cables':
+      return 'Cables';
+    case 'switches':
+      return 'Switches';
+    case 'hardware':
+      return 'Hardware';
+    case 'optoelectronics':
+      return 'Opto';
     default:
       return slug;
   }
@@ -135,28 +127,27 @@ export const Navbar: React.FC<NavbarProps> = ({
   // Dynamically map icon strings to Lucide components
   const renderCategoryIcon = (iconName: string) => {
     switch (iconName) {
-      case 'Laptop': return <Laptop className="w-4 h-4" />;
-      case 'Smartphone': return <Smartphone className="w-4 h-4" />;
-      case 'Headphones': return <Headphones className="w-4 h-4" />;
-      case 'Watch': return <Watch className="w-4 h-4" />;
-      case 'Camera': return <Camera className="w-4 h-4" />;
-      case 'Gamepad2': return <Gamepad2 className="w-4 h-4" />;
+      case 'Cpu': return <Cpu className="w-4 h-4" />;
+      case 'Cable': return <Cable className="w-4 h-4" />;
+      case 'Power': return <Power className="w-4 h-4" />;
+      case 'Settings': return <Settings className="w-4 h-4" />;
+      case 'Sun': return <Sun className="w-4 h-4" />;
       default: return <Cpu className="w-4 h-4" />;
     }
   };
 
   // Small black tag list (Behance footer tags style)
   const quickTags = [
-    { label: 'store', query: 'store' },
-    { label: 'website', query: 'website' },
-    { label: 'macbook', query: 'MacBook' },
-    { label: 'iphone', query: 'iPhone' },
-    { label: 'clean', query: 'clean' },
-    { label: 'audio', query: 'Sony' },
-    { label: 'repair', query: 'warranty' },
-    { label: 'gadget store website', query: 'Pro' },
-    { label: 'website ui', query: 'Ultra' },
-    { label: 'website design', query: 'Wireless' }
+    { label: 'connectors', query: 'connectors' },
+    { label: 'cables', query: 'cables' },
+    { label: 'switches', query: 'switches' },
+    { label: 'aviation plug', query: 'aviation' },
+    { label: 'rocker switch', query: 'rocker' },
+    { label: 'led components', query: 'led' },
+    { label: 'rubber feet', query: 'rubber' },
+    { label: 'grommet', query: 'grommet' },
+    { label: 'power cord', query: 'power' },
+    { label: 'ic socket', query: 'socket' }
   ];
 
   // Reusable search bar render helper
@@ -188,7 +179,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           type="text"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          placeholder="Search electronic gadgets..."
+          placeholder="Search electronic components..."
           className="w-full bg-transparent text-sm text-slate-900 placeholder-slate-400 outline-none"
         />
 
@@ -509,7 +500,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                 onClick={onOpenAuth}
                 className="bg-gradient-to-r from-[#e11d48] to-[#0057ff] hover:opacity-90 hover:scale-102 text-white rounded-full px-5 py-2.5 text-xs font-bold transition-all shadow-md shadow-blue-500/10 hover:shadow-lg hover:shadow-blue-500/20 hover:-translate-y-[1px] active:translate-y-0 active:scale-95"
               >
-                Start Free Trial
+                Sign In
               </button>
             )}
           </div>
@@ -706,7 +697,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                 className="flex items-center gap-1.5 bg-white border border-slate-200 hover:border-slate-300 px-4 py-2.5 rounded-full text-xs font-bold whitespace-nowrap cursor-pointer select-none transition-all duration-300 shadow-sm active:scale-95 text-slate-700 hover:text-blue-600 hover:bg-slate-50"
               >
                 <SlidersHorizontal className="w-3.5 h-3.5 rotate-90" />
-                <span>{sortBy === 'default' ? 'Recommended' : sortBy === 'low' ? 'Price: Low' : sortBy === 'high' ? 'Price: High' : 'Rating'}</span>
+                <span>{sortBy === 'default' ? 'Recommended' : 'Top Rated'}</span>
                 <ChevronDown className={`w-3 h-3 transition-transform duration-300 ${isSortDropdownOpen ? 'rotate-180 text-blue-600' : 'text-slate-400'}`} />
               </button>
 
@@ -718,18 +709,6 @@ export const Navbar: React.FC<NavbarProps> = ({
                       className="w-full text-left px-3 py-1.5 text-xs text-slate-700 hover:bg-slate-50 hover:text-black rounded-lg"
                     >
                       Recommended
-                    </button>
-                    <button
-                      onClick={() => { setSortBy('low'); setIsSortDropdownOpen(false); }}
-                      className="w-full text-left px-3 py-1.5 text-xs text-slate-700 hover:bg-slate-50 hover:text-black rounded-lg"
-                    >
-                      Price: Low-High
-                    </button>
-                    <button
-                      onClick={() => { setSortBy('high'); setIsSortDropdownOpen(false); }}
-                      className="w-full text-left px-3 py-1.5 text-xs text-slate-700 hover:bg-slate-50 hover:text-black rounded-lg"
-                    >
-                      Price: High-Low
                     </button>
                     <button
                       onClick={() => { setSortBy('rating'); setIsSortDropdownOpen(false); }}

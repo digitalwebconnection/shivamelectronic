@@ -11,7 +11,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLoginSu
   const [mode, setMode] = useState<'login' | 'signup' | 'forgot' | 'forgot-success'>('login');
   const [email, setEmail] = useState('demo@shivamelectronics.com');
   const [name, setName] = useState('John Doe');
-  const [password, setPassword] = useState('password123');
+  const [password, setPassword] = useState('ShivamWorld2026!');
 
   if (!isOpen) return null;
 

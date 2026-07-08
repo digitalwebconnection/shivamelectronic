@@ -102,7 +102,7 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
                 <span className="text-[10px] text-blue-600 uppercase tracking-widest font-black block mb-1">
                   {product.category}
                 </span>
-                <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black text-slate-900 leading-tight">
+                <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black text-slate-900 font-serif leading-tight">
                   {product.name}
                 </h1>
               </div>
@@ -123,8 +123,8 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
               </div>
 
               {/* Price */}
-              <div className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-blue-50 border border-blue-200 text-blue-600 text-xs font-extrabold uppercase tracking-wider">
-                Price on Request
+              <div className="text-lg font-black text-blue-600">
+                Quote on Request
               </div>
 
               {/* Description */}
@@ -195,8 +195,8 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
               <Sparkles className="w-4 h-4" />
             </div>
             <div>
-              <h2 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
-                Related Technical Gear
+              <h2 className="text-2xl sm:text-3xl font-black text-slate-900 font-serif tracking-tight">
+                Related Electronic Components
               </h2>
               <p className="text-xs text-slate-400 mt-0.5">
                 Explore other premium choices from our high-performance electronic categories.

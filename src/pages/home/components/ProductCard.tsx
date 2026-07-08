@@ -81,17 +81,17 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   return (
     <div 
       onClick={() => onSelectProduct(product)}
-      className={`group relative flex flex-col bg-white border border-slate-200/80 ${borderHoverClass} rounded-xl overflow-hidden shadow-xl shadow-slate-800/80 transition-all duration-300 hover:shadow-xl hover:${shadowClass} hover:-translate-y-1 cursor-pointer`}
+      className={`group relative flex flex-col bg-white border border-slate-200/80 ${borderHoverClass} rounded-xl overflow-hidden shadow-xl shadow-slate-800/80 transition-all duration-300 hover:shadow-xl  hover:-translate-y-1 cursor-pointer`}
     >
       {/* Badges (Hot / New) */}
       <div className="absolute top-3 left-3 z-10 flex flex-col gap-1">
         {product.isHot && (
-          <span className="bg-gradient-to-r from-red-600 to-orange-500 text-white text-[8px] font-black uppercase tracking-widest px-2 py-0.5 rounded-md shadow-sm">
+          <span className="bg-linear-to-r from-red-600 to-orange-500 text-white text-[8px] font-black uppercase tracking-widest px-2 py-0.5 rounded-md shadow-sm">
             Hot
           </span>
         )}
         {product.isNew && (
-          <span className={`bg-gradient-to-r ${badgeGradient} text-white text-[8px] font-black uppercase tracking-widest px-2 py-0.5 rounded-md shadow-sm`}>
+          <span className={`bg-linear-to-r ${badgeGradient} text-white text-[8px] font-black uppercase tracking-widest px-2 py-0.5 rounded-md shadow-sm`}>
             New
           </span>
         )}
@@ -100,22 +100,22 @@ export const ProductCard: React.FC<ProductCardProps> = ({
       {/* Wishlist Button */}
       <button
         onClick={handleWishlistClick}
-        className={`absolute top-3 right-3 z-10 p-2 rounded-xl transition-all duration-300 border cursor-pointer ${
+        className={`absolute top-3 right-3 z-10 p-2 rounded-xl transition-all duration-300 cursor-pointer ${
           isWishlisted 
-            ? 'bg-rose-500 border-rose-500 text-white shadow-md shadow-rose-500/20' 
-            : 'bg-white/95 border-slate-200 text-slate-400 hover:text-rose-500 hover:border-rose-300'
+            ? 'text-rose-500  ' 
+            : ' text-slate-800 hover:text-rose-500 '
         }`}
         title={isWishlisted ? 'Remove from Wishlist' : 'Add to Wishlist'}
       >
-        <Heart className={`w-3.5 h-3.5 transition-transform duration-300 ${isWishlisted ? 'fill-current text-white scale-110' : 'text-slate-400'}`} />
+        <Heart className={`w-6.5 h-6.5 transition-transform duration-300 ${isWishlisted ? 'fill-current text-rose-500 scale-110' : 'text-slate-400'}`} />
       </button>
 
       {/* Product Image */}
-      <div className="relative aspect-square w-full bg-slate-50/50 overflow-hidden border-b border-slate-100 flex items-center justify-center p-2 ">
+      <div className="relative aspect-square w-full bg-slate-50/50 overflow-hidden border-b border-slate-100 flex items-center justify-center ">
         <img 
           src={product.image} 
           alt={product.name} 
-          className="w-full h-full  object-fill rounded-xl transition-transform duration-500 group-hover:scale-105 drop-shadow-[0_8px_16px_rgba(0,0,0,0.03)]"
+          className="w-full h-full  object-fill  transition-transform duration-500 group-hover:scale-105 drop-shadow-[0_8px_16px_rgba(0,0,0,0.03)]"
         />
         {/* Hover Overlay */}
         <div className="absolute inset-0 bg-slate-950/10 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity duration-300">
@@ -156,13 +156,13 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         </div>
 
         <div className="flex items-center justify-between mt-auto pt-3 border-t border-slate-100">
-          <span className={`text-[9px] font-extrabold ${textAccentClass} uppercase tracking-wider bg-slate-50 border border-slate-100 px-1.5 py-0.5 rounded-lg`}>
-            Price on Request
+          <span className="text-[10px] font-extrabold uppercase tracking-wider text-slate-400">
+            Quote on Request
           </span>
 
           <button
             onClick={handleCartClick}
-            className={`flex items-center justify-center gap-1 py-1.5 px-3 rounded-xl bg-gradient-to-r ${btnGradient} text-white text-[10px] font-black shadow-md ${shadowClass} active:scale-95 transition-all duration-300 cursor-pointer`}
+            className={`flex items-center justify-center gap-1 py-1.5 px-3 rounded-xl bg-linear-to-r ${btnGradient} text-white text-[10px] font-black shadow-md ${shadowClass} active:scale-95 transition-all duration-300 cursor-pointer`}
             title="Add to Cart"
           >
             <ShoppingCart className="w-3 h-3" />
