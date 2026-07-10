@@ -144,23 +144,7 @@ function App() {
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [sortBy, setSortBy] = useState('default');
 
-  // Filter and sort products list
-  const filteredProducts = products
-    .filter(product => {
-      const matchesSearch = searchQuery.trim() === '' || 
-        product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        product.category.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        product.description.toLowerCase().includes(searchQuery.toLowerCase());
-        
-      const matchesCategory = selectedCategory === 'All' || 
-        product.category.toLowerCase() === selectedCategory.toLowerCase();
-        
-      return matchesSearch && matchesCategory;
-    })
-    .sort((a, b) => {
-      if (sortBy === 'rating') return b.rating - a.rating;
-      return 0;
-    });
+
 
   // Cart Handlers
   const handleAddToCart = (product: Product) => {
@@ -264,7 +248,7 @@ function App() {
 
         {currentPage === 'products' && (
           <ProductsPage 
-            products={filteredProducts}
+            products={products}
             wishlist={wishlist}
             onToggleWishlist={handleToggleWishlist}
             onAddToCart={handleAddToCart}
@@ -272,6 +256,11 @@ function App() {
             isLoggedIn={user !== null}
             onPromptAuth={() => setIsAuthOpen(true)}
             selectedCategory={selectedCategory}
+            setSelectedCategory={setSelectedCategory}
+            searchQuery={searchQuery}
+            setSearchQuery={setSearchQuery}
+            sortBy={sortBy}
+            setSortBy={setSortBy}
           />
         )}
 

@@ -101,12 +101,12 @@ export const ProductGrid: React.FC<ProductGridProps> = ({
               {/* Product Image Panel */}
               <div 
                 onClick={() => onSelectProduct(product)}
-                className="relative aspect-square w-full bg-slate-100/40 group-hover:bg-slate-50/50 overflow-hidden cursor-pointer border-b border-slate-100 flex items-center justify-center p-6"
+                className="relative aspect-square w-full bg-slate-100/40 group-hover:bg-slate-50/50 overflow-hidden cursor-pointer border-b border-slate-100 flex items-center justify-center p"
               >
                 <img 
                   src={product.image} 
                   alt={product.name} 
-                  className="w-[85%] h-[85%] object-contain transition-transform duration-500 group-hover:scale-105 drop-shadow-[0_10px_20px_rgba(0,0,0,0.06)]"
+                  className="w-full h-full object-fill transition-transform duration-500 group-hover:scale-105 drop-shadow-[0_10px_20px_rgba(0,0,0,0.06)]"
                 />
                 {/* Overlay on hover */}
                 <div className="absolute inset-0 bg-slate-950/15 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity duration-300">

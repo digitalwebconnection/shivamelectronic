@@ -71,16 +71,16 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
         </div>
 
         {/* Product Split Details */}
-        <div className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 lg:p-10 shadow-sm grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 mb-16 relative overflow-hidden">
+        <div className=" p-6 sm:p-8 lg:p-4 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 mb-16 relative overflow-hidden">
           {/* Ambient background decoration */}
           <div className="absolute top-0 right-0 w-96 h-96 bg-blue-500/5 rounded-full blur-3xl pointer-events-none" />
 
           {/* Left Column: Image Showcase */}
-          <div className="lg:col-span-6 flex flex-col items-center justify-center bg-slate-50/50 border border-slate-100 rounded-2xl p-8 relative aspect-square">
+          <div className="lg:col-span-6 shadow-lg shadow-black flex flex-col items-center justify-center bg-slate-50/50 border border-slate-100 rounded-lg  relative aspect-square">
             <img 
               src={product.image} 
               alt={product.name} 
-              className="w-[80%] h-[80%] object-contain transition-transform duration-700 hover:scale-105 drop-shadow-[0_15px_30px_rgba(0,0,0,0.08)]"
+              className="w-full h-full object-fill transition-transform duration-700  drop-"
             />
             {product.isHot && (
               <span className="absolute top-4 left-4 bg-linear-to-r from-red-600 to-rose-500 text-white text-[9px] font-black uppercase tracking-widest px-3 py-1 rounded-lg shadow-md shadow-red-500/10">

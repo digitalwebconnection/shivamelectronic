@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
 import {
   Search, ShoppingCart, Heart,  LogOut, ChevronDown,
-  Menu, X, Camera, Cpu,  ShoppingBag, SlidersHorizontal, Tag,
+  Menu, X, Camera, Cpu, SlidersHorizontal, Tag,
   Power, Cable, Settings, Sun
 } from 'lucide-react';
 import type { Product, CartItem, User as UserType } from '../types';
 import { categories, products } from '../data/products';
+import logo from "../assets/image.png"
 
 interface NavbarProps {
   cartItems: CartItem[];
@@ -69,8 +70,6 @@ export const Navbar: React.FC<NavbarProps> = ({
 }) => {
   // Navigation states
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [isCategoryDropdownOpen, setIsCategoryDropdownOpen] = useState(false);
-  const [activeCategoryIndex, setActiveCategoryIndex] = useState(0);
   const [, setIsProfileDropdownOpen] = useState(false);
   const [isSortDropdownOpen, setIsSortDropdownOpen] = useState(false);
   const [isFilterDropdownOpen, setIsFilterDropdownOpen] = useState(false);
@@ -79,7 +78,6 @@ export const Navbar: React.FC<NavbarProps> = ({
   // Smart Navbar Scroll States
   const [isScrolled, setIsScrolled] = useState(false);
 
-  const categoryRef = useRef<HTMLDivElement>(null);
   const profileRef = useRef<HTMLDivElement>(null);
   const sortRef = useRef<HTMLDivElement>(null);
   const filterRef = useRef<HTMLDivElement>(null);
@@ -95,9 +93,6 @@ export const Navbar: React.FC<NavbarProps> = ({
   // Close dropdowns when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (categoryRef.current && !categoryRef.current.contains(event.target as Node)) {
-        setIsCategoryDropdownOpen(false);
-      }
       if (profileRef.current && !profileRef.current.contains(event.target as Node)) {
         setIsProfileDropdownOpen(false);
       }
@@ -318,98 +313,17 @@ export const Navbar: React.FC<NavbarProps> = ({
               </a>
 
            
-              <div ref={categoryRef} className="relative h-full flex items-center">
-                <button
-                  onClick={() => setIsCategoryDropdownOpen(!isCategoryDropdownOpen)}
-                  className={`relative h-full flex items-center gap-1.5 text-sm font-bold transition-all cursor-pointer py-2 after:absolute after:bottom-0 after:left-0 after:w-full after:h-[3px] after:bg-linear-to-r after:from-[#e11d48] after:to-[#0057ff] after:transition-transform after:duration-300 ${isCategoryDropdownOpen || currentPage === 'products'
-                    ? 'text-slate-950 after:scale-x-100'
-                    : 'text-slate-800 hover:text-slate-900 after:scale-x-0 hover:after:scale-x-100 after:origin-left'
-                    }`}
-                >
-                  <span>Products</span>
-                  <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-300 ${isCategoryDropdownOpen ? 'rotate-180 text-blue-600' : 'text-slate-400'}`} />
-                </button>
-
-                {/* megamenu popover */}
-                {isCategoryDropdownOpen && (
-                  <div className="absolute top-16 left-0 w-[500px] bg-white border border-slate-200 rounded-2xl shadow-2xl overflow-hidden flex animate-in fade-in slide-in-from-top-1 duration-150 z-50">
-                    <div className="w-[45%] bg-slate-50 border-r border-slate-100 p-3 space-y-1">
-                      <span className="block text-[10px] font-bold text-black uppercase tracking-widest px-3 py-1.5">
-                        Categories
-                      </span>
-                      {categories.map((cat, index) => (
-                        <button
-                          key={cat.slug}
-                          onMouseEnter={() => setActiveCategoryIndex(index)}
-                          onClick={() => {
-                            setSelectedCategory(cat.slug);
-                            setIsCategoryDropdownOpen(false);
-                            if (setCurrentPage) setCurrentPage('products');
-                          }}
-                          className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-left text-xs font-semibold tracking-wide transition-all ${activeCategoryIndex === index
-                            ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/10'
-                            : 'text-slate-660 hover:text-slate-900 hover:bg-slate-150'
-                            }`}
-                        >
-                          <div className="flex items-center gap-2.5">
-                            {renderCategoryIcon(cat.icon)}
-                            <span>{cat.name}</span>
-                          </div>
-                          <ChevronDown className="-rotate-90 w-3 h-3 opacity-60" />
-                        </button>
-                      ))}
-                    </div>
-
-                    <div className="w-[55%] p-5 flex flex-col justify-between">
-                      <div>
-                        <h4 className="text-sm font-bold text-slate-950 mb-1.5">
-                          {categories[activeCategoryIndex].name}
-                        </h4>
-                        <p className="text-xs text-slate-555 leading-relaxed mb-4">
-                          {categories[activeCategoryIndex].description}
-                        </p>
-
-                        <div className="space-y-2">
-                          <span className="block text-[10px] font-bold text-slate-400 uppercase tracking-widest">
-                            Popular Gear
-                          </span>
-                          <ul className="space-y-1.5">
-                            {categories[activeCategoryIndex].featured.map((item, i) => (
-                              <li
-                                key={i}
-                                onClick={() => {
-                                  setSearchQuery(item);
-                                  setIsCategoryDropdownOpen(false);
-                                  if (setCurrentPage) setCurrentPage('products');
-                                }}
-                                className="flex items-center gap-2 text-xs font-medium text-slate-700 hover:text-blue-600 transition-colors cursor-pointer"
-                              >
-                                <span className="w-1.5 h-1.5 rounded-full bg-blue-500" />
-                                {item}
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-                      </div>
-
-                      {/* View All Products CTA */}
-                      <div className="pt-4 border-t border-slate-100 mt-4">
-                        <button
-                          onClick={() => {
-                            setSelectedCategory('All');
-                            setIsCategoryDropdownOpen(false);
-                            if (setCurrentPage) setCurrentPage('products');
-                          }}
-                          className="w-full flex items-center justify-center gap-1.5 py-2 px-3 bg-slate-50 hover:bg-blue-600 hover:text-white border border-slate-200 hover:border-blue-600 rounded-xl text-xs font-bold text-slate-700 transition-all cursor-pointer"
-                        >
-                          <span>View All Products</span>
-                          <ShoppingBag className="w-3.5 h-3.5" />
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                )}
-              </div>
+              <button
+                onClick={() => {
+                  if (setCurrentPage) setCurrentPage('products');
+                }}
+                className={`relative h-full flex items-center text-sm font-bold py-2 after:absolute after:bottom-0 after:left-0 after:w-full after:h-[3px] after:bg-linear-to-r after:from-[#e11d48] after:to-[#0057ff] after:transition-transform after:duration-300 ${currentPage === 'products'
+                  ? 'text-slate-950 after:scale-x-100'
+                  : 'text-slate-800 hover:text-slate-900 after:scale-x-0 hover:after:scale-x-100 after:origin-left'
+                  }`}
+              >
+                Products
+              </button>
 
 
             </nav>
@@ -423,14 +337,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             }}
             className="flex items-center group transition-transform duration-300 hover:scale-102"
           >
-            <span className="text-2xl font-black font-sans tracking-tighter select-none">
-              <span className="text-[#e11d48] group-hover:text-[#0057ff] transition-colors duration-300">shiv</span>
-              <span className="text-[#0057ff] group-hover:text-[#e11d48] transition-colors duration-300">am</span>
-              <span className="text-[#e11d48] relative inline-block group-hover:translate-x-0.5 transition-transform duration-300">
-                .
-                <span className="absolute -top-0.5 -right-0.5 w-1.5 h-1.5 bg-[#0057ff] rounded-full animate-ping opacity-75" />
-              </span>
-            </span>
+            <img src={logo} alt="logo" className="h-14 md:h-28 w-auto object-contain" />
           </a>
           {/* Center: Search Bar (ONLY shown when scrolled - making it clean single line) */}
           {isScrolled && (

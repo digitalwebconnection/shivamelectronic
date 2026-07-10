@@ -1,5 +1,6 @@
 import React from 'react';
-import { Cpu, MapPin, Phone, Mail } from 'lucide-react';
+import { MapPin, Phone, Mail } from 'lucide-react';
+import logo from '../../assets/image.png';
 
 interface FooterProps {
   onNavigate?: (page: 'home' | 'products' | 'about' | 'contact') => void;
@@ -25,16 +26,11 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
                   onNavigate('home');
                 }
               }}
-              className="flex items-center gap-2 group"
+              className="flex items-center group transition-transform duration-300 "
             >
-              <div className="w-8 h-8 rounded-lg bg-linear-to-tr from-blue-600 to-cyan-400 flex items-center justify-center transition-transform group-hover:scale-105">
-                <Cpu className="w-4 h-4 text-white" />
-              </div>
-              <span className="text-sm font-black tracking-widest text-white uppercase group-hover:text-blue-400 transition-colors">Shivam Electronics</span>
+              <img src={logo} alt="Shivam Electronics Logo" className="h-16 md:h-28 w-auto " />
             </a>
-            <p className="text-xs text-slate-400 leading-relaxed max-w-sm">
-              Your absolute hub for premium connectors, cables, switches, optoelectronic components, and hardware accessories. Experience industrial grade reliability with Shivam.
-            </p>
+           
             
             {/* Social links */}
             <div className="flex gap-3 pt-2">
