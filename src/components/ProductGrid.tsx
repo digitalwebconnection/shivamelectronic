@@ -101,7 +101,7 @@ export const ProductGrid: React.FC<ProductGridProps> = ({
               {/* Product Image Panel */}
               <div 
                 onClick={() => onSelectProduct(product)}
-                className="relative aspect-square w-full bg-slate-100/40 group-hover:bg-slate-50/50 overflow-hidden cursor-pointer border-b border-slate-100 flex items-center justify-center p-6"
+                className="relative aspect-square w-full bg-slate-100/40 group-hover:bg-slate-50/50 overflow-hidden cursor-pointer border-b border-slate-100 flex items-center justify-center "
               >
                 <img 
                   src={product.image} 
