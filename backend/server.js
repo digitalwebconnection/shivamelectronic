@@ -14,9 +14,61 @@ dotenv.config();
 
 const app = express();
 
-// Middlewares
+// Configure CORS to dynamically support:
+// 1. Localhost development (on any port)
+// 2. Local network IP addresses (e.g., http://192.168.x.x)
+// 3. Configured production domains (FRONTEND_URL env list)
+const allowedOrigins = [];
+if (process.env.FRONTEND_URL) {
+  process.env.FRONTEND_URL.split(',').forEach(origin => {
+    const trimmed = origin.trim();
+    if (trimmed) {
+      allowedOrigins.push(trimmed);
+      // Auto-register HTTP/HTTPS variations for flexibility
+      if (trimmed.startsWith('http://')) {
+        allowedOrigins.push(trimmed.replace('http://', 'https://'));
+      } else if (trimmed.startsWith('https://')) {
+        allowedOrigins.push(trimmed.replace('https://', 'http://'));
+      } else {
+        allowedOrigins.push(`https://${trimmed}`);
+        allowedOrigins.push(`http://${trimmed}`);
+      }
+    }
+  });
+}
+
 app.use(cors({
-  origin: process.env.FRONTEND_URL || '*',
+  origin: (origin, callback) => {
+    // Allow requests with no origin (like mobile apps, postman, curl)
+    if (!origin) return callback(null, true);
+
+    // If wildcard '*' is in the list, allow all origins
+    if (allowedOrigins.includes('*')) {
+      return callback(null, true);
+    }
+
+    // Match exact configured domains (with and without trailing slash)
+    if (allowedOrigins.includes(origin) || allowedOrigins.includes(origin + '/')) {
+      return callback(null, true);
+    }
+
+    // Match local development machines (localhost, 127.0.0.1 on any port)
+    if (origin.startsWith('http://localhost:') || origin.startsWith('http://127.0.0.1:')) {
+      return callback(null, true);
+    }
+
+    // Match Wi-Fi/local network IPs (e.g. 192.168.x.x, 10.x.x.x, 172.16-31.x.x) on any port
+    const localIpPattern = /^http:\/\/192\.168\.\d{1,3}\.\d{1,3}(:\d+)?$/;
+    const localIpPattern2 = /^http:\/\/10\.\d{1,3}\.\d{1,3}\.\d{1,3}(:\d+)?$/;
+    const localIpPattern3 = /^http:\/\/172\.(1[6-9]|2\d|3[0-1])\.\d{1,3}\.\d{1,3}(:\d+)?$/;
+
+    if (localIpPattern.test(origin) || localIpPattern2.test(origin) || localIpPattern3.test(origin)) {
+      return callback(null, true);
+    }
+
+    console.log(`[CORS Blocked] Origin: ${origin}`);
+    callback(new Error('Blocked by CORS policy'));
+  },
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
