@@ -13,6 +13,15 @@ interface GamingSectionProps {
   onViewAll: (slug: string) => void;
 }
 
+const isRecentProduct = (p: Product): boolean => {
+  if (!p.createdAt) return false;
+  const createdDate = new Date(p.createdAt);
+  const today = new Date();
+  const diffTime = Math.abs(today.getTime() - createdDate.getTime());
+  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  return diffDays <= 7;
+};
+
 export const GamingSection: React.FC<GamingSectionProps> = ({
   products,
   wishlist,
@@ -215,7 +224,7 @@ export const GamingSection: React.FC<GamingSectionProps> = ({
 
                   {/* Promo Showcase Footer - No Price/Cart */}
                   <div className="mt-auto pt-3 border-t border-slate-850 flex items-center justify-between">
-                    {p.isRecent ? (
+                    {isRecentProduct(p) ? (
                       <span className="text-[9.5px] font-black bg-gradient-to-r from-cyan-500 to-blue-500 text-white px-2.5 py-1 rounded-lg uppercase tracking-wider shadow-sm shadow-blue-900/20 animate-pulse">
                         Upcoming Launch
                       </span>

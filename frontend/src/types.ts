@@ -10,6 +10,8 @@ export interface Product {
   specifications: string[];
   isRecent?: boolean;
   isHot?: boolean;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export interface CartItem {

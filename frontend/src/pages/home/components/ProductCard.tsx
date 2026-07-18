@@ -25,6 +25,16 @@ export const ProductCard: React.FC<ProductCardProps> = ({
 }) => {
   const isWishlisted = wishlist.some(item => item.id === product.id);
 
+  // Determine if product is recent (created within the last 7 days)
+  const isProductRecent = React.useMemo(() => {
+    if (!product.createdAt) return false;
+    const createdDate = new Date(product.createdAt);
+    const today = new Date();
+    const diffTime = Math.abs(today.getTime() - createdDate.getTime());
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    return diffDays <= 7;
+  }, [product.createdAt]);
+
   const handleWishlistClick = (e: React.MouseEvent) => {
     e.stopPropagation();
     if (!isLoggedIn) {
@@ -90,7 +100,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             Hot
           </span>
         )}
-        {product.isRecent && (
+        {isProductRecent && (
           <span className={`bg-linear-to-r ${badgeGradient} text-white text-[8px] font-black uppercase tracking-widest px-2 py-0.5 rounded-md shadow-sm`}>
             New
           </span>

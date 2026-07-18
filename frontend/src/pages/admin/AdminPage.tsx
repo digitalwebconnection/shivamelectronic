@@ -149,13 +149,11 @@ export const AdminPage: React.FC<AdminPageProps> = ({
   const [prodCategory, setProdCategory] = useState('');
   const [isCustomCategory, setIsCustomCategory] = useState(false);
   const [prodBrand, setProdBrand] = useState('');
-  const [prodPrice, setProdPrice] = useState('');
   const [prodRating, setProdRating] = useState('5.0');
   const [prodImageFile, setProdImageFile] = useState<File | null>(null);
   const [prodImagePreview, setProdImagePreview] = useState<string | null>(null);
   const [prodDescription, setProdDescription] = useState('');
   const [prodSpecsText, setProdSpecsText] = useState('');
-  const [prodIsRecent, setProdIsRecent] = useState(false);
   const [prodIsHot, setProdIsHot] = useState(false);
 
   // Search query state
@@ -345,11 +343,9 @@ export const AdminPage: React.FC<AdminPageProps> = ({
       const exists = categories.some(cat => cat.name.toLowerCase() === prod.category.toLowerCase());
       setIsCustomCategory(!exists);
       setProdBrand(prod.brand);
-      setProdPrice(prod.price.toString());
       setProdRating(prod.rating.toString());
       setProdDescription(prod.description);
       setProdSpecsText(prod.specifications ? prod.specifications.join('\n') : '');
-      setProdIsRecent(!!prod.isRecent);
       setProdIsHot(!!prod.isHot);
       setProdImageFile(null);
       setProdImagePreview(prod.image);
@@ -358,11 +354,9 @@ export const AdminPage: React.FC<AdminPageProps> = ({
       setProdCategory('');
       setIsCustomCategory(false);
       setProdBrand('');
-      setProdPrice('0');
       setProdRating('5.0');
       setProdDescription('');
       setProdSpecsText('');
-      setProdIsRecent(false);
       setProdIsHot(false);
       setProdImageFile(null);
       setProdImagePreview(null);
@@ -391,8 +385,8 @@ export const AdminPage: React.FC<AdminPageProps> = ({
     setFormError('');
     setFormSuccess('');
 
-    if (!prodName || !prodCategory || !prodBrand || !prodPrice || !prodDescription) {
-      setFormError('Please fill in all required fields (Name, Category, Brand, Price, Description).');
+    if (!prodName || !prodCategory || !prodBrand || !prodDescription) {
+      setFormError('Please fill in all required fields (Name, Category, Brand, Description).');
       return;
     }
 
@@ -416,11 +410,11 @@ export const AdminPage: React.FC<AdminPageProps> = ({
       formData.append('name', prodName);
       formData.append('category', prodCategory);
       formData.append('brand', prodBrand);
-      formData.append('price', prodPrice);
+      formData.append('price', '0');
       formData.append('rating', prodRating);
       formData.append('description', prodDescription);
       formData.append('specifications', prodSpecsText);
-      formData.append('isRecent', prodIsRecent.toString());
+      formData.append('isRecent', 'false');
       formData.append('isHot', prodIsHot.toString());
 
       if (prodImageFile) {
@@ -1429,22 +1423,6 @@ export const AdminPage: React.FC<AdminPageProps> = ({
                     className="w-full bg-slate-50 border border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10 px-3 py-2.5 rounded-md text-xs font-bold text-slate-700 outline-none transition-all"
                   />
                 </div>
-
-                {/* Price */}
-                <div className="space-y-2">
-                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block">
-                    Price (INR) *
-                  </label>
-                  <input
-                    type="number"
-                    required
-                    min="0"
-                    value={prodPrice}
-                    onChange={(e) => setProdPrice(e.target.value)}
-                    placeholder="e.g. 299"
-                    className="w-full bg-slate-50 border border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10 px-3 py-2.5 rounded-md text-xs font-bold text-slate-700 outline-none transition-all"
-                  />
-                </div>
               </div>
 
               {/* Promo Flags / Badges */}
@@ -1466,26 +1444,6 @@ export const AdminPage: React.FC<AdminPageProps> = ({
                       className="sr-only peer"
                     />
                     <div className="w-9 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-red-600"></div>
-                  </label>
-                </div>
-
-                <div className="border-t border-slate-200/60 pt-4 flex items-center justify-between">
-                  <div>
-                    <label className="text-xs font-bold text-slate-800 block">
-                      New Product Badge Toggle
-                    </label>
-                    <span className="text-[10px] text-slate-400 block mt-0.5">
-                      Display a "NEW" promo badge/upcoming badge on the product card.
-                    </span>
-                  </div>
-                  <label className="relative inline-flex items-center cursor-pointer select-none">
-                    <input
-                      type="checkbox"
-                      checked={prodIsRecent}
-                      onChange={(e) => setProdIsRecent(e.target.checked)}
-                      className="sr-only peer"
-                    />
-                    <div className="w-9 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-blue-600"></div>
                   </label>
                 </div>
               </div>

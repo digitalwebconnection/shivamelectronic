@@ -69,7 +69,7 @@ router.post('/', protectAdmin, upload.single('image'), async (req, res) => {
     const { name, category, brand, price, rating, description, specifications, isRecent, isHot } = req.body;
 
     // Check required fields
-    if (!name || !category || !brand || !price || !description) {
+    if (!name || !category || !brand || !description) {
       return res.status(400).json({ message: 'Please provide all required fields' });
     }
 
@@ -92,7 +92,7 @@ router.post('/', protectAdmin, upload.single('image'), async (req, res) => {
       name,
       category: category.toLowerCase(),
       brand,
-      price: parseFloat(price),
+      price: price ? parseFloat(price) : 0,
       rating: rating ? parseFloat(rating) : 5.0,
       image: uploadResult.secure_url,
       description,
@@ -136,7 +136,7 @@ router.put('/:id', protectAdmin, upload.single('image'), async (req, res) => {
     if (name) product.name = name;
     if (category) product.category = category.toLowerCase();
     if (brand) product.brand = brand;
-    if (price) product.price = parseFloat(price);
+    if (price !== undefined) product.price = price ? parseFloat(price) : 0;
     if (rating) product.rating = parseFloat(rating);
     if (description) product.description = description;
     if (specifications !== undefined) {
