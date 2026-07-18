@@ -24,7 +24,14 @@ export const AudioSection: React.FC<AudioSectionProps> = ({
   onPromptAuth,
   onViewAll
 }) => {
-  const switchesList = products.filter(p => p.category === 'switches');
+  const toSlug = (str: string) => {
+    if (!str) return '';
+    return str.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+  };
+
+  const switchesList = products.filter(p => 
+    ['switches', 'switches-push-buttons', 'switches-relays'].includes(toSlug(p.category))
+  );
 
   // Mouse drag-to-scroll state
   const scrollRef = useRef<HTMLDivElement>(null);

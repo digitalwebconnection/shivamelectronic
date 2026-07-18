@@ -22,6 +22,11 @@ interface ProductsPageProps {
   categories: any[];
 }
 
+const toSlug = (str: string) => {
+  if (!str) return '';
+  return str.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+};
+
 export const ProductsPage: React.FC<ProductsPageProps> = ({
   products,
   wishlist,
@@ -48,29 +53,53 @@ export const ProductsPage: React.FC<ProductsPageProps> = ({
     setSelectedBrands([]);
   }, [selectedCategory]);
 
-  // Filter categories: show all categories, filtered by search input
+  // Pagination State
+  const ITEMS_PER_PAGE = 12;
+  const [currentPage, setCurrentPage] = useState(1);
+
+  // Reset page when filter changes
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [selectedCategory, searchQuery, selectedBrands, sortBy]);
+
+  // Dynamically calculate unique categories from products list
+  const dynamicCategories = useMemo(() => {
+    const uniqNames = Array.from(new Set(products.map(p => p.category?.trim()).filter(Boolean)));
+    return uniqNames.map(name => {
+      const slug = toSlug(name);
+      const existing = categories.find(c => c.slug.toLowerCase() === slug || c.name.toLowerCase() === name.toLowerCase());
+      return {
+        name: name.charAt(0).toUpperCase() + name.slice(1),
+        slug: slug,
+        icon: existing ? existing.icon : 'Cpu'
+      };
+    });
+  }, [products, categories]);
+
+  // Filter categories: show all categories (like the brand filter), 
+  // but keep the first 4 categories at the top of the list.
   const filteredCategories = useMemo(() => {
-    if (!categorySearch.trim()) return categories;
-    return categories.filter(cat => 
+    if (!categorySearch.trim()) {
+      const firstFour = dynamicCategories.slice(0, 4);
+      const remaining = dynamicCategories.slice(4);
+      return [...firstFour, ...remaining];
+    }
+    return dynamicCategories.filter(cat => 
       cat.name.toLowerCase().includes(categorySearch.toLowerCase())
     );
-  }, [categorySearch, categories]);
+  }, [categorySearch, dynamicCategories]);
 
-  // Dynamically calculate brands and count of products for each brand under selected category
+  // Dynamically calculate brands and count of products for each brand (showing all brands)
   const availableBrands = useMemo(() => {
-    const categoryProducts = selectedCategory === 'All'
-      ? products
-      : products.filter(p => p.category.toLowerCase() === selectedCategory.toLowerCase());
-
     const brandCounts: Record<string, number> = {};
-    categoryProducts.forEach(p => {
+    products.forEach(p => {
       brandCounts[p.brand] = (brandCounts[p.brand] || 0) + 1;
     });
 
     return Object.entries(brandCounts)
       .map(([name, count]) => ({ name, count }))
       .sort((a, b) => a.name.localeCompare(b.name));
-  }, [products, selectedCategory]);
+  }, [products]);
 
   // Filter & Sort Logic
   const filteredProducts = useMemo(() => {
@@ -78,7 +107,9 @@ export const ProductsPage: React.FC<ProductsPageProps> = ({
       .filter(product => {
         // Category Filter
         const matchesCategory = selectedCategory === 'All' || 
-          product.category.toLowerCase() === selectedCategory.toLowerCase();
+          toSlug(product.category) === selectedCategory ||
+          toSlug(product.category).startsWith(selectedCategory + '-') ||
+          selectedCategory.startsWith(toSlug(product.category) + '-');
 
         // Search Query Filter
         const matchesSearch = searchQuery.trim() === '' || 
@@ -98,6 +129,14 @@ export const ProductsPage: React.FC<ProductsPageProps> = ({
         return 0; // Default sorting
       });
   }, [products, selectedCategory, searchQuery, selectedBrands, sortBy]);
+
+  const totalPages = Math.max(1, Math.ceil(filteredProducts.length / ITEMS_PER_PAGE));
+  const paginatedProducts = useMemo(() => {
+    return filteredProducts.slice(
+      (currentPage - 1) * ITEMS_PER_PAGE,
+      currentPage * ITEMS_PER_PAGE
+    );
+  }, [filteredProducts, currentPage]);
 
   // Wishlist Check
   const isWishlisted = (productId: string) => {
@@ -219,8 +258,12 @@ export const ProductsPage: React.FC<ProductsPageProps> = ({
           <div className="flex flex-col gap-1 max-h-48 overflow-y-auto custom-scrollbar pr-1">
             {filteredCategories.length > 0 ? (
               filteredCategories.map((cat) => {
-                const count = products.filter(p => p.category.toLowerCase() === cat.slug.toLowerCase()).length;
-                const isSelected = selectedCategory.toLowerCase() === cat.slug.toLowerCase();
+                const count = products.filter(p => toSlug(p.category) === cat.slug).length;
+                const isSelected = selectedCategory.toLowerCase() === 'all' ? false : (
+                  cat.slug.toLowerCase() === selectedCategory.toLowerCase() ||
+                  cat.slug.toLowerCase().startsWith(selectedCategory.toLowerCase() + '-') ||
+                  selectedCategory.toLowerCase().startsWith(cat.slug.toLowerCase() + '-')
+                );
                 return (
                   <button
                     key={cat.slug}
@@ -258,8 +301,8 @@ export const ProductsPage: React.FC<ProductsPageProps> = ({
           <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
             {selectedCategory === 'All' ? 'All Brands' : 'Brands'}
           </h3>
-          <p className="text-[9px] text-slate-450 italic leading-none">
-            {selectedCategory === 'All' ? 'Showing brands across all products' : `Showing brands in ${categories.find(c => c.slug === selectedCategory)?.name || selectedCategory}`}
+          <p className="text-[9px] text-slate-455 italic leading-none">
+            Showing all brands
           </p>
         </div>
 
@@ -304,7 +347,13 @@ export const ProductsPage: React.FC<ProductsPageProps> = ({
             <span>Shivam Electronic Catalog</span>
           </div>
           <h1 className="text-3xl sm:text-4xl font-black text-slate-900 font-serif tracking-tight">
-            {selectedCategory === 'All' ? 'Explore Our Full Collection' : `Premium ${categories.find(c => c.slug === selectedCategory)?.name || selectedCategory}`}
+            {selectedCategory === 'All' ? 'Explore Our Full Collection' : `Premium ${
+              dynamicCategories.find(c => 
+                c.slug.toLowerCase() === selectedCategory.toLowerCase() ||
+                c.slug.toLowerCase().startsWith(selectedCategory.toLowerCase() + '-') ||
+                selectedCategory.toLowerCase().startsWith(c.slug.toLowerCase() + '-')
+              )?.name || selectedCategory
+            }`}
           </h1>
           <p className="text-xs sm:text-sm text-slate-500 max-w-xl mx-auto">
             Browse our verified inventory of high-grade electronic components. Use the sidebar filters to refine by Category and Brand.
@@ -366,10 +415,10 @@ export const ProductsPage: React.FC<ProductsPageProps> = ({
               </div>
             </div>
 
-            {/* Product Cards Grid */}
             {filteredProducts.length > 0 ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
-                {filteredProducts.map((product) => {
+              <>
+                <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
+                  {paginatedProducts.map((product) => {
                   const hasHeart = isWishlisted(product.id);
                   return (
                     <div 
@@ -381,11 +430,6 @@ export const ProductsPage: React.FC<ProductsPageProps> = ({
                         {product.isHot && (
                           <span className="bg-linear-to-r from-rose-600 to-red-500 text-white text-[8px] font-black uppercase tracking-widest px-2 py-0.5 rounded-md shadow-sm shadow-red-500/15">
                             Hot
-                          </span>
-                        )}
-                        {product.isNew && (
-                          <span className="bg-linear-to-r from-blue-600 to-indigo-500 text-white text-[8px] font-black uppercase tracking-widest px-2 py-0.5 rounded-md shadow-sm shadow-blue-500/15">
-                            New
                           </span>
                         )}
                       </div>
@@ -428,7 +472,7 @@ export const ProductsPage: React.FC<ProductsPageProps> = ({
                           {/* Category & Brand Labels */}
                           <div className="flex items-center gap-1.5 mb-1.5">
                             <span className="text-[9px] text-blue-600 uppercase tracking-widest font-black">
-                              {categories.find(c => c.slug === product.category)?.name || product.category}
+                              {dynamicCategories.find(c => c.slug === toSlug(product.category))?.name || product.category}
                             </span>
                             <span className="text-[8px] text-slate-350 font-black">•</span>
                             <span className="text-[9px] text-slate-500 font-extrabold uppercase tracking-wider bg-slate-100 px-1.5 py-0.5 rounded-md">
@@ -476,6 +520,72 @@ export const ProductsPage: React.FC<ProductsPageProps> = ({
                   );
                 })}
               </div>
+
+              {/* Pagination Controls */}
+              {totalPages > 1 && (
+                <div className="mt-12 flex items-center justify-between gap-4 border-t border-slate-200 pt-6 flex-wrap">
+                  <span className="text-xs font-bold text-slate-500">
+                    Showing <strong className="text-slate-800">{(currentPage - 1) * ITEMS_PER_PAGE + 1}</strong>–<strong className="text-slate-800">{Math.min(currentPage * ITEMS_PER_PAGE, filteredProducts.length)}</strong> of <strong className="text-slate-800">{filteredProducts.length}</strong> products
+                  </span>
+                  
+                  <div className="flex items-center gap-1.5">
+                    {/* Prev Button */}
+                    <button
+                      onClick={() => {
+                        setCurrentPage(p => Math.max(1, p - 1));
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                      }}
+                      disabled={currentPage === 1}
+                      className="px-3.5 py-2 rounded-xl text-xs font-black border border-slate-200 text-slate-600 hover:bg-slate-100 hover:text-slate-800 disabled:opacity-40 disabled:cursor-not-allowed transition-all cursor-pointer select-none"
+                    >
+                      ‹ Prev
+                    </button>
+
+                    {/* Page Numbers */}
+                    {Array.from({ length: totalPages }, (_, i) => i + 1)
+                      .filter(p => p === 1 || p === totalPages || Math.abs(p - currentPage) <= 1)
+                      .reduce<(number | 'ellipsis')[]>((acc, p, idx, arr) => {
+                        if (idx > 0 && p - (arr[idx - 1] as number) > 1) acc.push('ellipsis');
+                        acc.push(p);
+                        return acc;
+                      }, [])
+                      .map((item, idx) =>
+                        item === 'ellipsis' ? (
+                          <span key={`ellipsis-${idx}`} className="px-2 text-slate-400 text-xs font-bold select-none">…</span>
+                        ) : (
+                          <button
+                            key={item}
+                            onClick={() => {
+                              setCurrentPage(item as number);
+                              window.scrollTo({ top: 0, behavior: 'smooth' });
+                            }}
+                            className={`w-9 h-9 rounded-xl text-xs font-black border transition-all cursor-pointer select-none ${
+                              currentPage === item
+                                ? 'bg-blue-600 text-white border-blue-600 shadow-md shadow-blue-500/20'
+                                : 'border-slate-200 text-slate-600 hover:bg-slate-100 hover:text-slate-800'
+                            }`}
+                          >
+                            {item}
+                          </button>
+                        )
+                      )
+                    }
+
+                    {/* Next Button */}
+                    <button
+                      onClick={() => {
+                        setCurrentPage(p => Math.min(totalPages, p + 1));
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                      }}
+                      disabled={currentPage === totalPages}
+                      className="px-3.5 py-2 rounded-xl text-xs font-black border border-slate-200 text-slate-600 hover:bg-slate-100 hover:text-slate-800 disabled:opacity-40 disabled:cursor-not-allowed transition-all cursor-pointer select-none"
+                    >
+                      Next ›
+                    </button>
+                  </div>
+                </div>
+              )}
+              </>
             ) : (
               // Empty Search / Filter State
               <div className="text-center py-20 bg-white border border-slate-200 rounded-3xl p-8 max-w-md mx-auto shadow-sm animate-in fade-in duration-300">

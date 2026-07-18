@@ -23,7 +23,14 @@ export const SmartphonesSection: React.FC<SmartphonesSectionProps> = ({
   onPromptAuth,
   onViewAll
 }) => {
-  const cables = products.filter(p => p.category === 'cables');
+  const toSlug = (str: string) => {
+    if (!str) return '';
+    return str.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+  };
+
+  const cables = products.filter(p => 
+    ['cables', 'cables-power-cords'].includes(toSlug(p.category))
+  );
 
   return (
     <section 

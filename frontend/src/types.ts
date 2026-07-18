@@ -8,7 +8,7 @@ export interface Product {
   image: string;
   description: string;
   specifications: string[];
-  isNew?: boolean;
+  isRecent?: boolean;
   isHot?: boolean;
 }
 
@@ -19,10 +19,13 @@ export interface CartItem {
 }
 
 export interface User {
+  id?: string;
+  _id?: string;
   name: string;
   email: string;
   avatar: string;
   role: string;
+  createdAt?: string;
 }
 
 export interface OrderItem {

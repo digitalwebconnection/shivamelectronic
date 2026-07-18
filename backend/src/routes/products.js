@@ -66,7 +66,7 @@ router.get('/', async (req, res) => {
  */
 router.post('/', protectAdmin, upload.single('image'), async (req, res) => {
   try {
-    const { name, category, brand, price, rating, description, specifications, isNew, isHot } = req.body;
+    const { name, category, brand, price, rating, description, specifications, isRecent, isHot } = req.body;
 
     // Check required fields
     if (!name || !category || !brand || !price || !description) {
@@ -75,6 +75,14 @@ router.post('/', protectAdmin, upload.single('image'), async (req, res) => {
 
     if (!req.file) {
       return res.status(400).json({ message: 'Please upload a product image' });
+    }
+
+    // Check hot deals limit
+    if (isHot === 'true' || isHot === true) {
+      const hotCount = await Product.countDocuments({ isHot: true });
+      if (hotCount >= 2) {
+        return res.status(400).json({ message: 'Only exactly 2 products can be selected as Super Hot Deals. Please deselect another product first.' });
+      }
     }
 
     // Upload image to Cloudinary
@@ -89,7 +97,7 @@ router.post('/', protectAdmin, upload.single('image'), async (req, res) => {
       image: uploadResult.secure_url,
       description,
       specifications: parseSpecifications(specifications),
-      isNew: isNew === 'true' || isNew === true,
+      isRecent: isRecent === 'true' || isRecent === true,
       isHot: isHot === 'true' || isHot === true
     });
 
@@ -108,12 +116,20 @@ router.post('/', protectAdmin, upload.single('image'), async (req, res) => {
  */
 router.put('/:id', protectAdmin, upload.single('image'), async (req, res) => {
   try {
-    const { name, category, brand, price, rating, description, specifications, isNew, isHot } = req.body;
+    const { name, category, brand, price, rating, description, specifications, isRecent, isHot } = req.body;
 
     const product = await Product.findById(req.params.id);
 
     if (!product) {
       return res.status(404).json({ message: 'Product not found' });
+    }
+
+    // Check hot deals limit if isHot is being enabled
+    if (isHot !== undefined && (isHot === 'true' || isHot === true)) {
+      const hotCount = await Product.countDocuments({ isHot: true, _id: { $ne: req.params.id } });
+      if (hotCount >= 2) {
+        return res.status(400).json({ message: 'Only exactly 2 products can be selected as Super Hot Deals. Please deselect another product first.' });
+      }
     }
 
     // Update simple fields if they exist in request body
@@ -126,7 +142,7 @@ router.put('/:id', protectAdmin, upload.single('image'), async (req, res) => {
     if (specifications !== undefined) {
       product.specifications = parseSpecifications(specifications);
     }
-    if (isNew !== undefined) product.isNew = isNew === 'true' || isNew === true;
+    if (isRecent !== undefined) product.isRecent = isRecent === 'true' || isRecent === true;
     if (isHot !== undefined) product.isHot = isHot === 'true' || isHot === true;
 
     // Handle optional image update
@@ -140,6 +156,36 @@ router.put('/:id', protectAdmin, upload.single('image'), async (req, res) => {
   } catch (error) {
     console.error('Error updating product:', error.message);
     res.status(500).json({ message: 'Server error updating product' });
+  }
+});
+
+/**
+ * @route   PUT /api/products/:id/toggle-hot
+ * @desc    Toggle product isHot status (max 2)
+ * @access  Private/Admin
+ */
+router.put('/:id/toggle-hot', protectAdmin, async (req, res) => {
+  try {
+    const product = await Product.findById(req.params.id);
+    if (!product) {
+      return res.status(404).json({ message: 'Product not found' });
+    }
+
+    const newIsHot = !product.isHot;
+
+    if (newIsHot) {
+      const hotCount = await Product.countDocuments({ isHot: true, _id: { $ne: product._id } });
+      if (hotCount >= 2) {
+        return res.status(400).json({ message: 'Only exactly 2 products can be selected as Super Hot Deals. Please deselect another product first.' });
+      }
+    }
+
+    product.isHot = newIsHot;
+    await product.save();
+    res.json(product);
+  } catch (error) {
+    console.error('Error toggling hot status:', error.message);
+    res.status(500).json({ message: 'Server error toggling hot status' });
   }
 });
 

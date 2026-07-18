@@ -171,7 +171,7 @@ export const Hero: React.FC<HeroProps> = ({ products, onSelectProduct, onNavigat
 
               {/* Slide Content container */}
               <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-20 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-                
+
                 {/* Left Side: Content */}
                 <div className="lg:col-span-7 space-y-6 text-center lg:text-left flex flex-col justify-center text-white">
                   <div className="self-center lg:self-start inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/15 text-slate-100 text-xs font-semibold tracking-wide">
@@ -238,7 +238,7 @@ export const Hero: React.FC<HeroProps> = ({ products, onSelectProduct, onNavigat
           ))}
         </div>
 
-    
+
 
         {/* Dots Indicator Overlay */}
         <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-35 flex items-center gap-1.5">
@@ -247,8 +247,8 @@ export const Hero: React.FC<HeroProps> = ({ products, onSelectProduct, onNavigat
               key={i}
               onClick={() => setSlide(i)}
               className={`h-2 rounded-full transition-all duration-300 cursor-pointer ${i === currentSlide
-                  ? `w-6 bg-linear-to-r ${slide.gradient}`
-                  : 'w-2 bg-white/30 hover:bg-white/55'
+                ? `w-6 bg-linear-to-r ${slide.gradient}`
+                : 'w-2 bg-white/30 hover:bg-white/55'
                 }`}
               aria-label={`Go to slide ${i + 1}`}
             />

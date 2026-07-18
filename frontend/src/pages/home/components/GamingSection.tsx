@@ -98,7 +98,7 @@ export const GamingSection: React.FC<GamingSectionProps> = ({
       <div className="absolute bottom-0 right-10 w-[200px] h-[200px] bg-purple-650/5 rounded-full blur-[80px] pointer-events-none" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-0 relative z-10">
-        
+
         {/* Section Header */}
         <div className="flex items-center justify-between gap-4 mb-8 px-4 sm:px-6 lg:px-0">
           <div className="flex items-center gap-3">
@@ -110,7 +110,7 @@ export const GamingSection: React.FC<GamingSectionProps> = ({
               <p className="text-xs text-slate-400 mt-0.5">Explore our upcoming launches and exclusive promo items.</p>
             </div>
           </div>
-          <button 
+          <button
             onClick={() => onViewAll('gaming')}
             className="flex items-center gap-1 px-3 py-1.5 border border-slate-800 hover:border-red-500 hover:text-red-400 rounded-xl text-[10px] font-bold text-slate-300 transition-all bg-slate-900 cursor-pointer shadow-md"
           >
@@ -120,7 +120,7 @@ export const GamingSection: React.FC<GamingSectionProps> = ({
         </div>
 
         {/* Scrollable Slider */}
-        <div 
+        <div
           ref={scrollRef}
           onMouseDown={handleMouseDown}
           onMouseLeave={() => {
@@ -135,7 +135,7 @@ export const GamingSection: React.FC<GamingSectionProps> = ({
           {gaming.map(p => {
             const isWishlisted = wishlist.some(item => item.id === p.id);
             return (
-              <div 
+              <div
                 key={p.id}
                 onClick={() => onSelectProduct(p)}
                 onClickCapture={(e) => {
@@ -153,11 +153,6 @@ export const GamingSection: React.FC<GamingSectionProps> = ({
                       Hot
                     </span>
                   )}
-                  {p.isNew && (
-                    <span className="bg-gradient-to-r from-red-600 to-pink-500 text-white text-[8px] font-black uppercase tracking-widest px-2 py-0.5 rounded-md shadow-sm">
-                      New
-                    </span>
-                  )}
                 </div>
 
                 {/* Wishlist Button */}
@@ -170,11 +165,10 @@ export const GamingSection: React.FC<GamingSectionProps> = ({
                       onToggleWishlist(p);
                     }
                   }}
-                  className={`absolute top-3 right-3 z-10 p-2 rounded-xl transition-all duration-300 border cursor-pointer ${
-                    isWishlisted 
-                      ? 'bg-red-600 border-red-600 text-white shadow-md' 
+                  className={`absolute top-3 right-3 z-10 p-2 rounded-xl transition-all duration-300 border cursor-pointer ${isWishlisted
+                      ? 'bg-red-600 border-red-600 text-white shadow-md'
                       : 'bg-slate-950/80 border-slate-800 text-slate-400 hover:text-red-500 hover:border-red-500/30'
-                  }`}
+                    }`}
                   title={isWishlisted ? 'Remove from Wishlist' : 'Add to Wishlist'}
                 >
                   <Heart className={`w-3.5 h-3.5 transition-transform duration-300 ${isWishlisted ? 'fill-current text-white scale-110' : 'text-slate-400'}`} />
@@ -182,9 +176,9 @@ export const GamingSection: React.FC<GamingSectionProps> = ({
 
                 {/* Image */}
                 <div className="relative aspect-square w-full bg-slate-950 overflow-hidden border-b border-slate-900 flex items-center justify-center p-6">
-                  <img 
-                    src={p.image} 
-                    alt={p.name} 
+                  <img
+                    src={p.image}
+                    alt={p.name}
                     className="w-[82%] h-[82%] object-contain transition-transform duration-500 group-hover:scale-105 drop-shadow-[0_8px_20px_rgba(0,0,0,0.5)]"
                   />
                   <div className="absolute inset-0 bg-slate-950/20 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity duration-300">
@@ -207,9 +201,9 @@ export const GamingSection: React.FC<GamingSectionProps> = ({
                     <div className="flex items-center gap-1 mb-3">
                       <div className="flex text-yellow-500">
                         {[...Array(5)].map((_, i) => (
-                          <Star 
-                            key={i} 
-                            className={`w-2.5 h-2.5 ${i < Math.floor(p.rating) ? 'fill-yellow-500 text-yellow-500' : 'text-slate-800'}`} 
+                          <Star
+                            key={i}
+                            className={`w-2.5 h-2.5 ${i < Math.floor(p.rating) ? 'fill-yellow-500 text-yellow-500' : 'text-slate-800'}`}
                           />
                         ))}
                       </div>
@@ -221,7 +215,7 @@ export const GamingSection: React.FC<GamingSectionProps> = ({
 
                   {/* Promo Showcase Footer - No Price/Cart */}
                   <div className="mt-auto pt-3 border-t border-slate-850 flex items-center justify-between">
-                    {p.isNew ? (
+                    {p.isRecent ? (
                       <span className="text-[9.5px] font-black bg-gradient-to-r from-cyan-500 to-blue-500 text-white px-2.5 py-1 rounded-lg uppercase tracking-wider shadow-sm shadow-blue-900/20 animate-pulse">
                         Upcoming Launch
                       </span>
@@ -238,7 +232,7 @@ export const GamingSection: React.FC<GamingSectionProps> = ({
                     <span className="text-[9px] font-extrabold text-slate-500 uppercase tracking-widest">
                       Q3 2026
                     </span>
-                   </div>
+                  </div>
                 </div>
 
               </div>

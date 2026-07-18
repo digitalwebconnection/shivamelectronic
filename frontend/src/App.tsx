@@ -5,6 +5,7 @@ import { Navbar } from './components/Navbar';
 import { AuthModal } from './components/AuthModal';
 import { CartDrawer } from './components/CartDrawer';
 import { WishlistDrawer } from './components/WishlistDrawer';
+import { API_URL } from './config';
 
 // Pages
 import { Home } from './pages/home/Home';
@@ -49,6 +50,9 @@ function App() {
 
   // App States
   const [currentPage, setCurrentPageState] = useState<'home' | 'products' | 'about' | 'contact' | 'product-details' | 'profile' | 'admin'>('home');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('All');
+  const [sortBy, setSortBy] = useState('default');
 
   const setCurrentPage = (page: 'home' | 'products' | 'about' | 'contact' | 'product-details' | 'profile' | 'admin') => {
     setCurrentPageState(page);
@@ -64,18 +68,23 @@ function App() {
     const path = location.pathname;
     if (path === '/' || path === '/home') {
       setCurrentPageState('home');
+      setSelectedCategory('All');
     } else if (path === '/about') {
       setCurrentPageState('about');
+      setSelectedCategory('All');
     } else if (path === '/products') {
       setCurrentPageState('products');
     } else if (path === '/contact') {
       setCurrentPageState('contact');
+      setSelectedCategory('All');
     } else if (path === '/product-details') {
       setCurrentPageState('product-details');
     } else if (path === '/profile') {
       setCurrentPageState('profile');
+      setSelectedCategory('All');
     } else if (path === '/admin') {
       setCurrentPageState('admin');
+      setSelectedCategory('All');
     }
   }, [location.pathname]);
 
@@ -86,7 +95,6 @@ function App() {
 
   // Fetch from Express Backend API
   const fetchProductsAndCategories = async () => {
-    const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
     try {
       const prodRes = await fetch(`${API_URL}/api/products`);
       if (prodRes.ok) {
@@ -116,6 +124,11 @@ function App() {
   }, []);
 
   const [user, setUser] = useState<User | null>(null);
+
+  const handleLogout = () => {
+    setUser(null);
+    setCurrentPage('home');
+  };
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [wishlist, setWishlist] = useState<Product[]>([]);
   const [orders, setOrders] = useState<Order[]>([]);
@@ -131,10 +144,7 @@ function App() {
   const [isWishlistOpen, setIsWishlistOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
 
-  // Search & sorting states
-  const [searchQuery, setSearchQuery] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('All');
-  const [sortBy, setSortBy] = useState('default');
+
 
   // Cart Handlers
   const handleAddToCart = (product: Product) => {
@@ -205,7 +215,7 @@ function App() {
           wishlist={wishlist}
           user={user}
           onOpenAuth={() => setIsAuthOpen(true)}
-          onLogout={() => setUser(null)}
+          onLogout={handleLogout}
           onOpenCart={() => setIsCartOpen(true)}
           onOpenWishlist={() => setIsWishlistOpen(true)}
           onProductClick={handleSelectProduct}
@@ -273,7 +283,7 @@ function App() {
             onToggleWishlist={handleToggleWishlist}
             onAddToCart={handleAddToCart}
             onProductClick={handleSelectProduct}
-            onLogout={() => setUser(null)}
+            onLogout={handleLogout}
             onPromptAuth={() => setIsAuthOpen(true)}
             orders={orders}
           />
@@ -324,6 +334,10 @@ function App() {
         user={user}
         onPromptAuth={() => setIsAuthOpen(true)}
         onPlaceOrder={handlePlaceOrder}
+        onStartShopping={() => {
+          setIsCartOpen(false);
+          setCurrentPage('products');
+        }}
       />
 
       <WishlistDrawer 
@@ -332,6 +346,10 @@ function App() {
         wishlist={wishlist}
         onRemoveFromWishlist={(id) => setWishlist(prev => prev.filter(p => p.id !== id))}
         onMoveToCart={handleMoveToCart}
+        onExploreProducts={() => {
+          setIsWishlistOpen(false);
+          setCurrentPage('products');
+        }}
       />
 
     </div>

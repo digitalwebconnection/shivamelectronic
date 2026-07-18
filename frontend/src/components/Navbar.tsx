@@ -1,7 +1,7 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import {
   Search, ShoppingCart, Heart,  LogOut, ChevronDown,
-  Menu, X, Camera, Cpu, SlidersHorizontal, Tag,
+  Menu, X, Cpu,
   Power, Cable, Settings, Sun
 } from 'lucide-react';
 import type { Product, CartItem, User as UserType } from '../types';
@@ -65,8 +65,6 @@ export const Navbar: React.FC<NavbarProps> = ({
   setSearchQuery,
   selectedCategory,
   setSelectedCategory,
-  sortBy,
-  setSortBy,
 
   currentPage = 'home',
   setCurrentPage,
@@ -76,24 +74,57 @@ export const Navbar: React.FC<NavbarProps> = ({
   // Navigation states
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [, setIsProfileDropdownOpen] = useState(false);
-  const [isSortDropdownOpen, setIsSortDropdownOpen] = useState(false);
-  const [isFilterDropdownOpen, setIsFilterDropdownOpen] = useState(false);
 
 
   // Smart Navbar Scroll States
   const [isScrolled, setIsScrolled] = useState(false);
 
   const profileRef = useRef<HTMLDivElement>(null);
-  const sortRef = useRef<HTMLDivElement>(null);
-  const filterRef = useRef<HTMLDivElement>(null);
 
-  // Compute search suggestions
-  const searchResults = searchQuery.trim() === ''
-    ? []
-    : products.filter(product =>
-      product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      product.category.toLowerCase().includes(searchQuery.toLowerCase())
+  const [isBottomCatDropdownOpen, setIsBottomCatDropdownOpen] = useState(false);
+  const [isStickyCatDropdownOpen, setIsStickyCatDropdownOpen] = useState(false);
+  const bottomCatRef = useRef<HTMLDivElement>(null);
+  const stickyCatRef = useRef<HTMLDivElement>(null);
+
+  // Localized search inputs so typing in one does not update the text in the other
+  const [bottomSearchQuery, setBottomSearchQuery] = useState(searchQuery);
+  const [stickySearchQuery, setStickySearchQuery] = useState(searchQuery);
+
+  // Sync inputs if parent search query is cleared (e.g. clear filters)
+  useEffect(() => {
+    if (searchQuery === '') {
+      setBottomSearchQuery('');
+      setStickySearchQuery('');
+    }
+  }, [searchQuery]);
+
+  const toSlug = (str: string) => {
+    if (!str) return '';
+    return str.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+  };
+
+  // Dynamically calculate unique categories from products list
+  const dynamicCategories = useMemo(() => {
+    const uniqNames = Array.from(new Set(products.map(p => p.category?.trim()).filter(Boolean)));
+    return uniqNames.map(name => {
+      const slug = toSlug(name);
+      const existing = categories.find(c => c.slug.toLowerCase() === slug || c.name.toLowerCase() === name.toLowerCase());
+      return {
+        name: name.charAt(0).toUpperCase() + name.slice(1),
+        slug: slug,
+        icon: existing ? existing.icon || 'Cpu' : 'Cpu'
+      };
+    });
+  }, [products, categories]);
+
+  // Compute search suggestions for a given query
+  const getSuggestions = (query: string) => {
+    if (query.trim() === '') return [];
+    return products.filter(product =>
+      product.name.toLowerCase().includes(query.toLowerCase()) ||
+      product.category.toLowerCase().includes(query.toLowerCase())
     ).slice(0, 5);
+  };
 
   // Close dropdowns when clicking outside
   useEffect(() => {
@@ -101,11 +132,12 @@ export const Navbar: React.FC<NavbarProps> = ({
       if (profileRef.current && !profileRef.current.contains(event.target as Node)) {
         setIsProfileDropdownOpen(false);
       }
-      if (sortRef.current && !sortRef.current.contains(event.target as Node)) {
-        setIsSortDropdownOpen(false);
+
+      if (bottomCatRef.current && !bottomCatRef.current.contains(event.target as Node)) {
+        setIsBottomCatDropdownOpen(false);
       }
-      if (filterRef.current && !filterRef.current.contains(event.target as Node)) {
-        setIsFilterDropdownOpen(false);
+      if (stickyCatRef.current && !stickyCatRef.current.contains(event.target as Node)) {
+        setIsStickyCatDropdownOpen(false);
       }
     };
     document.addEventListener('mousedown', handleClickOutside);
@@ -136,99 +168,141 @@ export const Navbar: React.FC<NavbarProps> = ({
     }
   };
 
-  // Small black tag list (Behance footer tags style)
-  const quickTags = [
-    { label: 'connectors', query: 'connectors' },
-    { label: 'cables', query: 'cables' },
-    { label: 'switches', query: 'switches' },
-    { label: 'aviation plug', query: 'aviation' },
-    { label: 'rocker switch', query: 'rocker' },
-    { label: 'led components', query: 'led' },
-    { label: 'rubber feet', query: 'rubber' },
-    { label: 'grommet', query: 'grommet' },
-    { label: 'power cord', query: 'power' },
-    { label: 'ic socket', query: 'socket' }
-  ];
 
   // Reusable search bar render helper
   const renderSearchBar = (isCompact: boolean) => {
+    const currentQuery = isCompact ? stickySearchQuery : bottomSearchQuery;
+    const searchResults = getSuggestions(currentQuery);
+    const isDropdownOpen = isCompact ? isStickyCatDropdownOpen : isBottomCatDropdownOpen;
+    const dropdownRef = isCompact ? stickyCatRef : bottomCatRef;
+
+    const handleInputChange = (val: string) => {
+      if (isCompact) {
+        setStickySearchQuery(val);
+      } else {
+        setBottomSearchQuery(val);
+      }
+      setSearchQuery(val);
+    };
+
+    const handleClearInput = () => {
+      if (isCompact) {
+        setStickySearchQuery('');
+      } else {
+        setBottomSearchQuery('');
+      }
+      setSearchQuery('');
+    };
+
+    const toggleDropdown = (e: React.MouseEvent) => {
+      e.preventDefault();
+      if (isCompact) {
+        setIsStickyCatDropdownOpen(!isStickyCatDropdownOpen);
+      } else {
+        setIsBottomCatDropdownOpen(!isBottomCatDropdownOpen);
+      }
+    };
+
+    const closeDropdown = () => {
+      if (isCompact) {
+        setIsStickyCatDropdownOpen(false);
+      } else {
+        setIsBottomCatDropdownOpen(false);
+      }
+    };
+
     return (
       <div className={`relative grow flex items-center bg-white border border-slate-200 hover:border-slate-300 focus-within:border-blue-500 focus-within:ring-4 focus-within:ring-blue-500/10 focus-within:shadow-md rounded-full transition-all duration-300 ${isCompact
-        ? 'h-9 pl-3 pr-3.5 max-w-[280px] lg:max-w-sm'
+        ? 'h-9 pl-3 pr-1 max-w-[280px] lg:max-w-sm'
         : 'h-11 pl-4 pr-1.5 w-full shadow-sm'
         }`}>
         <span className="text-slate-400 mr-2 shrink-0">
           <Search className="w-3.5 h-3.5" />
         </span>
 
-        {/* Tag inside search box if a category is selected */}
-        {selectedCategory !== 'All' && (
-          <div className="flex items-center gap-1 bg-linear-to-r from-blue-50 to-[#0057ff]/10 border border-[#0057ff]/20 text-[#0057ff] text-[10px] font-extrabold px-2 py-0.5 rounded-full mr-2 select-none shrink-0 animate-in zoom-in-95 duration-150">
-            <Tag className="w-2.5 h-2.5" />
-            <span>{getShortCategoryName(selectedCategory)}</span>
-            <button
-              onClick={() => setSelectedCategory('All')}
-              className="hover:text-blue-800 font-extrabold ml-0.5"
-            >
-              ×
-            </button>
-          </div>
-        )}
-
         <input
           type="text"
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
+          value={currentQuery}
+          onChange={(e) => handleInputChange(e.target.value)}
           placeholder="Search electronic components..."
           className="w-full bg-transparent text-sm text-slate-900 placeholder-slate-400 outline-none"
         />
 
-        {searchQuery && (
+        {currentQuery && (
           <button
-            onClick={() => setSearchQuery('')}
+            onClick={handleClearInput}
             className="text-slate-400 hover:text-black shrink-0 mr-2"
           >
             <X className="w-3.5 h-3.5" />
           </button>
         )}
 
-        {/* Inner Category Tabs & Separator (only in expanded Row 2 mode) */}
-        {!isCompact && (
-          <>
-            {/* Vertical separator */}
-            <div className="hidden md:block border-l border-slate-250 h-5 mx-2.5 shrink-0" />
+        {/* Separator line */}
+        <div className="border-l border-slate-250 h-5 mx-2.5 shrink-0" />
 
-            {/* Inner Category Tabs */}
-            <div className="hidden md:flex items-center gap-1.5 shrink-0 mr-1">
-              <button
-                onClick={() => setSelectedCategory('All')}
-                className={`px-3 py-1 rounded-full transition-all text-xs font-bold ${selectedCategory === 'All'
-                  ? 'bg-slate-100 text-slate-950 font-black'
-                  : 'bg-transparent text-slate-500 hover:text-slate-900 hover:bg-slate-50'
-                  }`}
-              >
-                Projects
-              </button>
-              {categories.slice(0, 3).map((cat) => (
+        {/* Categories Dropdown inside Searchbar */}
+        <div ref={dropdownRef} className="relative shrink-0">
+          <button
+            type="button"
+            onClick={toggleDropdown}
+            className="flex items-center gap-1 text-[10px] font-black text-slate-700 hover:text-blue-600 tracking-wide uppercase px-2.5 py-1 rounded-full hover:bg-slate-100 transition-all select-none cursor-pointer"
+          >
+            <span className="max-w-[70px] sm:max-w-[100px] truncate">
+              {selectedCategory === 'All' ? 'Categories' : getShortCategoryName(selectedCategory)}
+            </span>
+            <ChevronDown className={`w-3 h-3 transition-transform duration-300 shrink-0 ${isDropdownOpen ? 'rotate-180 text-blue-600' : 'text-slate-400'}`} />
+          </button>
+
+          {isDropdownOpen && (
+            <div className="absolute top-[calc(100%+8px)] right-0 w-[240px] bg-white border border-slate-200 rounded-2xl shadow-2xl overflow-hidden z-[60] animate-in fade-in slide-in-from-top-1 duration-150 p-1.5">
+              <span className="block text-[10px] font-bold text-slate-400 uppercase tracking-widest px-3 py-2 border-b border-slate-100 text-left">
+                Select Category
+              </span>
+              <div className="space-y-0.5 mt-1 max-h-[250px] overflow-y-auto">
                 <button
-                  key={cat.slug}
-                  onClick={() => setSelectedCategory(cat.slug)}
-                  className={`px-3 py-1 rounded-full transition-all text-xs font-bold whitespace-nowrap ${selectedCategory === cat.slug
-                    ? 'bg-slate-100 text-slate-950 font-black'
-                    : 'bg-transparent text-slate-500 hover:text-black hover:bg-slate-50'
+                  type="button"
+                  onClick={() => {
+                    setSelectedCategory('All');
+                    closeDropdown();
+                    if (setCurrentPage) setCurrentPage('products');
+                    setTimeout(() => {
+                      document.getElementById('products')?.scrollIntoView({ behavior: 'smooth' });
+                    }, 100);
+                  }}
+                  className={`w-full text-left px-3 py-2 text-xs font-bold rounded-xl transition-all ${selectedCategory === 'All'
+                    ? 'bg-blue-50 text-blue-600'
+                    : 'text-slate-700 hover:bg-slate-50 hover:text-black'
                     }`}
                 >
-                  {getShortCategoryName(cat.slug)}
+                  All Categories
                 </button>
-              ))}
+                {dynamicCategories.map((cat) => (
+                  <button
+                    key={cat.slug}
+                    type="button"
+                    onClick={() => {
+                      setSelectedCategory(cat.slug);
+                      closeDropdown();
+                      if (setCurrentPage) setCurrentPage('products');
+                      setTimeout(() => {
+                        document.getElementById('products')?.scrollIntoView({ behavior: 'smooth' });
+                      }, 100);
+                    }}
+                    className={`w-full flex items-center justify-between px-3 py-2 text-xs font-bold rounded-xl transition-all ${selectedCategory === cat.slug
+                      ? 'bg-blue-50 text-blue-650 font-black'
+                      : 'text-slate-700 hover:bg-slate-50 hover:text-black'
+                      }`}
+                  >
+                    <span className="truncate pr-2 text-left">{cat.name}</span>
+                    <span className="text-[10px] bg-slate-100 text-slate-500 px-1.5 py-0.5 rounded-md font-bold shrink-0">
+                      {products.filter((p: any) => toSlug(p.category) === cat.slug).length}
+                    </span>
+                  </button>
+                ))}
+              </div>
             </div>
-
-            {/* Camera / Image search icon (matches cloud-upload icon in Behance) */}
-            <button className="h-8 w-8 rounded-full text-slate-400 hover:text-blue-600 hover:bg-blue-50 transition-all shrink-0 flex items-center justify-center mr-0.5 tooltip" title="Search by Image">
-              <Camera className="w-4 h-4" />
-            </button>
-          </>
-        )}
+          )}
+        </div>
 
         {/* Suggestions Dropdown */}
         {searchResults.length > 0 && (
@@ -255,7 +329,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                   onClick={(e) => {
                     e.stopPropagation();
                     onProductClick(product);
-                    setSearchQuery('');
+                    handleClearInput();
                   }}
                   className="px-2.5 py-1.5 bg-blue-600 hover:bg-blue-500 text-white text-[10px] font-bold rounded-lg transition-all shrink-0 hover:shadow-sm"
                 >
@@ -372,7 +446,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               >
                 <Heart className="w-5 h-5 transition-transform hover:scale-110 active:scale-95" />
                 {wishlist.length > 0 && (
-                  <span className="absolute top-1.5 right-1.5 w-4 h-4 bg-red-500 text-white text-[8px] font-black rounded-full flex items-center justify-center border border-white animate-pulse">
+                  <span className="absolute top-1.5 right-1.5 w-4 h-4 bg-red-500 text-white text-[8px] font-black rounded-full flex items-center justify-center">
                     {wishlist.length}
                   </span>
                 )}
@@ -403,8 +477,8 @@ export const Navbar: React.FC<NavbarProps> = ({
                 className="flex items-center gap-1 focus:outline-none hover:scale-105 active:scale-95 transition-all"
                 title="My Account"
               >
-                <div className="w-8 h-8 rounded-full overflow-hidden border border-slate-250 hover:border-blue-600 transition-colors">
-                  <img src={user.avatar} alt={user.name} className="w-full h-full object-cover" />
+                <div className="w-8 h-8 rounded-full bg-linear-to-r from-blue-600 to-indigo-650 text-white flex items-center justify-center font-black text-xs uppercase border border-slate-200 hover:border-blue-600 transition-colors select-none shadow-sm shadow-blue-500/10">
+                  {user.name ? user.name.trim().charAt(0).toUpperCase() : 'U'}
                 </div>
               </button>
             ) : (
@@ -477,7 +551,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                   Product Categories
                 </span>
                 <div className="grid grid-cols-2 gap-2">
-                  {categories.map((cat) => (
+                  {dynamicCategories.map((cat) => (
                     <button
                       key={cat.slug}
                       onClick={() => {
@@ -501,7 +575,9 @@ export const Navbar: React.FC<NavbarProps> = ({
               {user ? (
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2.5">
-                    <img src={user.avatar} className="w-9 h-9 rounded-full object-cover" />
+                    <div className="w-9 h-9 rounded-full bg-linear-to-r from-blue-600 to-indigo-650 text-white flex items-center justify-center font-black text-sm uppercase shrink-0 select-none shadow-sm shadow-blue-500/10 border border-slate-100">
+                      {user.name ? user.name.trim().charAt(0).toUpperCase() : 'U'}
+                    </div>
                     <div>
                       <p className="text-xs font-bold text-slate-900">{user.name}</p>
                       <p className="text-[10px] text-slate-505">{user.email}</p>
@@ -535,125 +611,19 @@ export const Navbar: React.FC<NavbarProps> = ({
       </header>
 
       {/* ROW 2 & ROW 3 (Non-sticky, scrolls away naturally) */}
-      <div className="w-full bg-slate-50/50">
-        {/* ROW 2: Behance Filter & Search & Category Tabs */}
-        <div className="border-b border-gray-300 shadow-sm">
-          <div className="max-w-7xl mx-auto px-6 py-3 flex items-center justify-between gap-3 w-full">
-
-            {/* Filter button with dropdown */}
-            <div ref={filterRef} className="relative shrink-0">
-              <button
-                onClick={() => setIsFilterDropdownOpen(!isFilterDropdownOpen)}
-                className={`flex items-center gap-1.5 px-4 py-2.5 border text-xs font-bold rounded-full transition-all duration-300 cursor-pointer shadow-sm select-none shrink-0 active:scale-95 ${isFilterDropdownOpen || selectedCategory !== 'All'
-                  ? 'bg-blue-600 border-blue-600 text-white shadow-md shadow-blue-500/20'
-                  : 'bg-white border-slate-200 hover:border-blue-200 hover:bg-blue-50/50 hover:text-blue-600 text-slate-700'
-                  }`}
-              >
-                <SlidersHorizontal className="w-3.5 h-3.5" />
-                <span>{selectedCategory === 'All' ? 'Filter' : getShortCategoryName(selectedCategory)}</span>
-                <ChevronDown className={`w-3 h-3 transition-transform duration-300 ${isFilterDropdownOpen ? 'rotate-180' : ''}`} />
-              </button>
-
-              {/* Filter Dropdown */}
-              {isFilterDropdownOpen && (
-                <div className="absolute top-[calc(100%+8px)] left-0 w-[240px] bg-white border border-slate-200 rounded-2xl shadow-2xl overflow-hidden z-50 animate-in fade-in slide-in-from-top-1 duration-150 p-1.5">
-                  <span className="block text-[10px] font-bold text-slate-400 uppercase tracking-widest px-3 py-2 border-b border-slate-100 text-left">
-                    Filter by Category
-                  </span>
-                  <div className="space-y-0.5 mt-1">
-                    <button
-                      onClick={() => {
-                        setSelectedCategory('All');
-                        setIsFilterDropdownOpen(false);
-                      }}
-                      className={`w-full text-left px-3 py-2 text-xs font-bold rounded-xl transition-all ${selectedCategory === 'All'
-                        ? 'bg-blue-50 text-blue-600'
-                        : 'text-slate-700 hover:bg-slate-50 hover:text-black'
-                        }`}
-                    >
-                      All Categories
-                    </button>
-                    {categories.map((cat) => (
-                      <button
-                        key={cat.slug}
-                        onClick={() => {
-                          setSelectedCategory(cat.slug);
-                          setIsFilterDropdownOpen(false);
-                          document.getElementById('products')?.scrollIntoView({ behavior: 'smooth' });
-                        }}
-                        className={`w-full flex items-center justify-between px-3 py-2 text-xs font-bold rounded-xl transition-all ${selectedCategory === cat.slug
-                          ? 'bg-blue-50 text-blue-600'
-                          : 'text-slate-700 hover:bg-slate-50 hover:text-black'
-                          }`}
-                      >
-                        <span>{cat.name}</span>
-                        <span className="text-[10px] bg-slate-100 text-slate-500 px-1.5 py-0.5 rounded-md font-bold">
-                          {products.filter(p => p.category === cat.slug).length}
-                        </span>
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </div>
-
-            {/* Search Bar (Centered, fills middle space) */}
-            <div className="flex-1 min-w-[200px]">
-              {renderSearchBar(false)}
-            </div>
-
-            {/* Right Side: Sort Dropdown */}
-            <div ref={sortRef} className="relative shrink-0">
-              <button
-                onClick={() => setIsSortDropdownOpen(!isSortDropdownOpen)}
-                className="flex items-center gap-1.5 bg-white border border-slate-200 hover:border-slate-300 px-4 py-2.5 rounded-full text-xs font-bold whitespace-nowrap cursor-pointer select-none transition-all duration-300 shadow-sm active:scale-95 text-slate-700 hover:text-blue-600 hover:bg-slate-50"
-              >
-                <SlidersHorizontal className="w-3.5 h-3.5 rotate-90" />
-                <span>{sortBy === 'default' ? 'Recommended' : 'Top Rated'}</span>
-                <ChevronDown className={`w-3 h-3 transition-transform duration-300 ${isSortDropdownOpen ? 'rotate-180 text-blue-600' : 'text-slate-400'}`} />
-              </button>
-
-              {isSortDropdownOpen && (
-                <div className="absolute top-[calc(100%+8px)] right-0 w-[140px] bg-white border border-slate-200 rounded-xl shadow-xl overflow-hidden z-50 animate-in fade-in duration-100">
-                  <div className="p-1 space-y-0.5">
-                    <button
-                      onClick={() => { setSortBy('default'); setIsSortDropdownOpen(false); }}
-                      className="w-full text-left px-3 py-1.5 text-xs text-slate-700 hover:bg-slate-50 hover:text-black rounded-lg"
-                    >
-                      Recommended
-                    </button>
-                    <button
-                      onClick={() => { setSortBy('rating'); setIsSortDropdownOpen(false); }}
-                      className="w-full text-left px-3 py-1.5 text-xs text-slate-700 hover:bg-slate-50 hover:text-black rounded-lg"
-                    >
-                      Top Rated
-                    </button>
-                  </div>
-                </div>
-              )}
-            </div>
-
+      {currentPage !== 'profile' && (
+        <div 
+          className={`w-full bg-slate-50/50 transition-all duration-300 ease-in-out relative z-20 ${
+            isScrolled 
+              ? 'opacity-0 h-0 overflow-hidden pointer-events-none' 
+              : 'opacity-100 h-[69px] overflow-visible border-b border-gray-300 shadow-sm'
+          }`}
+        >
+          <div className="max-w-7xl mx-auto px-6 py-3 w-full">
+            {renderSearchBar(false)}
           </div>
         </div>
-
-        {/* ROW 3: Behance Small black capsule tags */}
-        <div className="py-2 border-b border-gray-300">
-          <div className="max-w-7xl mx-auto px-6 flex flex-wrap items-center justify-start gap-1.5">
-            {quickTags.map((tag) => (
-              <button
-                key={tag.label}
-                onClick={() => {
-                  setSearchQuery(tag.query);
-                  document.getElementById('products')?.scrollIntoView({ behavior: 'smooth' });
-                }}
-                className="inline-block bg-slate-900 border border-slate-800 text-slate-200 hover:text-white hover:bg-linear-to-r hover:from-[#e11d48] hover:to-[#0057ff] text-[10px] font-extrabold px-4.5 py-2 rounded-full cursor-pointer transition-all duration-300 hover:translate-y-[-1.5px] hover:shadow-lg hover:shadow-blue-500/20 active:scale-95 select-none"
-              >
-                {tag.label}
-              </button>
-            ))}
-          </div>
-        </div>
-      </div>
+      )}
     </>
   );
-};
+};;

@@ -77,11 +77,6 @@ export const ProductGrid: React.FC<ProductGridProps> = ({
                     Hot
                   </span>
                 )}
-                {product.isNew && (
-                  <span className="bg-linear-to-r from-blue-600 to-indigo-500 text-white text-[8px] font-black uppercase tracking-widest px-2 py-0.5 rounded-md shadow-md shadow-blue-500/10">
-                    New
-                  </span>
-                )}
               </div>
 
               {/* Wishlist Button */}

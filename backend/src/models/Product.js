@@ -42,7 +42,7 @@ const productSchema = new mongoose.Schema({
     type: [String],
     default: [],
   },
-  isNew: {
+  isRecent: {
     type: Boolean,
     default: false,
   },
@@ -57,7 +57,7 @@ const productSchema = new mongoose.Schema({
 });
 
 // Create a virtual 'id' mapping from '_id' for frontend compatibility
-productSchema.virtual('id').get(function() {
+productSchema.virtual('id').get(function () {
   return this._id.toHexString();
 });
 

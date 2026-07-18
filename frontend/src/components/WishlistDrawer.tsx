@@ -8,6 +8,7 @@ interface WishlistDrawerProps {
   wishlist: Product[];
   onRemoveFromWishlist: (productId: string) => void;
   onMoveToCart: (product: Product) => void;
+  onExploreProducts: () => void;
 }
 
 export const WishlistDrawer: React.FC<WishlistDrawerProps> = ({
@@ -16,6 +17,7 @@ export const WishlistDrawer: React.FC<WishlistDrawerProps> = ({
   wishlist,
   onRemoveFromWishlist,
   onMoveToCart,
+  onExploreProducts,
 }) => {
   return (
     <>
@@ -62,8 +64,8 @@ export const WishlistDrawer: React.FC<WishlistDrawerProps> = ({
                 Save your favorite items here to purchase them later.
               </p>
               <button 
-                onClick={onClose}
-                className="px-5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white text-sm font-semibold rounded-xl transition-all"
+                onClick={onExploreProducts}
+                className="px-5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white text-sm font-semibold rounded-xl transition-all cursor-pointer"
               >
                 Explore Products
               </button>

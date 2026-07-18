@@ -88,11 +88,6 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
                 Hot Seller
               </span>
             )}
-            {product.isNew && (
-              <span className="absolute top-4 left-4 bg-linear-to-r from-blue-600 to-indigo-500 text-white text-[9px] font-black uppercase tracking-widest px-3 py-1 rounded-lg shadow-md shadow-blue-500/10">
-                New Release
-              </span>
-            )}
           </div>
 
           {/* Right Column: Spec content */}

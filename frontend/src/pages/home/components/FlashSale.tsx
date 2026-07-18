@@ -13,8 +13,10 @@ export const FlashSale: React.FC<FlashSaleProps> = ({
   onAddToCart,
   onSelectProduct
 }) => {
-  const flashProducts = products.filter(p => p.id === 'p11' || p.id === 'p12');
-  const actualFlashProducts = flashProducts.length >= 2 ? flashProducts.slice(0, 2) : products.slice(1, 3);
+  const flashProducts = products.filter(p => p.isHot);
+  const actualFlashProducts = flashProducts.length > 0 
+    ? flashProducts.slice(0, 2) 
+    : products.slice(1, 3);
 
   // Countdown timer state
   const [timeLeft, setTimeLeft] = useState({ hours: 6, minutes: 24, seconds: 12 });

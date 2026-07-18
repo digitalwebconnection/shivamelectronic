@@ -1,12 +1,10 @@
 import React from 'react';
 import { Cpu, Cable, Power, Settings, Sun } from 'lucide-react';
-import type { Product } from '../../../types';
 interface CategoriesQuickNavProps {
-  products: Product[];
   categories: any[];
 }
 
-export const CategoriesQuickNav: React.FC<CategoriesQuickNavProps> = ({ products, categories }) => {
+export const CategoriesQuickNav: React.FC<CategoriesQuickNavProps> = ({ categories }) => {
   return (
     <section className="py-4 bg-slate-50 border-b border-slate-100">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-0">
@@ -29,8 +27,6 @@ export const CategoriesQuickNav: React.FC<CategoriesQuickNavProps> = ({ products
               activeColor = 'hover:bg-amber-50 hover:text-amber-600 hover:border-amber-200';
             }
 
-            const count = products.filter(p => p.category.toLowerCase() === cat.slug.toLowerCase()).length;
-
             return (
               <button
                 key={cat.slug}
@@ -43,10 +39,7 @@ export const CategoriesQuickNav: React.FC<CategoriesQuickNavProps> = ({ products
                 <div className="shrink-0 p-1.5 bg-slate-50 rounded-xl group-hover:bg-transparent">
                   {iconElement}
                 </div>
-                <div className="text-left">
-                  <p className="leading-none text-[11px] font-black">{cat.name}</p>
-                  <p className="text-[9px] text-slate-400 font-bold mt-0.5">{count} Items</p>
-                </div>
+                <p className="leading-none text-[11px] font-black">{cat.name}</p>
               </button>
             );
           })}

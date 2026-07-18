@@ -24,7 +24,14 @@ export const LaptopsSection: React.FC<LaptopsSectionProps> = ({
   onPromptAuth,
   onViewAll
 }) => {
-  const connectors = products.filter(p => p.category === 'connectors');
+  const toSlug = (str: string) => {
+    if (!str) return '';
+    return str.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+  };
+
+  const connectors = products.filter(p => 
+    ['connectors', 'connectors-sockets'].includes(toSlug(p.category))
+  );
 
   return (
     <section id="category-connectors" className="py-16 bg-white border-b border-slate-100 scroll-mt-20 relative overflow-hidden">

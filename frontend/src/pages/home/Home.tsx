@@ -3,7 +3,6 @@ import { Hero } from '../../components/sections/Hero';
 import type { Product } from '../../types';
 
 // Refactored Sub-Sections
-import { CategoriesQuickNav } from './components/CategoriesQuickNav';
 import { BestSellers } from './components/BestSellers';
 import { FlashSale } from './components/FlashSale';
 import { LaptopsSection } from './components/LaptopsSection';
@@ -38,7 +37,7 @@ export const Home: React.FC<HomeProps> = ({
   onPromptAuth,
   onNavigateToProducts,
   onSelectCategory,
-  categories
+  // categories
 }) => {
   const handleCategoryViewAll = (slug: string) => {
     if (onSelectCategory) {
@@ -56,9 +55,6 @@ export const Home: React.FC<HomeProps> = ({
         onSelectProduct={onSelectProduct} 
         onNavigateToProducts={onNavigateToProducts}
       />
-
-      {/* Categories Quick Navigation */}
-      <CategoriesQuickNav products={products} categories={categories} />
 
       {/* Featured / Best Sellers */}
       <BestSellers 

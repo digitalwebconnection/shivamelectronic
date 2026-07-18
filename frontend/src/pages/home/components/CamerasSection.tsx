@@ -23,7 +23,14 @@ export const CamerasSection: React.FC<CamerasSectionProps> = ({
   onPromptAuth,
   onViewAll
 }) => {
-  const optoelectronics = products.filter(p => p.category === 'optoelectronics');
+  const toSlug = (str: string) => {
+    if (!str) return '';
+    return str.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+  };
+
+  const optoelectronics = products.filter(p => 
+    ['optoelectronics', 'spotlight-optoelectronics', 'optoelectronics-leds', 'optoelectronics-signals'].includes(toSlug(p.category))
+  );
 
   return (
     <section 

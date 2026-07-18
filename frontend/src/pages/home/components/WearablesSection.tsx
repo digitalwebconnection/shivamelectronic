@@ -24,7 +24,14 @@ export const WearablesSection: React.FC<WearablesSectionProps> = ({
   onPromptAuth,
   onViewAll
 }) => {
-  const hardware = products.filter(p => p.category === 'hardware');
+  const toSlug = (str: string) => {
+    if (!str) return '';
+    return str.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+  };
+
+  const hardware = products.filter(p => 
+    ['hardware', 'hardware-accessories'].includes(toSlug(p.category))
+  );
 
   return (
     <section id="category-hardware" className="py-16 bg-slate-50/50 border-b border-slate-100 scroll-mt-20 relative overflow-hidden">

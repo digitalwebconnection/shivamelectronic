@@ -11,6 +11,7 @@ interface CartDrawerProps {
   user: UserType | null;
   onPromptAuth: () => void;
   onPlaceOrder: (order: Order) => void;
+  onStartShopping: () => void;
 }
 
 export const CartDrawer: React.FC<CartDrawerProps> = ({
@@ -22,6 +23,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
   user,
   onPromptAuth,
   onPlaceOrder,
+  onStartShopping,
 }) => {
   const [isCheckingOut, setIsCheckingOut] = useState(false);
   const [customerName, setCustomerName] = useState(user?.name || '');
@@ -29,6 +31,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
   const [customerAddress, setCustomerAddress] = useState('');
   const [customerNote, setCustomerNote] = useState('');
   const [orderSuccessId, setOrderSuccessId] = useState<string | null>(null);
+  const [lastMessage, setLastMessage] = useState('');
 
   const cartSubtotal = cartItems.reduce((sum, item) => sum + (item.product.price * item.quantity), 0);
 
@@ -56,6 +59,11 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
       return;
     }
 
+    if (customerPhone.length !== 10) {
+      alert('Please enter a valid 10-digit WhatsApp / Phone Number.');
+      return;
+    }
+
     const newOrderId = `ORD-${Math.floor(100000 + Math.random() * 900000)}`;
 
     const newOrder: Order = {
@@ -76,10 +84,12 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
     const storePhone = '919601072015'; // Flagship Hotline from Contact Center
     let itemsText = '';
     cartItems.forEach((item, idx) => {
-      itemsText += `${idx + 1}. *${item.product.name}* (Qty: ${item.quantity})\n`;
+      itemsText += `${idx + 1}. *${item.product.name}*\n` +
+                   `   Brand: ${item.product.brand} | Category: ${item.product.category.toUpperCase()}\n` +
+                   `   Qty: ${item.quantity} | Price: ₹${item.product.price} each\n\n`;
     });
 
-    const message = `🛍️ *NEW ORDER - Shivam Electronic World*\n` +
+    const message = `🛍️ *NEW INQUIRY - Shivam Electronic World*\n` +
       `-----------------------------------------\n` +
       `🆔 *Order ID:* ${newOrderId}\n` +
       `👤 *Customer Name:* ${customerName}\n` +
@@ -87,14 +97,17 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
       `📍 *Delivery Address:* ${customerAddress}\n` +
       (customerNote ? `💬 *Customer Note:* ${customerNote}\n` : '') +
       `-----------------------------------------\n` +
-      `🛒 *Items:* \n${itemsText}\n` +
+      `🛒 *Requested Items:* \n\n${itemsText}` +
       `-----------------------------------------\n` +
       `🚚 *Shipping:* FREE\n` +
-      `💵 *Order Total:* Pricing on request\n\n` +
-      `Please confirm availability and dispatch details. Thank you!`;
+      `💵 *Est. Cart Subtotal:* ₹${cartSubtotal}\n` +
+      `💬 *Final Quote:* Pricing on request / Wholesale Quote\n\n` +
+      `Please confirm availability, wholesale discounts, and dispatch details. Thank you!`;
+
+    setLastMessage(message);
 
     const encodedText = encodeURIComponent(message);
-    const whatsappUrl = `https://api.whatsapp.com/send?phone=${storePhone}&text=${encodedText}`;
+    const whatsappUrl = `https://wa.me/${storePhone}?text=${encodedText}`;
     window.open(whatsappUrl, '_blank');
   };
 
@@ -176,13 +189,12 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                 <button
                   onClick={() => {
                     const storePhone = '919601072015';
-                    const message = `🛍️ *Order Inquiry:* ${orderSuccessId}\nName: ${customerName}`;
-                    const whatsappUrl = `https://api.whatsapp.com/send?phone=${storePhone}&text=${encodeURIComponent(message)}`;
+                    const whatsappUrl = `https://wa.me/${storePhone}?text=${encodeURIComponent(lastMessage)}`;
                     window.open(whatsappUrl, '_blank');
                   }}
-                  className="w-full py-2.5 bg-emerald-650 hover:bg-emerald-600 text-white text-xs font-bold rounded-xl transition-all flex items-center justify-center gap-2 cursor-pointer shadow-md shadow-emerald-500/20 active:scale-95"
+                  className="w-full py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl transition-all flex items-center justify-center gap-2 cursor-pointer shadow-md shadow-emerald-500/20 active:scale-95"
                 >
-                  <MessageSquare className="w-4 h-4 fill-white text-emerald-600 animate-pulse" />
+                  <MessageSquare className="w-4 h-4 fill-green/30 text-white animate-pulse" />
                   <span>Open WhatsApp Details</span>
                 </button>
                 <button
@@ -217,8 +229,15 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                   type="tel"
                   required
                   value={customerPhone}
-                  onChange={(e) => setCustomerPhone(e.target.value)}
-                  placeholder="e.g. +91 96010 72015"
+                  onChange={(e) => {
+                    const val = e.target.value;
+                    const digits = val.replace(/\D/g, '');
+                    setCustomerPhone(digits.slice(0, 10));
+                  }}
+                  pattern="[0-9]{10}"
+                  maxLength={10}
+                  inputMode="numeric"
+                  placeholder="e.g. 9601072015"
                   className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 hover:border-slate-350 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10 text-slate-900 placeholder-slate-400 rounded-xl transition-all outline-none text-sm font-medium"
                 />
               </div>
@@ -260,8 +279,8 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                 Looks like you haven't added any electronic components to your cart yet.
               </p>
               <button 
-                onClick={onClose}
-                className="px-5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white text-sm font-semibold rounded-xl transition-all"
+                onClick={onStartShopping}
+                className="px-5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white text-sm font-semibold rounded-xl transition-all cursor-pointer"
               >
                 Start Shopping
               </button>
@@ -334,10 +353,6 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
               <div className="flex justify-between text-sm text-slate-500">
                 <span className="font-semibold text-slate-700">Wholesale Order</span>
                 <span className="text-blue-600 font-extrabold uppercase tracking-wide">Quote on Request</span>
-              </div>
-              <div className="flex justify-between text-[11px] text-slate-400 font-bold uppercase tracking-wider">
-                <span>Shipping Info</span>
-                <span className="text-emerald-600">Calculated on confirmation</span>
               </div>
             </div>
 

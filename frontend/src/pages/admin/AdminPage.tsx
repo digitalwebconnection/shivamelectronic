@@ -1,13 +1,12 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import {
-  Lock, KeyRound, ShieldAlert, Cpu, 
+  Lock, KeyRound, ShieldAlert, Cpu,
   Plus, Pencil, Trash2, LogOut, CheckCircle2, Loader2, ChevronUp, ChevronDown,
   Image as ImageIcon, Eye, EyeOff, AlertTriangle,
-  Layers, Menu, Package, Tag, LayoutDashboard
+  Layers, Menu, Package, Tag, LayoutDashboard, Search, Users
 } from 'lucide-react';
 import type { Product } from '../../types';
-
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+import { API_URL } from '../../config';
 
 interface AdminPageProps {
   products: Product[];
@@ -20,6 +19,9 @@ export const AdminPage: React.FC<AdminPageProps> = ({
   categories,
   onProductsChange
 }) => {
+  // Avoid unused variable check error
+  useEffect(() => { }, [categories]);
+
   // Auth state
   const [token, setToken] = useState<string | null>(() => {
     const saved = localStorage.getItem('adminToken');
@@ -34,8 +36,8 @@ export const AdminPage: React.FC<AdminPageProps> = ({
   const [authError, setAuthError] = useState('');
   const [isLoggingIn, setIsLoggingIn] = useState(false);
 
-  // Active view: 'overview' | 'products' | 'categories'
-  const [activeTab, setActiveTab] = useState<'overview' | 'products' | 'categories'>('overview');
+  // Active view: 'overview' | 'products' | 'categories' | 'users'
+  const [activeTab, setActiveTab] = useState<'overview' | 'products' | 'categories' | 'users'>('overview');
 
   // Sidebar collapse state
   const [isCollapsed, setIsCollapsed] = useState(false);
@@ -74,6 +76,40 @@ export const AdminPage: React.FC<AdminPageProps> = ({
     type: 'success'
   });
 
+  const [toast, setToast] = useState<{
+    isOpen: boolean;
+    title: string;
+    message: string;
+    type: 'success' | 'error' | 'warning';
+  }>({
+    isOpen: false,
+    title: '',
+    message: '',
+    type: 'success'
+  });
+
+  const showToast = (
+    title: string,
+    message: string,
+    type: 'success' | 'error' | 'warning' = 'success'
+  ) => {
+    setToast({
+      isOpen: true,
+      title,
+      message,
+      type
+    });
+  };
+
+  useEffect(() => {
+    if (toast.isOpen) {
+      const timer = setTimeout(() => {
+        setToast(prev => ({ ...prev, isOpen: false }));
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [toast.isOpen]);
+
   // Custom Trigger Helpers
   const showCustomConfirm = (
     title: string,
@@ -111,6 +147,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({
   // Product form fields
   const [prodName, setProdName] = useState('');
   const [prodCategory, setProdCategory] = useState('');
+  const [isCustomCategory, setIsCustomCategory] = useState(false);
   const [prodBrand, setProdBrand] = useState('');
   const [prodPrice, setProdPrice] = useState('');
   const [prodRating, setProdRating] = useState('5.0');
@@ -118,8 +155,11 @@ export const AdminPage: React.FC<AdminPageProps> = ({
   const [prodImagePreview, setProdImagePreview] = useState<string | null>(null);
   const [prodDescription, setProdDescription] = useState('');
   const [prodSpecsText, setProdSpecsText] = useState('');
-  const [prodIsNew, setProdIsNew] = useState(false);
+  const [prodIsRecent, setProdIsRecent] = useState(false);
   const [prodIsHot, setProdIsHot] = useState(false);
+
+  // Search query state
+  const [searchQuery, setSearchQuery] = useState('');
 
   // Sorting state by Rating
   const [ratingSort, setRatingSort] = useState<'asc' | 'desc'>('desc');
@@ -131,16 +171,37 @@ export const AdminPage: React.FC<AdminPageProps> = ({
   // Mobile drawer visibility
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
+  // Filter products by name, category, and brand case-insensitively
+  const filteredProducts = useMemo(() => {
+    if (!searchQuery.trim()) return products;
+    const query = searchQuery.toLowerCase().trim();
+    return products.filter(p =>
+      (p.name?.toLowerCase().includes(query)) ||
+      (p.category?.toLowerCase().includes(query)) ||
+      (p.brand?.toLowerCase().includes(query))
+    );
+  }, [products, searchQuery]);
+
   const sortedProducts = useMemo(() => {
-    return [...products].sort((a, b) => {
+    return [...filteredProducts].sort((a, b) => {
       const ratingA = parseFloat(a.rating?.toString() || '0');
       const ratingB = parseFloat(b.rating?.toString() || '0');
       return ratingSort === 'asc' ? ratingA - ratingB : ratingB - ratingA;
     });
-  }, [products, ratingSort]);
+  }, [filteredProducts, ratingSort]);
 
-  // Reset to page 1 whenever sort or products change
-  useEffect(() => { setCurrentPage(1); }, [ratingSort, products.length]);
+  // Count of unique categories in product inventory
+  const uniqueCategoriesCount = useMemo(() => {
+    const uniq = new Set(
+      products
+        .map(p => p.category?.trim().toLowerCase())
+        .filter(Boolean)
+    );
+    return uniq.size;
+  }, [products]);
+
+  // Reset to page 1 whenever sort, products, or search query changes
+  useEffect(() => { setCurrentPage(1); }, [ratingSort, products.length, searchQuery]);
 
   const totalPages = Math.max(1, Math.ceil(sortedProducts.length / ITEMS_PER_PAGE));
   const paginatedProducts = sortedProducts.slice(
@@ -228,10 +289,41 @@ export const AdminPage: React.FC<AdminPageProps> = ({
       'Confirm Logout',
       'Are you sure you want to log out from the Shivam Admin Control Console?',
       handleLogout,
-      'warning',
+      'danger',
       'Log Out'
     );
   };
+
+  const [users, setUsers] = useState<any[]>([]);
+  const [loadingUsers, setLoadingUsers] = useState(false);
+
+  const fetchUsers = async () => {
+    if (!token) return;
+    setLoadingUsers(true);
+    try {
+      const response = await fetch(`${API_URL}/api/auth/users`, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setUsers(data);
+      } else {
+        console.error('Failed to fetch users list');
+      }
+    } catch (err) {
+      console.error('Error fetching users:', err);
+    } finally {
+      setLoadingUsers(false);
+    }
+  };
+
+  useEffect(() => {
+    if (token) {
+      fetchUsers();
+    }
+  }, [token]);
 
   // Auto-fill category slug on name change
   useEffect(() => {
@@ -250,24 +342,27 @@ export const AdminPage: React.FC<AdminPageProps> = ({
     if (prod) {
       setProdName(prod.name);
       setProdCategory(prod.category);
+      const exists = categories.some(cat => cat.name.toLowerCase() === prod.category.toLowerCase());
+      setIsCustomCategory(!exists);
       setProdBrand(prod.brand);
       setProdPrice(prod.price.toString());
       setProdRating(prod.rating.toString());
       setProdDescription(prod.description);
       setProdSpecsText(prod.specifications ? prod.specifications.join('\n') : '');
-      setProdIsNew(!!prod.isNew);
+      setProdIsRecent(!!prod.isRecent);
       setProdIsHot(!!prod.isHot);
       setProdImageFile(null);
       setProdImagePreview(prod.image);
     } else {
       setProdName('');
       setProdCategory('');
+      setIsCustomCategory(false);
       setProdBrand('');
       setProdPrice('0');
       setProdRating('5.0');
       setProdDescription('');
       setProdSpecsText('');
-      setProdIsNew(false);
+      setProdIsRecent(false);
       setProdIsHot(false);
       setProdImageFile(null);
       setProdImagePreview(null);
@@ -301,6 +396,14 @@ export const AdminPage: React.FC<AdminPageProps> = ({
       return;
     }
 
+    if (prodIsHot) {
+      const currentHotCount = products.filter(p => p.isHot && p.id !== editingProduct?.id).length;
+      if (currentHotCount >= 2) {
+        setFormError('Only exactly 2 products can be selected as Super Hot Deals. Please deselect another product first.');
+        return;
+      }
+    }
+
     if (!editingProduct && !prodImageFile) {
       setFormError('Please upload a product image.');
       return;
@@ -317,7 +420,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({
       formData.append('rating', prodRating);
       formData.append('description', prodDescription);
       formData.append('specifications', prodSpecsText);
-      formData.append('isNew', prodIsNew.toString());
+      formData.append('isRecent', prodIsRecent.toString());
       formData.append('isHot', prodIsHot.toString());
 
       if (prodImageFile) {
@@ -392,14 +495,84 @@ export const AdminPage: React.FC<AdminPageProps> = ({
     }
   };
 
+  // Inline toggle for hot status
+  const handleToggleHot = async (prod: Product) => {
+    const currentHotCount = products.filter(p => p.isHot && p.id !== prod.id).length;
+    if (!prod.isHot && currentHotCount >= 2) {
+      showCustomAlert(
+        'Limit Reached',
+        'Only exactly 2 products can be selected as Super Hot Deals. Please deselect another product first.',
+        'warning'
+      );
+      return;
+    }
+
+    try {
+      const response = await fetch(`${API_URL}/api/products/${prod.id}/toggle-hot`, {
+        method: 'PUT',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      if (response.ok) {
+        showToast('Status Updated', `${prod.name} hot status updated.`, 'success');
+        onProductsChange();
+      } else {
+        const data = await response.json();
+        showCustomAlert('Update Failed', data.message || 'Unable to update hot status.', 'error');
+      }
+    } catch (err) {
+      console.error(err);
+      showCustomAlert('Connection Error', 'Error connecting to the backend server.', 'error');
+    }
+  };
+
+  // Handle Category Delete Click (Triggers Custom Modal)
+  const handleDeleteCategory = (slug: string, name: string) => {
+    showCustomConfirm(
+      'Delete Category',
+      `Are you sure you want to delete the category "${name}"? This action cannot be undone.`,
+      () => executeDeleteCategory(slug),
+      'danger',
+      'Delete Category'
+    );
+  };
+
+  // Actual category deletion execution
+  const executeDeleteCategory = async (slug: string) => {
+    try {
+      const response = await fetch(`${API_URL}/api/categories/${slug}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      if (response.ok) {
+        showToast('Category Deleted', 'The category has been successfully removed from the database.', 'success');
+        onProductsChange();
+      } else {
+        const data = await response.json();
+        showCustomAlert('Deletion Failed', data.message || 'Unable to delete the category.', 'error');
+      }
+    } catch (err) {
+      console.error(err);
+      showCustomAlert('Connection Error', 'Error connecting to the backend server.', 'error');
+    }
+  };
+
+
   // Submit Category Form
   const handleCategorySubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setFormError('');
     setFormSuccess('');
 
-    if (!catName || !catSlug) {
-      setFormError('Name and Slug are required.');
+    const generatedSlug = catSlug || catName.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+
+    if (!catName || !generatedSlug) {
+      setFormError('Name is required.');
       return;
     }
 
@@ -414,24 +587,22 @@ export const AdminPage: React.FC<AdminPageProps> = ({
         },
         body: JSON.stringify({
           name: catName,
-          slug: catSlug,
-          description: catDescription,
-          icon: catIcon
+          slug: generatedSlug,
+          description: catDescription || '',
+          icon: catIcon || 'Cpu'
         })
       });
 
       const data = await response.json();
 
       if (response.ok) {
-        setFormSuccess('Category created successfully!');
         onProductsChange();
         setCatName('');
         setCatSlug('');
         setCatDescription('');
         setCatIcon('Cpu');
-        setTimeout(() => {
-          setIsCategoryModalOpen(false);
-        }, 1500);
+        setIsCategoryModalOpen(false);
+        showToast('Category Added', 'The category has been successfully added to the database.', 'success');
       } else {
         setFormError(data.message || 'Failed to save category.');
       }
@@ -562,17 +733,46 @@ export const AdminPage: React.FC<AdminPageProps> = ({
       >
         <div>
           {/* Logo Brand Header */}
-          <div className="p-4 border-b border-slate-200 flex items-center justify-between h-16 shrink-0">
+          <div className={`p-4 border-b border-slate-200 flex items-center h-16 shrink-0 transition-all ${isCollapsed && !isMobileMenuOpen ? 'justify-center' : 'justify-between'
+            }`}>
             <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-amber-400 to-blue-600 flex items-center justify-center shadow-md shrink-0">
-                <Layers className="w-4 h-4 text-white" />
-              </div>
+              {/* Brand logo container which becomes hoverable when collapsed */}
+              <button
+                disabled={!isCollapsed || isMobileMenuOpen}
+                onClick={() => isCollapsed && !isMobileMenuOpen && setIsCollapsed(false)}
+                className={`relative w-8 h-8 rounded-lg bg-gradient-to-tr from-amber-400 to-blue-600 flex items-center justify-center shadow-md shrink-0 group ${isCollapsed && !isMobileMenuOpen ? 'cursor-ew-resize hover:from-amber-500 hover:to-blue-700' : 'cursor-default'
+                  }`}
+              >
+                <span className={`transition-opacity duration-150 ${isCollapsed && !isMobileMenuOpen ? 'group-hover:opacity-0' : 'opacity-100'}`}>
+                  <Layers className="w-4 h-4 text-white" />
+                </span>
+                {isCollapsed && !isMobileMenuOpen && (
+                  <span className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-150">
+                    <Menu className="w-4 h-4 text-white" />
+                  </span>
+                )}
+              </button>
               {(!isCollapsed || isMobileMenuOpen) && (
                 <span className="font-black text-slate-805 text-sm tracking-wide uppercase font-sans truncate">
                   Shivam Admin
                 </span>
               )}
             </div>
+
+            {/* Desktop toggle sidebar collapse button (only visible when sidebar is NOT collapsed) */}
+            {(!isCollapsed || isMobileMenuOpen) && (
+              <button
+                onClick={() => setIsCollapsed(true)}
+                className="hidden md:flex p-1.5 hover:bg-slate-100 rounded-md text-slate-400 hover:text-slate-800 transition-colors cursor-ew-resize"
+                title="Collapse sidebar"
+              >
+                <svg stroke="currentColor" fill="none" strokeWidth="2" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg">
+                  <rect width="18" height="18" x="3" y="3" rx="2"></rect>
+                  <path d="M9 3v18"></path>
+                </svg>
+              </button>
+            )}
+
             {/* Close drawer button for mobile screens */}
             <button
               onClick={() => setIsMobileMenuOpen(false)}
@@ -583,15 +783,6 @@ export const AdminPage: React.FC<AdminPageProps> = ({
           </div>
 
           <div className="p-3 space-y-4">
-            {/* Collapse Trigger Button (Desktop Only) */}
-            <button
-              onClick={() => setIsCollapsed(!isCollapsed)}
-              className="hidden md:flex w-full items-center gap-3 px-3 py-2.5 text-slate-500 hover:text-slate-800 hover:bg-slate-100 rounded-md transition-all text-xs font-bold cursor-pointer text-left"
-            >
-              <Menu className="w-4 h-4 shrink-0" />
-              {!isCollapsed && <span>Collapse Menu</span>}
-            </button>
-
             {/* Menu Items */}
             <nav className="flex flex-col gap-1.5 pt-2">
               <button
@@ -599,9 +790,10 @@ export const AdminPage: React.FC<AdminPageProps> = ({
                   setActiveTab('overview');
                   setIsMobileMenuOpen(false);
                 }}
-                className={`w-full flex items-center gap-3 px-3.5 py-3 rounded-md text-left text-xs font-bold transition-all cursor-pointer ${activeTab === 'overview'
-                  ? 'border border-amber-500/30 bg-amber-500/5 text-amber-600 font-extrabold'
-                  : 'text-slate-500 hover:text-slate-850 hover:bg-slate-100'
+                className={`w-full flex items-center gap-3 px-3.5 py-3 rounded-md text-left text-xs font-bold transition-all cursor-pointer ${isCollapsed && !isMobileMenuOpen ? 'justify-center' : ''
+                  } ${activeTab === 'overview'
+                    ? 'bg-slate-100 text-slate-800 font-bold'
+                    : 'text-slate-800 hover:text-slate-850 hover:bg-slate-100'
                   }`}
               >
                 <LayoutDashboard className="w-4 h-4 shrink-0" />
@@ -613,9 +805,10 @@ export const AdminPage: React.FC<AdminPageProps> = ({
                   setActiveTab('products');
                   setIsMobileMenuOpen(false);
                 }}
-                className={`w-full flex items-center justify-between px-3.5 py-3 rounded-md text-left text-xs font-bold transition-all cursor-pointer ${activeTab === 'products'
-                  ? 'border border-amber-500/30 bg-amber-500/5 text-amber-600 font-extrabold'
-                  : 'text-slate-500 hover:text-slate-850 hover:bg-slate-100'
+                className={`w-full flex items-center justify-between px-3.5 py-3 rounded-md text-left text-xs font-bold transition-all cursor-pointer ${isCollapsed && !isMobileMenuOpen ? 'justify-center' : 'justify-between'
+                  } ${activeTab === 'products'
+                    ? 'bg-slate-100 text-slate-800 font-bold'
+                    : 'text-slate-800 hover:text-slate-850 hover:bg-slate-100'
                   }`}
               >
                 <div className="flex items-center gap-3">
@@ -623,12 +816,57 @@ export const AdminPage: React.FC<AdminPageProps> = ({
                   {(!isCollapsed || isMobileMenuOpen) && <span>Products</span>}
                 </div>
                 {(!isCollapsed || isMobileMenuOpen) && (
-                  <span className={`text-[9px] px-2 py-0.5 rounded-md font-black transition-all ${activeTab === 'products' ? 'bg-amber-500/10 text-amber-600' : 'bg-slate-100 text-slate-500'
+                  <span className={`text-[9px] px-2 py-0.5 rounded-md font-black transition-all ${activeTab === 'products' ? 'bg-slate-300 text-slate-600' : 'bg-slate-100 text-slate-500'
                     }`}>
                     {products.length}
                   </span>
                 )}
+              </button>
 
+              <button
+                onClick={() => {
+                  setActiveTab('categories');
+                  setIsMobileMenuOpen(false);
+                }}
+                className={`w-full flex items-center justify-between px-3.5 py-3 rounded-md text-left text-xs font-bold transition-all cursor-pointer ${isCollapsed && !isMobileMenuOpen ? 'justify-center' : 'justify-between'
+                  } ${activeTab === 'categories'
+                    ? 'bg-slate-100 text-slate-800 font-bold'
+                    : 'text-slate-800 hover:text-slate-850 hover:bg-slate-100'
+                  }`}
+              >
+                <div className="flex items-center gap-3">
+                  <Tag className="w-4 h-4 shrink-0" />
+                  {(!isCollapsed || isMobileMenuOpen) && <span>Categories</span>}
+                </div>
+                {(!isCollapsed || isMobileMenuOpen) && (
+                  <span className={`text-[9px] px-2 py-0.5 rounded-md font-black transition-all ${activeTab === 'categories' ? 'bg-slate-300 text-slate-600' : 'bg-slate-100 text-slate-500'
+                    }`}>
+                    {categories.length}
+                  </span>
+                )}
+              </button>
+
+              <button
+                onClick={() => {
+                  setActiveTab('users');
+                  setIsMobileMenuOpen(false);
+                }}
+                className={`w-full flex items-center justify-between px-3.5 py-3 rounded-md text-left text-xs font-bold transition-all cursor-pointer ${isCollapsed && !isMobileMenuOpen ? 'justify-center' : 'justify-between'
+                  } ${activeTab === 'users'
+                    ? 'bg-slate-100 text-slate-800 font-bold'
+                    : 'text-slate-800 hover:text-slate-850 hover:bg-slate-100'
+                  }`}
+              >
+                <div className="flex items-center gap-3">
+                  <Users className="w-4 h-4 shrink-0" />
+                  {(!isCollapsed || isMobileMenuOpen) && <span>Users</span>}
+                </div>
+                {(!isCollapsed || isMobileMenuOpen) && (
+                  <span className={`text-[9px] px-2 py-0.5 rounded-md font-black transition-all ${activeTab === 'users' ? 'bg-slate-300 text-slate-600' : 'bg-slate-100 text-slate-500'
+                    }`}>
+                    {users.length}
+                  </span>
+                )}
               </button>
             </nav>
           </div>
@@ -638,7 +876,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({
         <div className="p-3 border-t border-slate-200 bg-slate-50">
           <button
             onClick={handleLogoutClick}
-            className={`w-full flex items-center gap-3 px-3.5 py-3 text-slate-500 hover:text-rose-600 hover:bg-rose-50/50 rounded-md text-xs font-bold transition-all cursor-pointer text-left ${isCollapsed && !isMobileMenuOpen ? 'justify-center' : ''
+            className={`w-full flex items-center gap-3 px-3.5 py-3 text-slate-500 hover:text-white hover:bg-rose-600 rounded-md text-xs font-bold transition-all cursor-pointer text-left ${isCollapsed && !isMobileMenuOpen ? 'justify-center' : ''
               }`}
           >
             <LogOut className="w-4 h-4 shrink-0" />
@@ -664,12 +902,12 @@ export const AdminPage: React.FC<AdminPageProps> = ({
         </header>
 
         {/* Right Main Details Content (Light) */}
-        <main className="flex-1 overflow-y-auto p-3 sm:p-6 md:p-8 custom-scrollbar bg-slate-50/50 h-full">
+        <main className="flex-1 overflow-y-auto p-3 sm:p-6 md:p-8 custom-scrollbar bg-slate-50/50 h-full" data-lenis-prevent>
           {/* --- VIEW: OVERVIEW TAB --- */}
           {activeTab === 'overview' && (
             <div className="space-y-8 animate-in fade-in duration-200 w-full">
               {/* Stats Cards */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div className="bg-white border border-slate-200 rounded-2xl sm:rounded-md p-4 sm:p-6 shadow-sm flex items-center justify-between">
                   <div>
                     <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Inventory Size</span>
@@ -684,11 +922,22 @@ export const AdminPage: React.FC<AdminPageProps> = ({
                 <div className="bg-white border border-slate-200 rounded-2xl sm:rounded-md p-4 sm:p-6 shadow-sm flex items-center justify-between">
                   <div>
                     <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Categories Count</span>
-                    <p className="text-3xl font-black text-slate-800 mt-1">{categories.length}</p>
+                    <p className="text-3xl font-black text-slate-800 mt-1">{uniqueCategoriesCount}</p>
                     <span className="text-[10px] text-slate-455 font-bold block mt-1">Filters and sections</span>
                   </div>
                   <div className="w-12 h-12 rounded-md bg-purple-50 border border-purple-100 flex items-center justify-center text-purple-600">
                     <Tag className="w-6 h-6" />
+                  </div>
+                </div>
+
+                <div className="bg-white border border-slate-200 rounded-2xl sm:rounded-md p-4 sm:p-6 shadow-sm flex items-center justify-between">
+                  <div>
+                    <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Registered Customers</span>
+                    <p className="text-3xl font-black text-slate-800 mt-1">{users.length}</p>
+                    <span className="text-[10px] text-slate-455 font-bold block mt-1">Database users</span>
+                  </div>
+                  <div className="w-12 h-12 rounded-md bg-indigo-50 border border-indigo-100 flex items-center justify-center text-indigo-600">
+                    <Users className="w-6 h-6" />
                   </div>
                 </div>
               </div>
@@ -703,16 +952,60 @@ export const AdminPage: React.FC<AdminPageProps> = ({
                   <h3 className="text-sm font-black text-slate-800 uppercase tracking-wider">Product Inventory</h3>
                   <p className="text-xs text-slate-400 mt-1">Add, edit, or delete items from the database catalog.</p>
                 </div>
-                <button
-                  onClick={() => openProductForm(null)}
-                  className="flex items-center gap-1.5 px-4.5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-md text-xs font-bold transition-all shadow-md shadow-blue-500/10 cursor-pointer active:scale-95 border border-transparent"
-                >
-                  <Plus className="w-3.5 h-3.5" />
-                  <span>Add Product</span>
-                </button>
+                <div className="flex items-center gap-3 flex-1 sm:flex-initial justify-end w-full sm:w-auto">
+                  {/* Search Bar */}
+                  <div className="relative flex items-center bg-slate-50 border border-slate-200 focus-within:border-blue-500 rounded-md px-3 py-1.5 transition-colors w-full sm:w-64">
+                    <span className="text-slate-400 mr-2 shrink-0">
+                      <Search className="w-3.5 h-3.5" />
+                    </span>
+                    <input
+                      type="text"
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      placeholder="Search name, category, brand..."
+                      className="bg-transparent text-xs text-slate-800 placeholder-slate-400 outline-none w-full font-semibold"
+                    />
+                    {searchQuery && (
+                      <button
+                        onClick={() => setSearchQuery('')}
+                        className="text-slate-400 hover:text-slate-600 transition-colors text-xs font-bold px-1 cursor-pointer"
+                      >
+                        ×
+                      </button>
+                    )}
+                  </div>
+
+                  <button
+                    onClick={() => openProductForm(null)}
+                    className="flex items-center gap-1.5 px-4.5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-md text-xs font-bold transition-all shadow-md shadow-blue-500/10 cursor-pointer active:scale-95 border border-transparent shrink-0"
+                  >
+                    <Plus className="w-3.5 h-3.5" />
+                    <span>Add Product</span>
+                  </button>
+                </div>
               </div>
 
-              {products.length > 0 ? (
+              {products.length === 0 ? (
+                <div className="p-16 text-center space-y-3">
+                  <p className="text-slate-400 text-sm font-semibold">No products found in the database catalog.</p>
+                  <button
+                    onClick={() => openProductForm(null)}
+                    className="px-4 py-2 bg-blue-650 text-white text-xs font-bold rounded-lg"
+                  >
+                    Create First Product
+                  </button>
+                </div>
+              ) : filteredProducts.length === 0 ? (
+                <div className="p-16 text-center space-y-3">
+                  <p className="text-slate-400 text-sm font-semibold">No products match your search criteria. Try a different query.</p>
+                  <button
+                    onClick={() => setSearchQuery('')}
+                    className="px-4 py-2 bg-slate-105 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-md transition-colors cursor-pointer border border-slate-200"
+                  >
+                    Clear Search
+                  </button>
+                </div>
+              ) : (
                 <div className="overflow-x-auto">
                   <table className="w-full text-left border-collapse">
                     <thead>
@@ -733,6 +1026,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({
                             </div>
                           </div>
                         </th>
+                        <th className="py-3 px-3 sm:px-6 text-center">Super Hot Deal</th>
                         <th className="py-3 px-3 sm:px-6 text-center">Actions</th>
                       </tr>
                     </thead>
@@ -760,6 +1054,17 @@ export const AdminPage: React.FC<AdminPageProps> = ({
                           </td>
                           <td className="py-3 px-3 sm:px-6 font-bold text-slate-800">{prod.brand}</td>
                           <td className="py-3 px-3 sm:px-6 text-center font-bold text-amber-605">{prod.rating} ⭐</td>
+                          <td className="py-3 px-3 sm:px-6 text-center">
+                            <label className="relative inline-flex items-center cursor-pointer select-none">
+                              <input
+                                type="checkbox"
+                                checked={prod.isHot}
+                                onChange={() => handleToggleHot(prod)}
+                                className="sr-only peer"
+                              />
+                              <div className="w-9 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-red-600"></div>
+                            </label>
+                          </td>
                           <td className="py-3 px-3 sm:px-6">
                             <div className="flex items-center justify-center gap-2">
                               <button
@@ -782,16 +1087,6 @@ export const AdminPage: React.FC<AdminPageProps> = ({
                       ))}
                     </tbody>
                   </table>
-                </div>
-              ) : (
-                <div className="p-16 text-center space-y-3">
-                  <p className="text-slate-400 text-sm font-semibold">No products found in the database catalog.</p>
-                  <button
-                    onClick={() => openProductForm(null)}
-                    className="px-4 py-2 bg-blue-650 text-white text-xs font-bold rounded-lg"
-                  >
-                    Create First Product
-                  </button>
                 </div>
               )}
 
@@ -826,11 +1121,10 @@ export const AdminPage: React.FC<AdminPageProps> = ({
                           <button
                             key={item}
                             onClick={() => setCurrentPage(item as number)}
-                            className={`w-7 h-7 rounded-md text-[10px] font-bold border transition-all ${
-                              currentPage === item
-                                ? 'bg-blue-600 text-white border-blue-600 shadow-sm'
-                                : 'border-slate-200 text-slate-500 hover:bg-slate-100'
-                            }`}
+                            className={`w-7 h-7 rounded-md text-[10px] font-bold border transition-all ${currentPage === item
+                              ? 'bg-blue-600 text-white border-blue-600 shadow-sm'
+                              : 'border-slate-200 text-slate-500 hover:bg-slate-100'
+                              }`}
                           >
                             {item}
                           </button>
@@ -847,6 +1141,150 @@ export const AdminPage: React.FC<AdminPageProps> = ({
                       Next ›
                     </button>
                   </div>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* --- VIEW: CATEGORIES TAB --- */}
+          {activeTab === 'categories' && (
+            <div className="bg-white border border-slate-200 rounded-md sm:rounded-md shadow-sm overflow-hidden animate-in fade-in duration-200 flex flex-col w-full">
+              <div className="p-4 sm:p-6 border-b border-slate-100 flex items-center justify-between flex-wrap gap-3">
+                <div>
+                  <h3 className="text-sm font-black text-slate-800 uppercase tracking-wider">Dynamic Categories</h3>
+                  <p className="text-xs text-slate-400 mt-1">Manage dynamically active categories for filters and navigation.</p>
+                </div>
+                <button
+                  onClick={() => {
+                    setFormError('');
+                    setFormSuccess('');
+                    setIsCategoryModalOpen(true);
+                  }}
+                  className="flex items-center gap-1.5 px-4.5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-md text-xs font-bold transition-all shadow-md shadow-blue-500/10 cursor-pointer active:scale-95 border border-transparent"
+                >
+                  <Plus className="w-3.5 h-3.5" />
+                  <span>Add Category</span>
+                </button>
+              </div>
+
+              {categories.length > 0 ? (
+                <div className="overflow-x-auto">
+                  <table className="w-full text-left border-collapse">
+                    <thead>
+                      <tr className="bg-slate-50 border-b border-slate-200 text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                        <th className="py-3 px-3 sm:px-6 text-center w-12">#</th>
+                        <th className="py-3 px-3 sm:px-6">Category Name</th>
+                        <th className="py-3 px-3 sm:px-6 text-center">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-slate-100 text-xs font-semibold text-slate-700">
+                      {categories.map((cat, index) => (
+                        <tr key={cat.slug} className="hover:bg-slate-50/50 transition-colors">
+                          <td className="py-3 px-3 sm:px-6 text-center font-bold text-slate-400">
+                            {index + 1}
+                          </td>
+                          <td className="py-3 px-3 sm:px-6">
+                            <span className="font-bold text-slate-850 text-sm uppercase">
+                              {cat.name}
+                            </span>
+                          </td>
+                          <td className="py-3 px-3 sm:px-6">
+                            <div className="flex items-center justify-center gap-2">
+                              <button
+                                onClick={() => handleDeleteCategory(cat.slug, cat.name)}
+                                className="p-2 border border-slate-200 hover:border-rose-350 text-slate-500 hover:text-rose-600 hover:bg-rose-50/50 rounded-md transition-colors cursor-pointer"
+                                title="Delete category"
+                              >
+                                <Trash2 className="w-3.5 h-3.5" />
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              ) : (
+                <div className="p-16 text-center space-y-3">
+                  <p className="text-slate-400 text-sm font-semibold">No dynamic categories configured.</p>
+                  <button
+                    onClick={() => {
+                      setFormError('');
+                      setFormSuccess('');
+                      setIsCategoryModalOpen(true);
+                    }}
+                    className="px-4 py-2 bg-blue-650 text-white text-xs font-bold rounded-lg cursor-pointer"
+                  >
+                    Add Your First Category
+                  </button>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* --- VIEW: USERS TAB --- */}
+          {activeTab === 'users' && (
+            <div className="bg-white border border-slate-200 rounded-md sm:rounded-md shadow-sm overflow-hidden animate-in fade-in duration-200 flex flex-col w-full">
+              <div className="p-4 sm:p-6 border-b border-slate-100 flex items-center justify-between flex-wrap gap-3">
+                <div>
+                  <h3 className="text-sm font-black text-slate-800 uppercase tracking-wider">Registered Users</h3>
+                  <p className="text-xs text-slate-400 mt-1">View list of users signed up in the database.</p>
+                </div>
+                {loadingUsers && <Loader2 className="w-4 h-4 animate-spin text-blue-600" />}
+              </div>
+
+              {users.length > 0 ? (
+                <div className="overflow-x-auto">
+                  <table className="w-full text-left border-collapse">
+                    <thead>
+                      <tr className="bg-slate-50 border-b border-slate-200 text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                        <th className="py-3 px-3 sm:px-6 text-center w-12">#</th>
+                        <th className="py-3 px-3 sm:px-6">User Details</th>
+                        <th className="py-3 px-3 sm:px-6">Email Address</th>
+                        <th className="py-3 px-3 sm:px-6">Role</th>
+                        <th className="py-3 px-3 sm:px-6">Joined Date</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-slate-100 text-xs font-semibold text-slate-700">
+                      {users.map((usr, index) => (
+                        <tr key={usr._id || usr.email} className="hover:bg-slate-50/50 transition-colors">
+                          <td className="py-3 px-3 sm:px-6 text-center font-bold text-slate-400">
+                            {index + 1}
+                          </td>
+                          <td className="py-3 px-3 sm:px-6">
+                            <div className="flex items-center gap-3">
+                              <div className="w-8 h-8 rounded-full bg-linear-to-r from-blue-600 to-indigo-650 text-white flex items-center justify-center font-black text-[10px] uppercase shrink-0 select-none shadow-sm shadow-blue-500/10 border border-slate-100">
+                                {usr.name ? usr.name.trim().charAt(0).toUpperCase() : 'U'}
+                              </div>
+                              <span className="font-bold text-slate-850 text-xs uppercase tracking-wide">
+                                {usr.name}
+                              </span>
+                            </div>
+                          </td>
+                          <td className="py-3 px-3 sm:px-6 text-slate-600 font-medium">{usr.email}</td>
+                          <td className="py-3 px-3 sm:px-6">
+                            <span className={`px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider ${usr.role === 'admin'
+                              ? 'bg-blue-50 border border-blue-100 text-blue-600'
+                              : 'bg-slate-100 border border-slate-250 text-slate-655'
+                              }`}>
+                              {usr.role || 'Customer'}
+                            </span>
+                          </td>
+                          <td className="py-3 px-3 sm:px-6 text-slate-500 font-mono">
+                            {usr.createdAt ? new Date(usr.createdAt).toLocaleDateString(undefined, {
+                              year: 'numeric',
+                              month: 'short',
+                              day: 'numeric'
+                            }) : '—'}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              ) : (
+                <div className="p-16 text-center space-y-3">
+                  <p className="text-slate-400 text-sm font-semibold">No registered users found in the database.</p>
                 </div>
               )}
             </div>
@@ -925,22 +1363,53 @@ export const AdminPage: React.FC<AdminPageProps> = ({
                   <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2">
                     Category *
                   </label>
-                  <input
-                    type="text"
-                    required
-                    list="category-suggestions"
-                    value={prodCategory}
-                    onChange={(e) => setProdCategory(e.target.value)}
-                    placeholder="Select or type category..."
-                    className="w-full bg-slate-50 border border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10 px-3 py-2.5 rounded-md text-xs font-bold text-slate-700 outline-none transition-all"
-                  />
-                  <datalist id="category-suggestions">
-                    {categories.map((cat) => (
-                      <option key={cat.slug} value={cat.slug}>
-                        {cat.name}
+                  {!isCustomCategory ? (
+                    <select
+                      required
+                      value={prodCategory}
+                      onChange={(e) => {
+                        if (e.target.value === '__custom__') {
+                          setIsCustomCategory(true);
+                          setProdCategory('');
+                        } else {
+                          setProdCategory(e.target.value);
+                        }
+                      }}
+                      className="w-full bg-slate-50 border border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10 px-3 py-2.5 rounded-md text-xs font-bold text-slate-700 outline-none transition-all cursor-pointer"
+                    >
+                      <option value="" disabled className="text-slate-400">Select category...</option>
+                      {categories.map((cat) => (
+                        <option key={cat.slug} value={cat.name} className="text-slate-700">
+                          {cat.name}
+                        </option>
+                      ))}
+                      <option value="__custom__" className="text-blue-600 font-bold">
+                        + Type Custom Category...
                       </option>
-                    ))}
-                  </datalist>
+                    </select>
+                  ) : (
+                    <div className="flex gap-2">
+                      <input
+                        type="text"
+                        required
+                        value={prodCategory}
+                        onChange={(e) => setProdCategory(e.target.value)}
+                        placeholder="Type custom category name..."
+                        className="flex-1 bg-slate-50 border border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10 px-3 py-2.5 rounded-md text-xs font-bold text-slate-700 outline-none transition-all"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setIsCustomCategory(false);
+                          setProdCategory('');
+                        }}
+                        className="px-3 border border-slate-200 hover:bg-slate-50 rounded-md text-xs font-bold text-slate-550 cursor-pointer"
+                        title="Select from list"
+                      >
+                        Select Existing
+                      </button>
+                    </div>
+                  )}
                 </div>
 
                 {/* Rating */}
@@ -959,6 +1428,65 @@ export const AdminPage: React.FC<AdminPageProps> = ({
                     placeholder="5.0"
                     className="w-full bg-slate-50 border border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10 px-3 py-2.5 rounded-md text-xs font-bold text-slate-700 outline-none transition-all"
                   />
+                </div>
+
+                {/* Price */}
+                <div className="space-y-2">
+                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block">
+                    Price (INR) *
+                  </label>
+                  <input
+                    type="number"
+                    required
+                    min="0"
+                    value={prodPrice}
+                    onChange={(e) => setProdPrice(e.target.value)}
+                    placeholder="e.g. 299"
+                    className="w-full bg-slate-50 border border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10 px-3 py-2.5 rounded-md text-xs font-bold text-slate-700 outline-none transition-all"
+                  />
+                </div>
+              </div>
+
+              {/* Promo Flags / Badges */}
+              <div className="bg-slate-50/50 p-4 border border-slate-200 rounded-md space-y-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <label className="text-xs font-bold text-slate-800 block">
+                      Super Hot Deal Toggle
+                    </label>
+                    <span className="text-[10px] text-slate-400 block mt-0.5">
+                      Show in the "Super Hot Deals Of The Day" section. (Max 2 allowed)
+                    </span>
+                  </div>
+                  <label className="relative inline-flex items-center cursor-pointer select-none">
+                    <input
+                      type="checkbox"
+                      checked={prodIsHot}
+                      onChange={(e) => setProdIsHot(e.target.checked)}
+                      className="sr-only peer"
+                    />
+                    <div className="w-9 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-red-600"></div>
+                  </label>
+                </div>
+
+                <div className="border-t border-slate-200/60 pt-4 flex items-center justify-between">
+                  <div>
+                    <label className="text-xs font-bold text-slate-800 block">
+                      New Product Badge Toggle
+                    </label>
+                    <span className="text-[10px] text-slate-400 block mt-0.5">
+                      Display a "NEW" promo badge/upcoming badge on the product card.
+                    </span>
+                  </div>
+                  <label className="relative inline-flex items-center cursor-pointer select-none">
+                    <input
+                      type="checkbox"
+                      checked={prodIsRecent}
+                      onChange={(e) => setProdIsRecent(e.target.checked)}
+                      className="sr-only peer"
+                    />
+                    <div className="w-9 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-blue-600"></div>
+                  </label>
                 </div>
               </div>
 
@@ -1055,7 +1583,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({
       {/* --- MODAL: CATEGORY FORM --- */}
       {isCategoryModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/40 backdrop-blur-xs" data-lenis-prevent>
-          <div className="bg-white border border-slate-200 rounded-3xl shadow-2xl overflow-hidden w-full max-w-md animate-in fade-in zoom-in-95 duration-200 text-slate-800">
+          <div className="bg-white border border-slate-200 rounded-md shadow-2xl overflow-hidden w-full max-w-md animate-in fade-in zoom-in-95 duration-200 text-slate-800">
             <div className="p-6 border-b border-slate-100 flex items-center justify-between">
               <div>
                 <h3 className="text-sm font-black text-slate-805 uppercase tracking-wider">Add Dynamic Category</h3>
@@ -1063,7 +1591,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({
               </div>
               <button
                 onClick={() => setIsCategoryModalOpen(false)}
-                className="w-8 h-8 rounded-lg bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-550 flex items-center justify-center font-bold cursor-pointer"
+                className="w-8 h-8 rounded-md bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-550 flex items-center justify-center font-bold cursor-pointer"
               >
                 ×
               </button>
@@ -1074,12 +1602,6 @@ export const AdminPage: React.FC<AdminPageProps> = ({
                 <div className="p-3 bg-rose-50 border border-rose-100 text-rose-700 text-xs rounded-md flex items-center gap-1.5">
                   <ShieldAlert className="w-3.5 h-3.5 text-rose-550" />
                   <span>{formError}</span>
-                </div>
-              )}
-              {formSuccess && (
-                <div className="p-3 bg-emerald-50 border border-emerald-100 text-emerald-700 text-xs rounded-md flex items-center gap-1.5">
-                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" />
-                  <span>{formSuccess}</span>
                 </div>
               )}
 
@@ -1097,62 +1619,18 @@ export const AdminPage: React.FC<AdminPageProps> = ({
                 />
               </div>
 
-              <div className="space-y-2">
-                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block">
-                  Slug (Auto-generated) *
-                </label>
-                <input
-                  type="text"
-                  required
-                  value={catSlug}
-                  onChange={(e) => setCatSlug(e.target.value.toLowerCase())}
-                  placeholder="microcontrollers"
-                  className="w-full bg-slate-50 border border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10 px-3 py-2.5 rounded-md text-xs font-mono font-bold text-slate-700 outline-none transition-all"
-                />
-              </div>
-
-              <div className="space-y-2">
-                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block">
-                  Icon Representer
-                </label>
-                <select
-                  value={catIcon}
-                  onChange={(e) => setCatIcon(e.target.value)}
-                  className="w-full bg-slate-50 border border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10 px-3 py-2.5 rounded-md text-xs font-bold text-slate-700 outline-none transition-all cursor-pointer"
-                >
-                  <option value="Cpu" className="text-slate-700">Cpu (Connectors, Chips)</option>
-                  <option value="Cable" className="text-slate-700">Cable (Wires, Power cords)</option>
-                  <option value="Power" className="text-slate-700">Power (Switches, Relays)</option>
-                  <option value="Settings" className="text-slate-700">Settings (Hardware, Spacers)</option>
-                  <option value="Sun" className="text-slate-700">Sun (LEDs, Lights, Screens)</option>
-                </select>
-              </div>
-
-              <div className="space-y-2">
-                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block">
-                  Short Description
-                </label>
-                <textarea
-                  rows={2}
-                  value={catDescription}
-                  onChange={(e) => setCatDescription(e.target.value)}
-                  placeholder="Brief summary of electronic products in this category..."
-                  className="w-full bg-slate-50 border border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10 px-3 py-2 rounded-md text-xs font-bold text-slate-700 outline-none transition-all"
-                />
-              </div>
-
               <div className="pt-4 border-t border-slate-100 flex justify-end gap-3">
                 <button
                   type="button"
                   onClick={() => setIsCategoryModalOpen(false)}
-                  className="px-4 py-2 border border-slate-200 hover:bg-slate-50 rounded-md text-xs font-bold text-slate-500 transition-all cursor-pointer"
+                  className="px-4 py-2 border border-slate-200 hover:bg-slate-55 rounded-md text-xs font-bold text-slate-505 transition-all cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="flex items-center gap-1.5 px-5 py-2 bg-blue-650 hover:bg-blue-600 text-white rounded-md text-xs font-bold transition-all shadow-md shadow-blue-500/10 cursor-pointer disabled:opacity-50"
+                  className="flex items-center gap-1.5 px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md text-xs font-bold transition-all shadow-md shadow-blue-500/10 cursor-pointer disabled:opacity-50"
                 >
                   {isSubmitting ? (
                     <Loader2 className="w-3.5 h-3.5 animate-spin" />
@@ -1208,8 +1686,8 @@ export const AdminPage: React.FC<AdminPageProps> = ({
       {/* --- CUSTOM DIALOG: ALERT MODAL --- */}
       {alertModal.isOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-955/40 backdrop-blur-xs animate-in fade-in duration-250">
-          <div className="relative w-full max-w-sm bg-white border border-slate-200 rounded-3xl p-6 shadow-2xl animate-in zoom-in-95 duration-200 space-y-4 text-center text-slate-800">
-            <div className="mx-auto w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 mb-2 bg-slate-50 border border-slate-200">
+          <div className="relative w-full max-w-sm bg-white border border-slate-200 rounded-md p-6 shadow-2xl animate-in zoom-in-95 duration-200 space-y-4 text-center text-slate-800">
+            <div className="mx-auto w-12 h-12 rounded-md flex items-center justify-center shrink-0 mb-2 bg-slate-50 border border-slate-200">
               {alertModal.type === 'success' && <CheckCircle2 className="w-6 h-6 text-emerald-600" />}
               {alertModal.type === 'error' && <ShieldAlert className="w-6 h-6 text-rose-600" />}
               {alertModal.type === 'warning' && <AlertTriangle className="w-6 h-6 text-amber-600" />}
@@ -1232,6 +1710,61 @@ export const AdminPage: React.FC<AdminPageProps> = ({
           </div>
         </div>
       )}
+
+      {/* Toast Notification */}
+      {toast.isOpen && (() => {
+        let containerBg = 'bg-slate-900 border-slate-800 text-white shadow-slate-950/20';
+        let iconBg = 'bg-slate-800 border-slate-700';
+        let titleColor = 'text-slate-200';
+        let descColor = 'text-slate-400';
+        let closeColor = 'text-slate-400 hover:text-white';
+        let iconMarkup = null;
+
+        if (toast.type === 'success') {
+          containerBg = 'bg-emerald-600 border-emerald-500 text-white shadow-emerald-950/20';
+          iconBg = 'bg-emerald-700 border-emerald-600';
+          titleColor = 'text-white';
+          descColor = 'text-emerald-50';
+          closeColor = 'text-emerald-200 hover:text-white';
+          iconMarkup = <CheckCircle2 className="w-5.5 h-5.5 text-white" />;
+        } else if (toast.type === 'error') {
+          containerBg = 'bg-rose-600 border-rose-500 text-white shadow-rose-950/20';
+          iconBg = 'bg-rose-700 border-rose-600';
+          titleColor = 'text-white';
+          descColor = 'text-rose-50';
+          closeColor = 'text-rose-200 hover:text-white';
+          iconMarkup = <ShieldAlert className="w-5.5 h-5.5 text-white" />;
+        } else if (toast.type === 'warning') {
+          containerBg = 'bg-amber-500 border-amber-400 text-white shadow-amber-950/20';
+          iconBg = 'bg-amber-600 border-amber-500';
+          titleColor = 'text-white';
+          descColor = 'text-amber-50';
+          closeColor = 'text-amber-100 hover:text-white';
+          iconMarkup = <AlertTriangle className="w-5.5 h-5.5 text-white" />;
+        }
+
+        return (
+          <div className={`fixed bottom-6 right-6 z-55 max-w-sm rounded-md p-4 shadow-2xl border flex items-start gap-3.5 animate-in slide-in-from-bottom-5 fade-in duration-300 ${containerBg}`}>
+            <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 border ${iconBg}`}>
+              {iconMarkup}
+            </div>
+            <div className="flex-1 min-w-0 pr-4">
+              <h4 className={`text-xs font-black uppercase tracking-wider ${titleColor}`}>
+                {toast.title}
+              </h4>
+              <p className={`text-[11px] font-semibold mt-1 leading-relaxed ${descColor}`}>
+                {toast.message}
+              </p>
+            </div>
+            <button
+              onClick={() => setToast(prev => ({ ...prev, isOpen: false }))}
+              className={`transition-colors text-sm font-bold cursor-pointer self-start ${closeColor}`}
+            >
+              ×
+            </button>
+          </div>
+        );
+      })()}
     </div>
   );
 };

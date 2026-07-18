@@ -90,7 +90,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             Hot
           </span>
         )}
-        {product.isNew && (
+        {product.isRecent && (
           <span className={`bg-linear-to-r ${badgeGradient} text-white text-[8px] font-black uppercase tracking-widest px-2 py-0.5 rounded-md shadow-sm`}>
             New
           </span>

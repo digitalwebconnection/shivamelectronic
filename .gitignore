@@ -44,3 +44,5 @@ pnpm-debug.log*
 
 # Cloudinary / local uploads
 uploads/
+
+AI_INSTRUCTION/

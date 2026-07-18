@@ -20,30 +20,24 @@ export const PromoParallaxBanner: React.FC<PromoParallaxBannerProps> = ({ onNavi
       {/* Content Container */}
       <div className="relative z-10 max-w-xl mx-4 text-center">
         {/* Floating Glassmorphic card */}
-        <div className=" ">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-500/20 border border-blue-400/30 text-blue-300 text-[10px] font-black uppercase tracking-widest mb-4">
+        <div className="space-y-4">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-500/20 border border-blue-400/30 text-blue-300 text-[10px] font-black uppercase tracking-widest">
             <Sparkles className="w-3 h-3 text-blue-400 animate-pulse" />
-            <span>Limited Time Deal</span>
+            <span>Limited Time Offer</span>
           </div>
 
           <h3 className="text-2xl sm:text-3xl font-black text-white font-serif leading-tight tracking-tight uppercase">
-            Mid-Season Mega Sale
+            Exclusive Workshop Savings
           </h3>
           
-          <p className="text-xs text-slate-200 mt-2 max-w-md mx-auto leading-relaxed">
-            Equip your workbench with our premium industrial components. Get up to <span className="text-blue-300 font-bold">40% Off</span> on selected Connectors, Power Cables & Switches.
+          <p className="text-xs text-slate-200 max-w-md mx-auto leading-relaxed">
+            Equip your workbench with our premium industrial-grade electronic components. Get up to <span className="text-blue-300 font-bold">40% Off</span> on certified Connectors, Power Cables, and Switches while stocks last.
           </p>
 
-          {/* Coupon Code badge */}
-          <div className="inline-flex items-center gap-2 mt-4 px-4 py-1.5 bg-slate-950/30 border border-white/5 rounded-xl">
-            <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Use Code:</span>
-            <span className="text-[11px] text-blue-300 font-black tracking-widest">SHIVAM10</span>
-          </div>
-
-          <div className="mt-6">
+          <div className="pt-4">
             <button
               onClick={onNavigateToProducts}
-              className="inline-flex items-center gap-2 px-6 py-3 bg-linear-to-r from-blue-600 to-cyan-500 hover:from-blue-500 hover:to-cyan-400 text-white text-xs font-black rounded-xl transition-all duration-300 shadow-lg shadow-blue-500/20 active:scale-95 group"
+              className="inline-flex items-center gap-2 px-6 py-3 bg-linear-to-r from-blue-600 to-cyan-500 hover:from-blue-500 hover:to-cyan-400 text-white text-xs font-black rounded-xl transition-all duration-300 shadow-lg shadow-blue-500/20 active:scale-95 group cursor-pointer"
             >
               <span>Explore Deals Now</span>
               <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
