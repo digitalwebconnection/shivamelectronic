@@ -123,15 +123,33 @@ function App() {
     fetchProductsAndCategories();
   }, []);
 
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<User | null>(() => {
+    const saved = localStorage.getItem('currentUser');
+    return saved ? JSON.parse(saved) : null;
+  });
 
   const handleLogout = () => {
     setUser(null);
+    localStorage.removeItem('currentUser');
     setCurrentPage('home');
   };
-  const [cartItems, setCartItems] = useState<CartItem[]>([]);
-  const [wishlist, setWishlist] = useState<Product[]>([]);
+  const [cartItems, setCartItems] = useState<CartItem[]>(() => {
+    const saved = localStorage.getItem('cartItems');
+    return saved ? JSON.parse(saved) : [];
+  });
+  const [wishlist, setWishlist] = useState<Product[]>(() => {
+    const saved = localStorage.getItem('wishlist');
+    return saved ? JSON.parse(saved) : [];
+  });
   const [orders, setOrders] = useState<Order[]>([]);
+
+  useEffect(() => {
+    localStorage.setItem('cartItems', JSON.stringify(cartItems));
+  }, [cartItems]);
+
+  useEffect(() => {
+    localStorage.setItem('wishlist', JSON.stringify(wishlist));
+  }, [wishlist]);
 
   const handlePlaceOrder = (newOrder: Order) => {
     setOrders(prev => [newOrder, ...prev]);
@@ -321,6 +339,7 @@ function App() {
         onClose={() => setIsAuthOpen(false)}
         onLoginSuccess={(user) => {
           setUser(user);
+          localStorage.setItem('currentUser', JSON.stringify(user));
           setIsAuthOpen(false);
         }}
       />
