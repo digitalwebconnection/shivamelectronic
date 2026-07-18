@@ -1,16 +1,16 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import connectDB from './config/db.js';
-import authRoutes from './routes/auth.js';
-import productRoutes from './routes/products.js';
-import categoryRoutes from './routes/categories.js';
-import Category from './models/Category.js';
-import Product from './models/Product.js';
-import { defaultCategories } from './config/seedData.js';
+import connectDB from './src/config/db.js';
+import authRoutes from './src/routes/auth.js';
+import productRoutes from './src/routes/products.js';
+import categoryRoutes from './src/routes/categories.js';
+import Category from './src/models/Category.js';
+import Product from './src/models/Product.js';
+import { defaultCategories } from './src/config/seedData.js';
 
 // Load environment variables
-dotenv.config(); // Trigger restart
+dotenv.config();
 
 const app = express();
 
