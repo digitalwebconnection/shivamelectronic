@@ -40,7 +40,7 @@ export const sendOtpEmail = async (toEmail, otp) => {
         <p style="color: rgba(255,255,255,0.8); margin: 6px 0 0; font-size: 13px;">Password Reset OTP</p>
       </div>
       <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 28px; text-align: center;">
-        <p style="color: #475569; font-size: 14px; margin: 0 0 20px;">Use the OTP below to reset your password. It expires in <strong>10 minutes</strong>.</p>
+        <p style="color: #475569; font-size: 14px; margin: 0 0 20px;">Use the OTP below to reset your password. It expires in <strong>60 seconds</strong>.</p>
         <div style="background: #f1f5f9; border: 2px dashed #cbd5e1; border-radius: 10px; padding: 18px 32px; display: inline-block; margin: 0 auto 20px;">
           <span style="font-size: 36px; font-weight: 900; letter-spacing: 10px; color: #1e293b; font-family: monospace;">${otp}</span>
         </div>

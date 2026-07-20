@@ -1365,7 +1365,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({
                                     const pName = item.productName || item.product?.name || 'Electronic Product';
                                     const pBrand = item.brand || item.product?.brand || 'Generic';
                                     return (
-                                      <div key={idx} className="flex items-center justify-between gap-2 bg-slate-50 p-1.5 rounded border border-slate-150">
+                                      <div key={idx} className="flex items-center justify-between gap-2 bg-slate-50 p-1.5 rounded">
                                         <div className="min-w-0 flex-1">
                                           <span className="font-semibold text-slate-800 text-[11px] block truncate">
                                             {pName}
@@ -1405,7 +1405,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({
 
                               {/* 3 Status Toggle Buttons: Cancel order, Pending, Confirm */}
                               <td className="py-3.5 px-4 align-top text-center">
-                                <div className="inline-flex items-center bg-slate-100 p-1 rounded-lg border border-slate-200 gap-1">
+                                <div className="inline-flex items-center bg-slate-100 p-1 rounded-md border border-slate-200 gap-1">
                                   {/* Cancel Order Toggle Button */}
                                   <button
                                     type="button"

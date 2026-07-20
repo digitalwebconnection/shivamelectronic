@@ -29,8 +29,19 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLoginSu
 
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [timer, setTimer] = useState(60);
 
-
+  useEffect(() => {
+    let interval: any = null;
+    if (mode === 'otp' && timer > 0) {
+      interval = setInterval(() => {
+        setTimer((prev) => prev - 1);
+      }, 1000);
+    } else if (timer === 0) {
+      clearInterval(interval);
+    }
+    return () => clearInterval(interval);
+  }, [mode, timer]);
 
   useEffect(() => {
     if (isOpen) {
@@ -43,13 +54,36 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLoginSu
     setEmail(''); setName(''); setPassword('');
     setOtp(['', '', '', '', '', '']);
     setNewPassword(''); setConfirmPassword('');
-    setError(''); setLoading(false);
+    setError(''); setLoading(false); setTimer(60);
     setShowPassword(false); setShowNew(false); setShowConfirm(false);
   };
 
   const switchMode = (m: Mode) => {
     setMode(m);
     setError('');
+  };
+
+  const handleResendOtp = async () => {
+    setError('');
+    setLoading(true);
+    setOtp(['', '', '', '', '', '']);
+    try {
+      const res = await fetch(`${API_URL}/api/auth/forgot-password`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+      });
+      const data = await res.json();
+      if (res.ok && data.success) {
+        setTimer(60);
+      } else {
+        setError(data.message || 'Failed to resend OTP.');
+      }
+    } catch {
+      setError('Connection to server failed.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   if (!isOpen) return null;
@@ -115,7 +149,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLoginSu
           body: JSON.stringify({ email }),
         });
         const data = await res.json();
-        if (res.ok && data.success) { switchMode('otp'); }
+        if (res.ok && data.success) { setTimer(60); switchMode('otp'); }
         else setError(data.message || 'Failed to send OTP.');
 
       /* STEP 2 – verify OTP */
@@ -308,10 +342,16 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLoginSu
                 </div>
               )}
 
-              {/* ── OTP INPUT ── */}
+              {/* ── OTP INPUT & 60s TIMER ── */}
               {mode === 'otp' && (
-                <div>
-                  <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3 text-center">6-Digit OTP</label>
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">6-Digit OTP</label>
+                    <span className={`text-[11px] font-bold ${timer > 0 ? 'text-blue-600 font-mono' : 'text-rose-500 font-semibold'}`}>
+                      {timer > 0 ? `Expires in 00:${timer < 10 ? '0' : ''}${timer}` : 'OTP Expired'}
+                    </span>
+                  </div>
+
                   <div className="flex gap-2 justify-center" onPaste={handleOtpPaste}>
                     {otp.map((digit, i) => (
                       <input
@@ -327,11 +367,15 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLoginSu
                       />
                     ))}
                   </div>
-                  <div className="text-center mt-3">
-                    <button type="button"
-                      onClick={() => { setOtp(['','','','','','']); switchMode('forgot'); }}
-                      className="text-xs text-slate-500 hover:text-blue-600 font-semibold cursor-pointer">
-                      Didn't receive it? Resend OTP
+
+                  <div className="text-center pt-1">
+                    <button
+                      type="button"
+                      onClick={handleResendOtp}
+                      disabled={timer > 0 || loading}
+                      className="text-xs text-blue-600 hover:text-blue-700 font-bold cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                    >
+                      {timer > 0 ? `Resend OTP in ${timer}s` : 'Resend OTP'}
                     </button>
                   </div>
                 </div>

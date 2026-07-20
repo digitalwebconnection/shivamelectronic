@@ -156,20 +156,28 @@ router.post('/forgot-password', async (req, res) => {
       return res.json({ success: true, message: 'If this email exists, an OTP has been sent.' });
     }
 
-    // Generate 6-digit OTP
+    // Generate 6-digit OTP (valid for 60 seconds)
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
-    const expiry = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
+    const expiry = new Date(Date.now() + 60 * 1000); // 60 seconds (1 minute)
 
     user.otpCode = otp;
     user.otpExpiry = expiry;
     await user.save();
 
-    await sendOtpEmail(user.email, otp);
+    try {
+      await sendOtpEmail(user.email, otp);
+      console.log(`[OTP Email Success] Sent to ${user.email}`);
+    } catch (emailErr) {
+      console.error('[OTP Email Warning] SMTP Email sending failed:', emailErr.message || emailErr);
+      console.log(`========================================`);
+      console.log(`[SERVER FALLBACK OTP FOR ${user.email}]: ${otp}`);
+      console.log(`========================================`);
+    }
 
-    res.json({ success: true, message: 'OTP sent to your email address.' });
+    res.json({ success: true, message: 'OTP sent to your email address (valid for 60 seconds).' });
   } catch (error) {
-    console.error('Forgot password / sendEmail error:', error.message || error);
-    res.status(500).json({ success: false, message: 'Failed to send OTP. Check server email config.' });
+    console.error('Forgot password error:', error.message || error);
+    res.status(500).json({ success: false, message: 'Failed to generate OTP. Server error.' });
   }
 });
 
