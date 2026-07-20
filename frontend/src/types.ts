@@ -3,7 +3,7 @@ export interface Product {
   name: string;
   category: string;
   brand: string;
-  price: number;
+  price?: number;
   rating: number;
   image: string;
   description: string;
@@ -31,15 +31,32 @@ export interface User {
 }
 
 export interface OrderItem {
-  product: Product;
+  product?: Product;
+  productId?: string;
+  productName?: string;
+  brand?: string;
+  category?: string;
+  price?: number;
   quantity: number;
+  image?: string;
 }
 
 export interface Order {
   id: string;
+  _id?: string;
+  orderId?: string;
+  customerName?: string;
+  customerEmail?: string;
+  customerPhone?: string;
+  customerAddress?: string;
+  customerNote?: string;
   date: string;
-  status: 'Processing' | 'In Transit' | 'Delivered' | 'Cancelled';
+  createdAt?: string;
+  updatedAt?: string;
+  status: 'Pending' | 'Confirmed' | 'Cancelled' | 'Processing' | 'In Transit' | 'Delivered';
   total: number;
+  totalAmount?: number;
+  totalQuantity?: number;
   paymentMethod: string;
   items: OrderItem[];
 }

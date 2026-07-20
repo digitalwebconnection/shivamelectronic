@@ -5,6 +5,7 @@ import connectDB from './src/config/db.js';
 import authRoutes from './src/routes/auth.js';
 import productRoutes from './src/routes/products.js';
 import categoryRoutes from './src/routes/categories.js';
+import orderRoutes from './src/routes/orders.js';
 import Category from './src/models/Category.js';
 import Product from './src/models/Product.js';
 import { defaultCategories } from './src/config/seedData.js';
@@ -98,6 +99,7 @@ connectDB().then(() => {
 app.use('/api/auth', authRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/categories', categoryRoutes);
+app.use('/api/orders', orderRoutes);
 
 // Root route
 app.get('/', (req, res) => {
@@ -107,9 +109,9 @@ app.get('/', (req, res) => {
 // Error handling middleware
 app.use((err, req, res, next) => {
   console.error(err.stack);
-  res.status(500).json({ 
-    success: false, 
-    message: err.message || 'Something went wrong on the server!' 
+  res.status(500).json({
+    success: false,
+    message: err.message || 'Something went wrong on the server!'
   });
 });
 

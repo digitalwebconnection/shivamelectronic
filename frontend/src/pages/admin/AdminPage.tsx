@@ -3,9 +3,9 @@ import {
   Lock, KeyRound, ShieldAlert, Cpu,
   Plus, Pencil, Trash2, LogOut, CheckCircle2, Loader2, ChevronUp, ChevronDown,
   Image as ImageIcon, Eye, EyeOff, AlertTriangle,
-  Layers, Menu, Package, Tag, LayoutDashboard, Search, Users
+  Layers, Menu, Package, Tag, LayoutDashboard, Search, Users, ShoppingBag, Calendar, Clock, Check, XCircle, RefreshCw
 } from 'lucide-react';
-import type { Product } from '../../types';
+import type { Product, Order } from '../../types';
 import { API_URL } from '../../config';
 
 interface AdminPageProps {
@@ -36,8 +36,8 @@ export const AdminPage: React.FC<AdminPageProps> = ({
   const [authError, setAuthError] = useState('');
   const [isLoggingIn, setIsLoggingIn] = useState(false);
 
-  // Active view: 'overview' | 'products' | 'categories' | 'users'
-  const [activeTab, setActiveTab] = useState<'overview' | 'products' | 'categories' | 'users'>('overview');
+  // Active view: 'overview' | 'products' | 'categories' | 'users' | 'orders'
+  const [activeTab, setActiveTab] = useState<'overview' | 'products' | 'categories' | 'users' | 'orders'>('overview');
 
   // Sidebar collapse state
   const [isCollapsed, setIsCollapsed] = useState(false);
@@ -208,10 +208,26 @@ export const AdminPage: React.FC<AdminPageProps> = ({
   );
 
   // Category form fields
+  const [editingCategory, setEditingCategory] = useState<any | null>(null);
   const [catName, setCatName] = useState('');
   const [catSlug, setCatSlug] = useState('');
-  const [catDescription, setCatDescription] = useState('');
   const [catIcon, setCatIcon] = useState('Cpu');
+
+  const openCategoryForm = (cat: any | null = null) => {
+    setEditingCategory(cat);
+    setFormError('');
+    setFormSuccess('');
+    if (cat) {
+      setCatName(cat.name || '');
+      setCatSlug(cat.slug || '');
+      setCatIcon(cat.icon || 'Cpu');
+    } else {
+      setCatName('');
+      setCatSlug('');
+      setCatIcon('Cpu');
+    }
+    setIsCategoryModalOpen(true);
+  };
 
   // Status/Error states for forms
   const [formError, setFormError] = useState('');
@@ -320,8 +336,152 @@ export const AdminPage: React.FC<AdminPageProps> = ({
   useEffect(() => {
     if (token) {
       fetchUsers();
+      fetchOrders();
     }
   }, [token]);
+
+  // Order management state
+  const [orders, setOrders] = useState<Order[]>([]);
+  const [loadingOrders, setLoadingOrders] = useState(false);
+  const [orderSearchQuery, setOrderSearchQuery] = useState('');
+  const [orderStatusFilter, setOrderStatusFilter] = useState<'All' | 'Pending' | 'Confirmed' | 'Cancelled'>('All');
+  const [orderDateStart, setOrderDateStart] = useState('');
+  const [orderDateEnd, setOrderDateEnd] = useState('');
+  const [orderSortBy, setOrderSortBy] = useState<'date-desc' | 'date-asc' | 'qty-desc' | 'qty-asc'>('date-desc');
+  const [orderCurrentPage, setOrderCurrentPage] = useState(1);
+  const ORDERS_PER_PAGE = 10;
+
+  const fetchOrders = async () => {
+    if (!token) return;
+    setLoadingOrders(true);
+    try {
+      const response = await fetch(`${API_URL}/api/orders`, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      if (response.ok) {
+        const data = await response.json();
+        const formatted = data.map((o: any) => ({
+          ...o,
+          id: o._id || o.id || o.orderId,
+          date: o.createdAt ? new Date(o.createdAt).toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' }) : o.date
+        }));
+        setOrders(formatted);
+      }
+    } catch (err) {
+      console.error('Error fetching orders:', err);
+    } finally {
+      setLoadingOrders(false);
+    }
+  };
+
+  const handleUpdateOrderStatus = async (orderId: string, newStatus: 'Pending' | 'Confirmed' | 'Cancelled') => {
+    try {
+      const response = await fetch(`${API_URL}/api/orders/${orderId}/status`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ status: newStatus })
+      });
+
+      if (response.ok) {
+        const updated = await response.json();
+        setOrders(prev => prev.map(o => (o._id === orderId || o.id === orderId || o.orderId === orderId) ? { ...o, status: updated.status } : o));
+        showToast('Status Updated', `Order ${updated.orderId || orderId} status changed to ${newStatus}.`, 'success');
+      } else {
+        const data = await response.json();
+        showCustomAlert('Update Failed', data.message || 'Unable to update order status.', 'error');
+      }
+    } catch (err) {
+      console.error(err);
+      showCustomAlert('Connection Error', 'Error connecting to backend server.', 'error');
+    }
+  };
+
+  // Filter orders by search, status filter, and date range
+  const filteredOrders = useMemo(() => {
+    return orders.filter(order => {
+      // Status filter
+      if (orderStatusFilter !== 'All') {
+        if (order.status?.toLowerCase() !== orderStatusFilter.toLowerCase()) {
+          return false;
+        }
+      }
+
+      // Search query (Product name, Brand, Order ID, Customer Name, Customer Email)
+      if (orderSearchQuery.trim()) {
+        const query = orderSearchQuery.toLowerCase().trim();
+        const matchesOrderId = order.orderId?.toLowerCase().includes(query) || order.id?.toLowerCase().includes(query);
+        const matchesCustomer = order.customerName?.toLowerCase().includes(query) || order.customerEmail?.toLowerCase().includes(query);
+        const matchesItems = order.items?.some(item => {
+          const pName = item.productName || item.product?.name || '';
+          const pBrand = item.brand || item.product?.brand || '';
+          return pName.toLowerCase().includes(query) || pBrand.toLowerCase().includes(query);
+        });
+
+        if (!matchesOrderId && !matchesCustomer && !matchesItems) {
+          return false;
+        }
+      }
+
+      // Date Range filter
+      if (orderDateStart || orderDateEnd) {
+        const orderTime = new Date(order.createdAt || order.date).getTime();
+        if (!isNaN(orderTime)) {
+          if (orderDateStart) {
+            const startTime = new Date(orderDateStart).setHours(0, 0, 0, 0);
+            if (orderTime < startTime) return false;
+          }
+          if (orderDateEnd) {
+            const endTime = new Date(orderDateEnd).setHours(23, 59, 59, 999);
+            if (orderTime > endTime) return false;
+          }
+        }
+      }
+
+      return true;
+    });
+  }, [orders, orderStatusFilter, orderSearchQuery, orderDateStart, orderDateEnd]);
+
+  // Sort orders by date or total quantity
+  const sortedOrders = useMemo(() => {
+    return [...filteredOrders].sort((a, b) => {
+      if (orderSortBy === 'date-desc') {
+        const timeA = new Date(a.createdAt || a.date).getTime();
+        const timeB = new Date(b.createdAt || b.date).getTime();
+        return (isNaN(timeB) ? 0 : timeB) - (isNaN(timeA) ? 0 : timeA);
+      }
+      if (orderSortBy === 'date-asc') {
+        const timeA = new Date(a.createdAt || a.date).getTime();
+        const timeB = new Date(b.createdAt || b.date).getTime();
+        return (isNaN(timeA) ? 0 : timeA) - (isNaN(timeB) ? 0 : timeB);
+      }
+      if (orderSortBy === 'qty-desc') {
+        const qtyA = a.totalQuantity || a.items?.reduce((sum, item) => sum + item.quantity, 0) || 0;
+        const qtyB = b.totalQuantity || b.items?.reduce((sum, item) => sum + item.quantity, 0) || 0;
+        return qtyB - qtyA;
+      }
+      if (orderSortBy === 'qty-asc') {
+        const qtyA = a.totalQuantity || a.items?.reduce((sum, item) => sum + item.quantity, 0) || 0;
+        const qtyB = b.totalQuantity || b.items?.reduce((sum, item) => sum + item.quantity, 0) || 0;
+        return qtyA - qtyB;
+      }
+      return 0;
+    });
+  }, [filteredOrders, orderSortBy]);
+
+  useEffect(() => {
+    setOrderCurrentPage(1);
+  }, [orderStatusFilter, orderSearchQuery, orderDateStart, orderDateEnd, orderSortBy]);
+
+  const totalOrderPages = Math.max(1, Math.ceil(sortedOrders.length / ORDERS_PER_PAGE));
+  const paginatedOrders = sortedOrders.slice(
+    (orderCurrentPage - 1) * ORDERS_PER_PAGE,
+    orderCurrentPage * ORDERS_PER_PAGE
+  );
 
   // Auto-fill category slug on name change
   useEffect(() => {
@@ -410,7 +570,6 @@ export const AdminPage: React.FC<AdminPageProps> = ({
       formData.append('name', prodName);
       formData.append('category', prodCategory);
       formData.append('brand', prodBrand);
-      formData.append('price', '0');
       formData.append('rating', prodRating);
       formData.append('description', prodDescription);
       formData.append('specifications', prodSpecsText);
@@ -557,7 +716,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({
   };
 
 
-  // Submit Category Form
+  // Submit Category Form (Create or Update)
   const handleCategorySubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setFormError('');
@@ -573,8 +732,13 @@ export const AdminPage: React.FC<AdminPageProps> = ({
     setIsSubmitting(true);
 
     try {
-      const response = await fetch(`${API_URL}/api/categories`, {
-        method: 'POST',
+      const url = editingCategory
+        ? `${API_URL}/api/categories/${editingCategory._id || editingCategory.id}`
+        : `${API_URL}/api/categories`;
+      const method = editingCategory ? 'PUT' : 'POST';
+
+      const response = await fetch(url, {
+        method,
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
@@ -582,7 +746,6 @@ export const AdminPage: React.FC<AdminPageProps> = ({
         body: JSON.stringify({
           name: catName,
           slug: generatedSlug,
-          description: catDescription || '',
           icon: catIcon || 'Cpu'
         })
       });
@@ -593,10 +756,14 @@ export const AdminPage: React.FC<AdminPageProps> = ({
         onProductsChange();
         setCatName('');
         setCatSlug('');
-        setCatDescription('');
         setCatIcon('Cpu');
         setIsCategoryModalOpen(false);
-        showToast('Category Added', 'The category has been successfully added to the database.', 'success');
+        setEditingCategory(null);
+        showToast(
+          editingCategory ? 'Category Updated' : 'Category Added',
+          editingCategory ? 'Category details updated successfully.' : 'The category has been successfully added to the database.',
+          'success'
+        );
       } else {
         setFormError(data.message || 'Failed to save category.');
       }
@@ -862,6 +1029,29 @@ export const AdminPage: React.FC<AdminPageProps> = ({
                   </span>
                 )}
               </button>
+
+              <button
+                onClick={() => {
+                  setActiveTab('orders');
+                  setIsMobileMenuOpen(false);
+                }}
+                className={`w-full flex items-center justify-between px-3.5 py-3 rounded-md text-left text-xs font-bold transition-all cursor-pointer ${isCollapsed && !isMobileMenuOpen ? 'justify-center' : 'justify-between'
+                  } ${activeTab === 'orders'
+                    ? 'bg-slate-100 text-slate-800 font-bold'
+                    : 'text-slate-800 hover:text-slate-850 hover:bg-slate-100'
+                  }`}
+              >
+                <div className="flex items-center gap-3">
+                  <ShoppingBag className="w-4 h-4 shrink-0" />
+                  {(!isCollapsed || isMobileMenuOpen) && <span>Orders</span>}
+                </div>
+                {(!isCollapsed || isMobileMenuOpen) && (
+                  <span className={`text-[9px] px-2 py-0.5 rounded-md font-black transition-all ${activeTab === 'orders' ? 'bg-slate-300 text-slate-600' : 'bg-slate-100 text-slate-500'
+                    }`}>
+                    {orders.length}
+                  </span>
+                )}
+              </button>
             </nav>
           </div>
         </div>
@@ -901,39 +1091,416 @@ export const AdminPage: React.FC<AdminPageProps> = ({
           {activeTab === 'overview' && (
             <div className="space-y-8 animate-in fade-in duration-200 w-full">
               {/* Stats Cards */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div className="bg-white border border-slate-200 rounded-2xl sm:rounded-md p-4 sm:p-6 shadow-sm flex items-center justify-between">
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+                <div
+                  onClick={() => setActiveTab('products')}
+                  className="bg-white border border-slate-200 rounded-2xl sm:rounded-md p-4 sm:p-6 shadow-sm flex items-center justify-between cursor-pointer hover:border-blue-400 hover:shadow-md transition-all group"
+                >
                   <div>
-                    <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Inventory Size</span>
+                    <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest group-hover:text-blue-600 transition-colors">Inventory Size</span>
                     <p className="text-3xl font-black text-slate-800 mt-1">{products.length}</p>
-                    <span className="text-[10px] text-slate-455 font-bold block mt-1">Active electronic items</span>
+                    <span className="text-[10px] text-blue-600 font-bold block mt-1">Active electronic items →</span>
                   </div>
-                  <div className="w-12 h-12 rounded-md bg-blue-50 border border-blue-100 flex items-center justify-center text-blue-600">
+                  <div className="w-12 h-12 rounded-md bg-blue-50 border border-blue-100 flex items-center justify-center text-blue-600 group-hover:scale-105 transition-transform">
                     <Package className="w-6 h-6" />
                   </div>
                 </div>
 
-                <div className="bg-white border border-slate-200 rounded-2xl sm:rounded-md p-4 sm:p-6 shadow-sm flex items-center justify-between">
+                <div
+                  onClick={() => setActiveTab('categories')}
+                  className="bg-white border border-slate-200 rounded-2xl sm:rounded-md p-4 sm:p-6 shadow-sm flex items-center justify-between cursor-pointer hover:border-purple-400 hover:shadow-md transition-all group"
+                >
                   <div>
-                    <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Categories Count</span>
+                    <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest group-hover:text-purple-600 transition-colors">Categories Count</span>
                     <p className="text-3xl font-black text-slate-800 mt-1">{uniqueCategoriesCount}</p>
-                    <span className="text-[10px] text-slate-455 font-bold block mt-1">Filters and sections</span>
+                    <span className="text-[10px] text-purple-600 font-bold block mt-1">Filters and sections →</span>
                   </div>
-                  <div className="w-12 h-12 rounded-md bg-purple-50 border border-purple-100 flex items-center justify-center text-purple-600">
+                  <div className="w-12 h-12 rounded-md bg-purple-50 border border-purple-100 flex items-center justify-center text-purple-600 group-hover:scale-105 transition-transform">
                     <Tag className="w-6 h-6" />
                   </div>
                 </div>
 
-                <div className="bg-white border border-slate-200 rounded-2xl sm:rounded-md p-4 sm:p-6 shadow-sm flex items-center justify-between">
+                <div
+                  onClick={() => setActiveTab('users')}
+                  className="bg-white border border-slate-200 rounded-2xl sm:rounded-md p-4 sm:p-6 shadow-sm flex items-center justify-between cursor-pointer hover:border-indigo-400 hover:shadow-md transition-all group"
+                >
                   <div>
-                    <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Registered Customers</span>
+                    <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest group-hover:text-indigo-600 transition-colors">Registered Customers</span>
                     <p className="text-3xl font-black text-slate-800 mt-1">{users.length}</p>
-                    <span className="text-[10px] text-slate-455 font-bold block mt-1">Database users</span>
+                    <span className="text-[10px] text-indigo-600 font-bold block mt-1">Database users →</span>
                   </div>
-                  <div className="w-12 h-12 rounded-md bg-indigo-50 border border-indigo-100 flex items-center justify-center text-indigo-600">
+                  <div className="w-12 h-12 rounded-md bg-indigo-50 border border-indigo-100 flex items-center justify-center text-indigo-600 group-hover:scale-105 transition-transform">
                     <Users className="w-6 h-6" />
                   </div>
                 </div>
+
+                <div
+                  onClick={() => setActiveTab('orders')}
+                  className="bg-white border border-slate-200 rounded-2xl sm:rounded-md p-4 sm:p-6 shadow-sm flex items-center justify-between cursor-pointer hover:border-emerald-400 hover:shadow-md transition-all group"
+                >
+                  <div>
+                    <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest group-hover:text-emerald-600 transition-colors">Total Orders</span>
+                    <p className="text-3xl font-black text-slate-800 mt-1">{orders.length}</p>
+                    <span className="text-[10px] text-emerald-600 font-bold block mt-1">Manage & Update Status →</span>
+                  </div>
+                  <div className="w-12 h-12 rounded-md bg-emerald-50 border border-emerald-100 flex items-center justify-center text-emerald-600 group-hover:scale-105 transition-transform">
+                    <ShoppingBag className="w-6 h-6" />
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* --- VIEW: ORDERS TAB --- */}
+          {activeTab === 'orders' && (
+            <div className="space-y-6 animate-in fade-in duration-200 w-full">
+              {/* Top Header Metrics Cards */}
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div className="bg-white border border-slate-200 rounded-md p-4 shadow-sm">
+                  <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest block">Total Orders</span>
+                  <span className="text-2xl font-black text-slate-800 block mt-1">{orders.length}</span>
+                </div>
+                <div className="bg-amber-50/50 border border-amber-200/80 rounded-md p-4 shadow-sm">
+                  <span className="text-[10px] font-black text-amber-700 uppercase tracking-widest block">Pending Orders</span>
+                  <span className="text-2xl font-black text-amber-800 block mt-1">
+                    {orders.filter(o => o.status === 'Pending').length}
+                  </span>
+                </div>
+                <div className="bg-emerald-50/50 border border-emerald-200/80 rounded-md p-4 shadow-sm">
+                  <span className="text-[10px] font-black text-emerald-700 uppercase tracking-widest block">Confirmed Orders</span>
+                  <span className="text-2xl font-black text-emerald-800 block mt-1">
+                    {orders.filter(o => o.status === 'Confirmed').length}
+                  </span>
+                </div>
+                <div className="bg-rose-50/50 border border-rose-200/80 rounded-md p-4 shadow-sm">
+                  <span className="text-[10px] font-black text-rose-700 uppercase tracking-widest block">Cancelled Orders</span>
+                  <span className="text-2xl font-black text-rose-800 block mt-1">
+                    {orders.filter(o => o.status === 'Cancelled').length}
+                  </span>
+                </div>
+              </div>
+
+              {/* Order Filtering, Search, Date Filter & Sorting Toolbar */}
+              <div className="bg-white border border-slate-200 rounded-md p-4 sm:p-5 shadow-sm space-y-4">
+                <div className="flex flex-col lg:flex-row gap-3 items-stretch lg:items-center justify-between">
+                  
+                  {/* Search Input (Product Name, Brand, Order ID) */}
+                  <div className="relative flex-1 min-w-[240px]">
+                    <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                    <input
+                      type="text"
+                      value={orderSearchQuery}
+                      onChange={(e) => setOrderSearchQuery(e.target.value)}
+                      placeholder="Search by product name, brand, order ID..."
+                      className="w-full bg-slate-50 border border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10 pl-9 pr-8 py-2 rounded-md text-xs font-bold text-slate-800 outline-none transition-all"
+                    />
+                    {orderSearchQuery && (
+                      <button
+                        onClick={() => setOrderSearchQuery('')}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700 text-xs font-bold"
+                      >
+                        ×
+                      </button>
+                    )}
+                  </div>
+
+                  {/* Status Filter Dropdown Menu */}
+                  <div className="flex items-center gap-2">
+                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest shrink-0">
+                      Filter Status:
+                    </label>
+                    <select
+                      value={orderStatusFilter}
+                      onChange={(e) => setOrderStatusFilter(e.target.value as any)}
+                      className="bg-slate-50 border border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10 px-3 py-2 rounded-md text-xs font-bold text-slate-800 outline-none cursor-pointer"
+                    >
+                      <option value="All">All Orders</option>
+                      <option value="Pending">Pending</option>
+                      <option value="Confirmed">Confirmed</option>
+                      <option value="Cancelled">Cancelled</option>
+                    </select>
+                  </div>
+
+                  {/* Sorting Dropdown */}
+                  <div className="flex items-center gap-2">
+                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest shrink-0">
+                      Sort By:
+                    </label>
+                    <select
+                      value={orderSortBy}
+                      onChange={(e) => setOrderSortBy(e.target.value as any)}
+                      className="bg-slate-50 border border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10 px-3 py-2 rounded-md text-xs font-bold text-slate-800 outline-none cursor-pointer"
+                    >
+                      <option value="date-desc">Date (Newest First)</option>
+                      <option value="date-asc">Date (Oldest First)</option>
+                      <option value="qty-desc">Qty (High → Low)</option>
+                      <option value="qty-asc">Qty (Low → High)</option>
+                    </select>
+                  </div>
+                </div>
+
+                {/* Date Filter Range */}
+                <div className="pt-3 border-t border-slate-100 flex flex-wrap items-center justify-between gap-3">
+                  <div className="flex flex-wrap items-center gap-3">
+                    <div className="flex items-center gap-1.5 cursor-pointer" onClick={() => (document.getElementById('orderDateStartInput') as any)?.showPicker?.()}>
+                      <Calendar className="w-3.5 h-3.5 text-slate-400" />
+                      <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">From Date:</span>
+                      <input
+                        id="orderDateStartInput"
+                        type="date"
+                        value={orderDateStart}
+                        onChange={(e) => setOrderDateStart(e.target.value)}
+                        onClick={(e) => e.currentTarget.showPicker?.()}
+                        className="bg-slate-50 border border-slate-200 focus:border-blue-500 px-2.5 py-1.5 rounded-md text-xs font-semibold text-slate-800 outline-none cursor-pointer"
+                      />
+                    </div>
+                    <div className="flex items-center gap-1.5 cursor-pointer" onClick={() => (document.getElementById('orderDateEndInput') as any)?.showPicker?.()}>
+                      <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">To Date:</span>
+                      <input
+                        id="orderDateEndInput"
+                        type="date"
+                        value={orderDateEnd}
+                        onChange={(e) => setOrderDateEnd(e.target.value)}
+                        onClick={(e) => e.currentTarget.showPicker?.()}
+                        className="bg-slate-50 border border-slate-200 focus:border-blue-500 px-2.5 py-1.5 rounded-md text-xs font-semibold text-slate-800 outline-none cursor-pointer"
+                      />
+                    </div>
+                    {(orderDateStart || orderDateEnd || orderSearchQuery || orderStatusFilter !== 'All') && (
+                      <button
+                        onClick={() => {
+                          setOrderSearchQuery('');
+                          setOrderStatusFilter('All');
+                          setOrderDateStart('');
+                          setOrderDateEnd('');
+                          setOrderSortBy('date-desc');
+                        }}
+                        className="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-md text-xs font-bold transition-colors cursor-pointer"
+                      >
+                        Clear Filters
+                      </button>
+                    )}
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={fetchOrders}
+                      disabled={loadingOrders}
+                      className="flex items-center gap-1 px-3 py-1.5 bg-slate-50 border border-slate-200 hover:bg-slate-100 text-slate-700 rounded-md text-xs font-bold transition-colors cursor-pointer"
+                      title="Refresh Orders"
+                    >
+                      <RefreshCw className={`w-3.5 h-3.5 ${loadingOrders ? 'animate-spin' : ''}`} />
+                      <span>Refresh</span>
+                    </button>
+                    <span className="text-xs font-semibold text-slate-400">
+                      Showing {sortedOrders.length} order(s)
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Main Orders Table */}
+              <div className="bg-white border border-slate-200 rounded-md shadow-sm overflow-hidden">
+                {loadingOrders ? (
+                  <div className="p-12 text-center space-y-3">
+                    <Loader2 className="w-8 h-8 text-blue-600 animate-spin mx-auto" />
+                    <p className="text-xs font-bold text-slate-500">Loading orders database...</p>
+                  </div>
+                ) : paginatedOrders.length > 0 ? (
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-left border-collapse">
+                      <thead>
+                        <tr className="bg-slate-50 border-b border-slate-200 text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                          <th className="py-3 px-4 text-center w-12">#</th>
+                          <th className="py-3 px-4">Order ID & Date</th>
+                          <th className="py-3 px-4">User Name & Email</th>
+                          <th className="py-3 px-4">Product Name & Brand</th>
+                          <th className="py-3 px-4 text-center">Qty</th>
+                          <th className="py-3 px-4 text-center">Status</th>
+                          <th className="py-3 px-4 text-center">Toggle Action</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-slate-100 text-xs">
+                        {paginatedOrders.map((order, orderIdx) => {
+                          const indexNum = (orderCurrentPage - 1) * 10 + orderIdx + 1;
+                          const orderItems = order.items || [];
+                          const totalQty = order.totalQuantity || orderItems.reduce((sum, i) => sum + (i.quantity || 1), 0);
+                          const currentStatus = order.status || 'Pending';
+
+                          return (
+                            <tr key={order._id || order.id || order.orderId} className="hover:bg-slate-50/80 transition-colors">
+                              {/* Index */}
+                              <td className="py-3.5 px-4 text-center font-bold text-slate-400 align-top">
+                                {indexNum}
+                              </td>
+
+                              {/* Order ID & Date */}
+                              <td className="py-3.5 px-4 align-top">
+                                <span className="font-mono font-black text-slate-900 block text-xs">
+                                  {order.orderId || order.id}
+                                </span>
+                                <span className="text-[10px] text-slate-400 font-semibold block mt-0.5">
+                                  {order.date || (order.createdAt ? new Date(order.createdAt).toLocaleDateString() : '—')}
+                                </span>
+                              </td>
+
+                              {/* User Name & Email */}
+                              <td className="py-3.5 px-4 align-top">
+                                <span className="font-bold text-slate-800 block text-xs">
+                                  {order.customerName || 'N/A'}
+                                </span>
+                                <span className="text-[11px] text-blue-600 font-medium block">
+                                  {order.customerEmail || 'No Email'}
+                                </span>
+                                {order.customerPhone && (
+                                  <span className="text-[10px] text-slate-400 block font-mono">
+                                    📞 {order.customerPhone}
+                                  </span>
+                                )}
+                              </td>
+
+                              {/* Product Name & Brand */}
+                              <td className="py-3.5 px-4 align-top max-w-xs">
+                                <div className="space-y-1.5">
+                                  {orderItems.map((item, idx) => {
+                                    const pName = item.productName || item.product?.name || 'Electronic Product';
+                                    const pBrand = item.brand || item.product?.brand || 'Generic';
+                                    return (
+                                      <div key={idx} className="flex items-center justify-between gap-2 bg-slate-50 p-1.5 rounded border border-slate-150">
+                                        <div className="min-w-0 flex-1">
+                                          <span className="font-semibold text-slate-800 text-[11px] block truncate">
+                                            {pName}
+                                          </span>
+                                          <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wider block">
+                                            Brand: <span className="text-slate-600">{pBrand}</span>
+                                          </span>
+                                        </div>
+                                      </div>
+                                    );
+                                  })}
+                                </div>
+                              </td>
+
+                              {/* Total Qty */}
+                              <td className="py-3.5 px-4 align-top text-center">
+                                <span className="inline-block bg-slate-100 border border-slate-200 text-slate-800 font-black px-2.5 py-1 rounded-full text-xs">
+                                  {totalQty}
+                                </span>
+                              </td>
+
+                              {/* Current Status Badge */}
+                              <td className="py-3.5 px-4 align-top text-center">
+                                <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider ${
+                                  currentStatus === 'Confirmed'
+                                    ? 'bg-emerald-100 border border-emerald-200 text-emerald-800'
+                                    : currentStatus === 'Cancelled'
+                                    ? 'bg-rose-100 border border-rose-200 text-rose-800'
+                                    : 'bg-amber-100 border border-amber-200 text-amber-800'
+                                }`}>
+                                  {currentStatus === 'Confirmed' && <Check className="w-3 h-3 text-emerald-600" />}
+                                  {currentStatus === 'Cancelled' && <XCircle className="w-3 h-3 text-rose-600" />}
+                                  {currentStatus === 'Pending' && <Clock className="w-3 h-3 text-amber-600" />}
+                                  <span>{currentStatus}</span>
+                                </span>
+                              </td>
+
+                              {/* 3 Status Toggle Buttons: Cancel order, Pending, Confirm */}
+                              <td className="py-3.5 px-4 align-top text-center">
+                                <div className="inline-flex items-center bg-slate-100 p-1 rounded-lg border border-slate-200 gap-1">
+                                  {/* Cancel Order Toggle Button */}
+                                  <button
+                                    type="button"
+                                    onClick={() => handleUpdateOrderStatus(order._id || order.id || order.orderId || '', 'Cancelled')}
+                                    className={`px-2 py-1 rounded text-[10px] font-black uppercase transition-all cursor-pointer ${
+                                      currentStatus === 'Cancelled'
+                                        ? 'bg-rose-600 text-white shadow-xs'
+                                        : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200'
+                                    }`}
+                                  >
+                                    Cancel Order
+                                  </button>
+
+                                  {/* Pending Toggle Button */}
+                                  <button
+                                    type="button"
+                                    onClick={() => handleUpdateOrderStatus(order._id || order.id || order.orderId || '', 'Pending')}
+                                    className={`px-2 py-1 rounded text-[10px] font-black uppercase transition-all cursor-pointer ${
+                                      currentStatus === 'Pending'
+                                        ? 'bg-amber-500 text-white shadow-xs'
+                                        : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200'
+                                    }`}
+                                  >
+                                    Pending
+                                  </button>
+
+                                  {/* Confirm Toggle Button */}
+                                  <button
+                                    type="button"
+                                    onClick={() => handleUpdateOrderStatus(order._id || order.id || order.orderId || '', 'Confirmed')}
+                                    className={`px-2 py-1 rounded text-[10px] font-black uppercase transition-all cursor-pointer ${
+                                      currentStatus === 'Confirmed'
+                                        ? 'bg-emerald-600 text-white shadow-xs'
+                                        : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200'
+                                    }`}
+                                  >
+                                    Confirm
+                                  </button>
+                                </div>
+                              </td>
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                    </table>
+                  </div>
+                ) : (
+                  <div className="p-16 text-center space-y-3">
+                    <ShoppingBag className="w-10 h-10 text-slate-300 mx-auto" />
+                    <p className="text-slate-500 text-sm font-bold">No orders found matching the filter criteria.</p>
+                    <p className="text-xs text-slate-400">Try adjusting search, status filter, or date range.</p>
+                  </div>
+                )}
+
+                {/* Pagination Controls (10 orders per page) */}
+                {totalOrderPages > 1 && (
+                  <div className="p-4 border-t border-slate-100 bg-slate-50 flex items-center justify-between">
+                    <span className="text-xs text-slate-500 font-semibold">
+                      Page <span className="font-bold text-slate-800">{orderCurrentPage}</span> of{' '}
+                      <span className="font-bold text-slate-800">{totalOrderPages}</span>
+                    </span>
+
+                    <div className="flex items-center gap-1.5">
+                      <button
+                        onClick={() => setOrderCurrentPage(prev => Math.max(1, prev - 1))}
+                        disabled={orderCurrentPage === 1}
+                        className="px-3 py-1.5 bg-white border border-slate-200 rounded text-xs font-bold text-slate-600 hover:bg-slate-100 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+                      >
+                        Previous
+                      </button>
+
+                      {Array.from({ length: totalOrderPages }, (_, i) => i + 1).map((pageNum) => (
+                        <button
+                          key={pageNum}
+                          onClick={() => setOrderCurrentPage(pageNum)}
+                          className={`w-7 h-7 rounded text-xs font-bold flex items-center justify-center cursor-pointer transition-colors ${
+                            orderCurrentPage === pageNum
+                              ? 'bg-blue-600 text-white'
+                              : 'bg-white border border-slate-200 text-slate-600 hover:bg-slate-100'
+                          }`}
+                        >
+                          {pageNum}
+                        </button>
+                      ))}
+
+                      <button
+                        onClick={() => setOrderCurrentPage(prev => Math.min(totalOrderPages, prev + 1))}
+                        disabled={orderCurrentPage === totalOrderPages}
+                        className="px-3 py-1.5 bg-white border border-slate-200 rounded text-xs font-bold text-slate-600 hover:bg-slate-100 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+                      >
+                        Next
+                      </button>
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           )}
@@ -1149,11 +1716,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({
                   <p className="text-xs text-slate-400 mt-1">Manage dynamically active categories for filters and navigation.</p>
                 </div>
                 <button
-                  onClick={() => {
-                    setFormError('');
-                    setFormSuccess('');
-                    setIsCategoryModalOpen(true);
-                  }}
+                  onClick={() => openCategoryForm()}
                   className="flex items-center gap-1.5 px-4.5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-md text-xs font-bold transition-all shadow-md shadow-blue-500/10 cursor-pointer active:scale-95 border border-transparent"
                 >
                   <Plus className="w-3.5 h-3.5" />
@@ -1184,6 +1747,13 @@ export const AdminPage: React.FC<AdminPageProps> = ({
                           </td>
                           <td className="py-3 px-3 sm:px-6">
                             <div className="flex items-center justify-center gap-2">
+                              <button
+                                onClick={() => openCategoryForm(cat)}
+                                className="p-2 border border-slate-200 hover:border-blue-350 text-slate-500 hover:text-blue-600 hover:bg-blue-50/50 rounded-md transition-colors cursor-pointer"
+                                title="Edit category"
+                              >
+                                <Pencil className="w-3.5 h-3.5" />
+                              </button>
                               <button
                                 onClick={() => handleDeleteCategory(cat.slug, cat.name)}
                                 className="p-2 border border-slate-200 hover:border-rose-350 text-slate-500 hover:text-rose-600 hover:bg-rose-50/50 rounded-md transition-colors cursor-pointer"
@@ -1544,7 +2114,9 @@ export const AdminPage: React.FC<AdminPageProps> = ({
           <div className="bg-white border border-slate-200 rounded-md shadow-2xl overflow-hidden w-full max-w-md animate-in fade-in zoom-in-95 duration-200 text-slate-800">
             <div className="p-6 border-b border-slate-100 flex items-center justify-between">
               <div>
-                <h3 className="text-sm font-black text-slate-805 uppercase tracking-wider">Add Dynamic Category</h3>
+                <h3 className="text-sm font-black text-slate-805 uppercase tracking-wider">
+                  {editingCategory ? 'Edit Category' : 'Add Dynamic Category'}
+                </h3>
                 <p className="text-xs text-slate-400 mt-1">Filters on navbar and sidebar will refresh automatically.</p>
               </div>
               <button
@@ -1593,7 +2165,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({
                   {isSubmitting ? (
                     <Loader2 className="w-3.5 h-3.5 animate-spin" />
                   ) : (
-                    <span>Add Category</span>
+                    <span>{editingCategory ? 'Update Category' : 'Add Category'}</span>
                   )}
                 </button>
               </div>

@@ -13,18 +13,10 @@ const categorySchema = new mongoose.Schema({
     trim: true,
     lowercase: true,
   },
-  description: {
-    type: String,
-    trim: true,
-  },
   icon: {
     type: String,
     default: 'Cpu',
     trim: true,
-  },
-  featured: {
-    type: [String],
-    default: [],
   }
 }, {
   timestamps: true

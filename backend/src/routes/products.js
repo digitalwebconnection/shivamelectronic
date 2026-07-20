@@ -66,7 +66,7 @@ router.get('/', async (req, res) => {
  */
 router.post('/', protectAdmin, upload.single('image'), async (req, res) => {
   try {
-    const { name, category, brand, price, rating, description, specifications, isRecent, isHot } = req.body;
+    const { name, category, brand, rating, description, specifications, isRecent, isHot } = req.body;
 
     // Check required fields
     if (!name || !category || !brand || !description) {
@@ -92,7 +92,6 @@ router.post('/', protectAdmin, upload.single('image'), async (req, res) => {
       name,
       category: category.toLowerCase(),
       brand,
-      price: price ? parseFloat(price) : 0,
       rating: rating ? parseFloat(rating) : 5.0,
       image: uploadResult.secure_url,
       description,
@@ -116,7 +115,7 @@ router.post('/', protectAdmin, upload.single('image'), async (req, res) => {
  */
 router.put('/:id', protectAdmin, upload.single('image'), async (req, res) => {
   try {
-    const { name, category, brand, price, rating, description, specifications, isRecent, isHot } = req.body;
+    const { name, category, brand, rating, description, specifications, isRecent, isHot } = req.body;
 
     const product = await Product.findById(req.params.id);
 
@@ -136,7 +135,6 @@ router.put('/:id', protectAdmin, upload.single('image'), async (req, res) => {
     if (name) product.name = name;
     if (category) product.category = category.toLowerCase();
     if (brand) product.brand = brand;
-    if (price !== undefined) product.price = price ? parseFloat(price) : 0;
     if (rating) product.rating = parseFloat(rating);
     if (description) product.description = description;
     if (specifications !== undefined) {

@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { X, Plus, Minus, Trash2, ShoppingCart, ShoppingBag, ArrowLeft, MessageSquare, CheckCircle2 } from 'lucide-react';
 import type { CartItem, User as UserType, Order } from '../types';
 
+import { API_URL } from '../config';
+
 interface CartDrawerProps {
   isOpen: boolean;
   onClose: () => void;
@@ -33,7 +35,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
   const [orderSuccessId, setOrderSuccessId] = useState<string | null>(null);
   const [lastMessage, setLastMessage] = useState('');
 
-  const cartSubtotal = cartItems.reduce((sum, item) => sum + (item.product.price * item.quantity), 0);
+  const cartSubtotal = cartItems.reduce((sum, item) => sum + ((item.product.price || 0) * item.quantity), 0);
 
   // Sync user details if logged in
   useEffect(() => {
@@ -52,7 +54,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
     }
   }, [isOpen]);
 
-  const handleWhatsAppCheckout = (e: React.FormEvent) => {
+  const handleWhatsAppCheckout = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!customerName || !customerPhone || !customerAddress) {
       alert('Please fill in all required fields.');
@@ -68,12 +70,60 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
 
     const newOrder: Order = {
       id: newOrderId,
+      orderId: newOrderId,
+      customerName,
+      customerEmail: user?.email || '',
+      customerPhone,
+      customerAddress,
+      customerNote,
       date: new Date().toLocaleDateString('en-US', { month: 'long', day: '2-digit', year: 'numeric' }),
-      status: 'Processing',
+      status: 'Pending',
       total: cartSubtotal,
+      totalAmount: cartSubtotal,
+      totalQuantity: cartItems.reduce((sum, item) => sum + item.quantity, 0),
       paymentMethod: 'Cash on Delivery',
-      items: cartItems.map(item => ({ product: item.product, quantity: item.quantity }))
+      items: cartItems.map(item => ({
+        product: item.product,
+        productName: item.product.name,
+        brand: item.product.brand,
+        category: item.product.category,
+        price: item.product.price,
+        quantity: item.quantity,
+        image: item.product.image
+      }))
     };
+
+    // Persist order to backend DB
+    try {
+      await fetch(`${API_URL}/api/orders`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          orderId: newOrderId,
+          customerName,
+          customerEmail: user?.email || 'guest@shivam.com',
+          customerPhone,
+          customerAddress,
+          customerNote,
+          items: cartItems.map(item => ({
+            product: item.product,
+            productName: item.product.name,
+            brand: item.product.brand,
+            category: item.product.category,
+            price: item.product.price,
+            quantity: item.quantity,
+            image: item.product.image
+          })),
+          totalAmount: cartSubtotal,
+          paymentMethod: 'Cash on Delivery',
+          user: user
+        })
+      });
+    } catch (err) {
+      console.error('Failed to post order to backend server:', err);
+    }
 
     // Store in global order history
     onPlaceOrder(newOrder);
@@ -86,7 +136,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
     cartItems.forEach((item, idx) => {
       itemsText += `${idx + 1}. *${item.product.name}*\n` +
                    `   Brand: ${item.product.brand} | Category: ${item.product.category.toUpperCase()}\n` +
-                   `   Qty: ${item.quantity} | Price: ₹${item.product.price} each\n\n`;
+                   `   Qty: ${item.quantity}\n\n`;
     });
 
     const message = `🛍️ *NEW INQUIRY - Shivam Electronic World*\n` +
@@ -99,8 +149,6 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
       `-----------------------------------------\n` +
       `🛒 *Requested Items:* \n\n${itemsText}` +
       `-----------------------------------------\n` +
-      `🚚 *Shipping:* FREE\n` +
-      `💵 *Est. Cart Subtotal:* ₹${cartSubtotal}\n` +
       `💬 *Final Quote:* Pricing on request / Wholesale Quote\n\n` +
       `Please confirm availability, wholesale discounts, and dispatch details. Thank you!`;
 

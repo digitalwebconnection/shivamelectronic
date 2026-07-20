@@ -25,7 +25,7 @@ router.get('/', async (req, res) => {
  * @access  Private/Admin
  */
 router.post('/', protectAdmin, async (req, res) => {
-  const { name, slug, description, icon, featured } = req.body;
+  const { name, slug, icon } = req.body;
 
   if (!name || !slug) {
     return res.status(400).json({ message: 'Name and slug are required fields' });
@@ -41,9 +41,7 @@ router.post('/', protectAdmin, async (req, res) => {
     const category = new Category({
       name,
       slug: slug.toLowerCase(),
-      description,
       icon: icon || 'Cpu',
-      featured: featured || [],
     });
 
     const createdCategory = await category.save();
@@ -51,6 +49,37 @@ router.post('/', protectAdmin, async (req, res) => {
   } catch (error) {
     console.error('Error creating category:', error.message);
     res.status(500).json({ message: 'Server error creating category' });
+  }
+});
+
+/**
+ * @route   PUT /api/categories/:id
+ * @desc    Update a category (name and icon)
+ * @access  Private/Admin
+ */
+router.put('/:id', protectAdmin, async (req, res) => {
+  const { name, icon } = req.body;
+
+  if (!name) {
+    return res.status(400).json({ message: 'Category name is required' });
+  }
+
+  try {
+    const category = await Category.findById(req.params.id);
+
+    if (!category) {
+      return res.status(404).json({ message: 'Category not found' });
+    }
+
+    category.name = name;
+    category.slug = name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+    if (icon) category.icon = icon;
+
+    const updatedCategory = await category.save();
+    res.json(updatedCategory);
+  } catch (error) {
+    console.error('Error updating category:', error.message);
+    res.status(500).json({ message: 'Server error updating category' });
   }
 });
 
