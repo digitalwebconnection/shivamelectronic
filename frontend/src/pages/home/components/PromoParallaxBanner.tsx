@@ -21,7 +21,7 @@ export const PromoParallaxBanner: React.FC<PromoParallaxBannerProps> = ({ onNavi
       <div className="relative z-10 max-w-xl mx-4 text-center">
         {/* Floating Glassmorphic card */}
         <div className="space-y-4">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-500/20 border border-blue-400/30 text-blue-300 text-[10px] font-black uppercase tracking-widest">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-500/20 border border-blue-400/30 text-blue-500 text-[10px] font-black uppercase tracking-widest">
             <Sparkles className="w-3 h-3 text-blue-400 animate-pulse" />
             <span>Limited Time Offer</span>
           </div>
@@ -37,7 +37,7 @@ export const PromoParallaxBanner: React.FC<PromoParallaxBannerProps> = ({ onNavi
           <div className="pt-4">
             <button
               onClick={onNavigateToProducts}
-              className="inline-flex items-center gap-2 px-6 py-3 bg-linear-to-r from-blue-600 to-cyan-500 hover:from-blue-500 hover:to-cyan-400 text-white text-xs font-black rounded-xl transition-all duration-300 shadow-lg shadow-blue-500/20 active:scale-95 group cursor-pointer"
+              className="inline-flex items-center gap-2 px-6 py-3 bg-linear-to-r from-blue-600 to-cyan-500 hover:from-blue-500 hover:to-cyan-400 text-white text-xs font-black rounded-md transition-all duration-300 shadow-lg shadow-blue-500/20 active:scale-95 group cursor-pointer"
             >
               <span>Explore Deals Now</span>
               <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />

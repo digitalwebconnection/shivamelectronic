@@ -77,7 +77,7 @@ export const AudioSection: React.FC<AudioSectionProps> = ({
         {/* Section Header */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-10 border-b border-slate-100 pb-6">
           <div className="flex items-center gap-3.5">
-            <div className="w-12 h-12 rounded-2xl bg-violet-50 border border-violet-100 flex items-center justify-center text-violet-600 shadow-sm shadow-violet-100">
+            <div className="w-12 h-12 rounded-md bg-violet-50 border border-violet-100 flex items-center justify-center text-violet-600 shadow-sm shadow-violet-100">
               <Power className="w-6 h-6" />
             </div>
             <div>
@@ -87,7 +87,7 @@ export const AudioSection: React.FC<AudioSectionProps> = ({
           </div>
           <button 
             onClick={() => onViewAll('switches')}
-            className="flex items-center gap-1.5 px-4 py-2 border border-slate-200 hover:border-violet-550 hover:text-violet-600 rounded-xl text-xs font-bold text-slate-650 transition-all bg-white cursor-pointer self-start sm:self-auto shadow-sm"
+            className="flex items-center gap-1.5 px-4 py-2 border border-slate-200 hover:border-violet-550 hover:text-violet-600 rounded-md text-xs font-bold text-slate-650 transition-all bg-white cursor-pointer self-start sm:self-auto shadow-sm"
           >
             <span>View All</span>
             <ArrowRight className="w-3.5 h-3.5" />
@@ -97,7 +97,7 @@ export const AudioSection: React.FC<AudioSectionProps> = ({
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
           {/* Static Promo Card (Left) */}
           <div className="lg:col-span-3 shrink-0">
-            <div className="h-full rounded-2xl bg-linear-to-br from-slate-900 via-violet-955 to-slate-900 border border-slate-800 p-6 flex flex-col justify-between text-white relative overflow-hidden min-h-[300px] lg:min-h-auto">
+            <div className="h-full rounded-md bg-linear-to-br from-slate-900 via-violet-955 to-slate-900 border border-slate-800 p-6 flex flex-col justify-between text-white relative overflow-hidden min-h-[300px] lg:min-h-auto">
               <div className="absolute -bottom-8 -right-8 w-32 h-32 bg-violet-500/10 rounded-full blur-2xl pointer-events-none" />
               <div className="space-y-4">
                 <span className="px-2.5 py-1 rounded-full bg-violet-500/20 border border-violet-500/30 text-violet-400 text-[8px] font-black uppercase tracking-wider inline-block">

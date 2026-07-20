@@ -1,12 +1,13 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import {
-  Lock, KeyRound, ShieldAlert, Cpu,
+  Lock, KeyRound, ShieldAlert, Cpu, Info,
   Plus, Pencil, Trash2, LogOut, CheckCircle2, Loader2, ChevronUp, ChevronDown,
   Image as ImageIcon, Eye, EyeOff, AlertTriangle,
   Layers, Menu, Package, Tag, LayoutDashboard, Search, Users, ShoppingBag, Calendar, Clock, Check, XCircle, RefreshCw
 } from 'lucide-react';
 import type { Product, Order } from '../../types';
 import { API_URL } from '../../config';
+import logo from '../../assets/image.png';
 
 interface AdminPageProps {
   products: Product[];
@@ -207,11 +208,24 @@ export const AdminPage: React.FC<AdminPageProps> = ({
     currentPage * ITEMS_PER_PAGE
   );
 
+  // Category Pagination state
+  const [categoryCurrentPage, setCategoryCurrentPage] = useState(1);
+  const categoryTotalPages = Math.max(1, Math.ceil(categories.length / ITEMS_PER_PAGE));
+  const paginatedCategories = useMemo(() => {
+    return categories.slice(
+      (categoryCurrentPage - 1) * ITEMS_PER_PAGE,
+      categoryCurrentPage * ITEMS_PER_PAGE
+    );
+  }, [categories, categoryCurrentPage]);
+
+  useEffect(() => { setCategoryCurrentPage(1); }, [categories.length]);
+
   // Category form fields
   const [editingCategory, setEditingCategory] = useState<any | null>(null);
   const [catName, setCatName] = useState('');
   const [catSlug, setCatSlug] = useState('');
   const [catIcon, setCatIcon] = useState('Cpu');
+  const [showCategoryTooltip, setShowCategoryTooltip] = useState(false);
 
   const openCategoryForm = (cat: any | null = null) => {
     setEditingCategory(cat);
@@ -310,6 +324,18 @@ export const AdminPage: React.FC<AdminPageProps> = ({
 
   const [users, setUsers] = useState<any[]>([]);
   const [loadingUsers, setLoadingUsers] = useState(false);
+
+  // User Pagination state
+  const [userCurrentPage, setUserCurrentPage] = useState(1);
+  const userTotalPages = Math.max(1, Math.ceil(users.length / ITEMS_PER_PAGE));
+  const paginatedUsers = useMemo(() => {
+    return users.slice(
+      (userCurrentPage - 1) * ITEMS_PER_PAGE,
+      userCurrentPage * ITEMS_PER_PAGE
+    );
+  }, [users, userCurrentPage]);
+
+  useEffect(() => { setUserCurrentPage(1); }, [users.length]);
 
   const fetchUsers = async () => {
     if (!token) return;
@@ -775,35 +801,33 @@ export const AdminPage: React.FC<AdminPageProps> = ({
     }
   };
 
-  // --- RENDER LOGIN VIEW (LIGHT THEME) ---
+  // --- RENDER LOGIN VIEW (CLEAN SIMPLE COLOR DESIGN WITH SITE LOGO) ---
   if (!token) {
     return (
-      <div className="min-h-screen bg-slate-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
-        {/* Colorful Background Gradients */}
-        <div className="absolute top-1/4 left-1/4 w-[35rem] h-[35rem] bg-blue-100/50 rounded-full blur-3xl animate-pulse" />
-        <div className="absolute bottom-1/4 right-1/4 w-[35rem] h-[35rem] bg-rose-100/40 rounded-full blur-3xl animate-pulse" />
-
-        <div className="max-w-md w-full space-y-8 bg-white/90 backdrop-blur-xl border border-slate-200 rounded-3xl p-8 shadow-2xl relative z-10">
+      <div className="min-h-screen bg-slate-100 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-md w-full bg-white border border-slate-200 rounded-md p-8 shadow-xl space-y-6">
           <div className="text-center space-y-3">
-            <div className="mx-auto h-12 w-12 rounded-2xl bg-gradient-to-tr from-rose-500 to-blue-600 flex items-center justify-center shadow-lg shadow-blue-500/10">
-              <Lock className="h-6 w-6 text-white" />
-            </div>
-            <h2 className="text-3xl font-black text-slate-900 tracking-tight font-serif">
+            <img
+              src={logo}
+              alt="Shivam Electronic World Logo"
+              className="h-20 sm:h-24 w-auto mx-auto object-contain mb-2"
+            />
+            <h2 className="text-2xl font-black text-slate-900 tracking-tight">
               Admin Gateway
             </h2>
-            <p className="text-sm text-slate-500 font-medium">
+            <p className="text-xs text-slate-500 font-semibold">
               Please enter your admin credentials to access the console.
             </p>
           </div>
 
-          <form className="mt-8 space-y-6" onSubmit={handleLogin}>
+          <form className="space-y-5" onSubmit={handleLogin}>
             <div className="space-y-4">
               <div>
-                <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest block mb-2">
+                <label className="text-[12px] font-black text-slate-700 block mb-1.5">
                   Admin ID / Email
                 </label>
-                <div className="relative flex items-center bg-slate-50 border border-slate-200 focus-within:border-blue-500 rounded-md px-4 py-3 transition-colors">
-                  <span className="text-slate-400 mr-3">
+                <div className="relative flex items-center bg-slate-50 border border-slate-200 focus-within:border-blue-600 focus-within:ring-2 focus-within:ring-blue-500/10 rounded-md px-3.5 py-2.5 transition-all">
+                  <span className="text-slate-400 mr-2.5 shrink-0">
                     <KeyRound className="w-4 h-4" />
                   </span>
                   <input
@@ -811,18 +835,18 @@ export const AdminPage: React.FC<AdminPageProps> = ({
                     required
                     value={emailInput}
                     onChange={(e) => setEmailInput(e.target.value)}
-                    placeholder="admin@shivam.com"
-                    className="bg-transparent text-sm text-slate-800 placeholder-slate-400 outline-none w-full font-semibold"
+                    placeholder="example@gmailcom"
+                    className="bg-transparent text-xs text-slate-800 placeholder-slate-400 outline-none w-full font-bold"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest block mb-2">
+                <label className="text-[12px] font-black text-slate-700 block mb-1.5">
                   Password
                 </label>
-                <div className="relative flex items-center bg-slate-50 border border-slate-200 focus-within:border-blue-500 rounded-md px-4 py-3 transition-colors">
-                  <span className="text-slate-400 mr-3">
+                <div className="relative flex items-center bg-slate-50 border border-slate-200 focus-within:border-blue-600 focus-within:ring-2 focus-within:ring-blue-500/10 rounded-md px-3.5 py-2.5 transition-all">
+                  <span className="text-slate-400 mr-2.5 shrink-0">
                     <Lock className="w-4 h-4" />
                   </span>
                   <input
@@ -831,12 +855,12 @@ export const AdminPage: React.FC<AdminPageProps> = ({
                     value={passwordInput}
                     onChange={(e) => setPasswordInput(e.target.value)}
                     placeholder="••••••••••••"
-                    className="bg-transparent text-sm text-slate-800 placeholder-slate-400 outline-none w-full font-semibold pr-10"
+                    className="bg-transparent text-xs text-slate-800 placeholder-slate-400 outline-none w-full font-bold pr-8"
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-4 text-slate-400 hover:text-slate-600 transition-colors cursor-pointer"
+                    className="absolute right-3.5 text-slate-400 hover:text-slate-600 transition-colors cursor-pointer"
                   >
                     {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                   </button>
@@ -845,9 +869,9 @@ export const AdminPage: React.FC<AdminPageProps> = ({
             </div>
 
             {authError && (
-              <div className="flex items-center gap-2.5 p-3.5 bg-rose-50 border border-rose-100 text-rose-700 text-xs rounded-md">
+              <div className="flex items-center gap-2 p-3 bg-rose-50 border border-rose-100 text-rose-700 text-xs rounded-xl font-semibold">
                 <ShieldAlert className="w-4 h-4 shrink-0 text-rose-500" />
-                <span className="font-semibold">{authError}</span>
+                <span>{authError}</span>
               </div>
             )}
 
@@ -855,11 +879,11 @@ export const AdminPage: React.FC<AdminPageProps> = ({
               <button
                 type="submit"
                 disabled={isLoggingIn}
-                className="w-full flex justify-center items-center gap-2 py-3.5 px-4 border border-transparent rounded-md text-sm font-bold text-white bg-gradient-to-r from-rose-500 to-blue-600 hover:opacity-95 focus:outline-none transition-all cursor-pointer shadow-lg shadow-blue-500/10 active:scale-98"
+                className="w-full flex justify-center items-center gap-2 py-3 px-4 border border-transparent rounded-md text-xs font-bold text-white bg-blue-600 hover:bg-blue-700 focus:outline-none transition-all cursor-pointer shadow-md shadow-blue-500/10 active:scale-[0.99] disabled:opacity-60"
               >
                 {isLoggingIn ? (
                   <>
-                    <Loader2 className="w-4 h-4 animate-spin" />
+                    <Loader2 className="w-3.5 h-3.5 animate-spin" />
                     <span>Verifying Credentials...</span>
                   </>
                 ) : (
@@ -1094,14 +1118,13 @@ export const AdminPage: React.FC<AdminPageProps> = ({
               <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
                 <div
                   onClick={() => setActiveTab('products')}
-                  className="bg-white border border-slate-200 rounded-2xl sm:rounded-md p-4 sm:p-6 shadow-sm flex items-center justify-between cursor-pointer hover:border-blue-400 hover:shadow-md transition-all group"
+                  className="bg-white border border-slate-200 rounded-2xl sm:rounded-md p-4 sm:p-6 shadow-sm flex items-center justify-between cursor-pointer hover:border-orange-300 hover:shadow-md transition-all group"
                 >
                   <div>
-                    <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest group-hover:text-blue-600 transition-colors">Inventory Size</span>
+                    <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest group-hover:text-orange-300 transition-colors">Total Products</span>
                     <p className="text-3xl font-black text-slate-800 mt-1">{products.length}</p>
-                    <span className="text-[10px] text-blue-600 font-bold block mt-1">Active electronic items →</span>
                   </div>
-                  <div className="w-12 h-12 rounded-md bg-blue-50 border border-blue-100 flex items-center justify-center text-blue-600 group-hover:scale-105 transition-transform">
+                  <div className="w-12 h-12 rounded-md bg-orange-50 border border-orange-100 flex items-center justify-center text-orange-600 group-hover:scale-105 transition-transform">
                     <Package className="w-6 h-6" />
                   </div>
                 </div>
@@ -1111,9 +1134,26 @@ export const AdminPage: React.FC<AdminPageProps> = ({
                   className="bg-white border border-slate-200 rounded-2xl sm:rounded-md p-4 sm:p-6 shadow-sm flex items-center justify-between cursor-pointer hover:border-purple-400 hover:shadow-md transition-all group"
                 >
                   <div>
-                    <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest group-hover:text-purple-600 transition-colors">Categories Count</span>
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest group-hover:text-purple-600 transition-colors">
+                        Categories Count
+                      </span>
+                      <div
+                        className="relative group/tooltip inline-flex items-center"
+                        title="Total number of custom categories used across all products"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setShowCategoryTooltip((prev) => !prev);
+                        }}
+                      >
+                        <Info className="w-3.5 h-3.5 text-slate-400 hover:text-purple-600 transition-colors cursor-pointer" />
+                        <div className={`absolute left-1/2 -translate-x-1/2 bottom-full mb-2 w-52 p-2 bg-slate-900 text-white text-[11px] font-medium rounded-lg shadow-xl text-center z-30 pointer-events-none animate-in fade-in duration-150 leading-tight ${showCategoryTooltip ? 'block' : 'hidden group-hover/tooltip:block'}`}>
+                          Total number of custom categories used across all products
+                          <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-slate-900" />
+                        </div>
+                      </div>
+                    </div>
                     <p className="text-3xl font-black text-slate-800 mt-1">{uniqueCategoriesCount}</p>
-                    <span className="text-[10px] text-purple-600 font-bold block mt-1">Filters and sections →</span>
                   </div>
                   <div className="w-12 h-12 rounded-md bg-purple-50 border border-purple-100 flex items-center justify-center text-purple-600 group-hover:scale-105 transition-transform">
                     <Tag className="w-6 h-6" />
@@ -1127,7 +1167,6 @@ export const AdminPage: React.FC<AdminPageProps> = ({
                   <div>
                     <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest group-hover:text-indigo-600 transition-colors">Registered Customers</span>
                     <p className="text-3xl font-black text-slate-800 mt-1">{users.length}</p>
-                    <span className="text-[10px] text-indigo-600 font-bold block mt-1">Database users →</span>
                   </div>
                   <div className="w-12 h-12 rounded-md bg-indigo-50 border border-indigo-100 flex items-center justify-center text-indigo-600 group-hover:scale-105 transition-transform">
                     <Users className="w-6 h-6" />
@@ -1141,7 +1180,6 @@ export const AdminPage: React.FC<AdminPageProps> = ({
                   <div>
                     <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest group-hover:text-emerald-600 transition-colors">Total Orders</span>
                     <p className="text-3xl font-black text-slate-800 mt-1">{orders.length}</p>
-                    <span className="text-[10px] text-emerald-600 font-bold block mt-1">Manage & Update Status →</span>
                   </div>
                   <div className="w-12 h-12 rounded-md bg-emerald-50 border border-emerald-100 flex items-center justify-center text-emerald-600 group-hover:scale-105 transition-transform">
                     <ShoppingBag className="w-6 h-6" />
@@ -1735,36 +1773,39 @@ export const AdminPage: React.FC<AdminPageProps> = ({
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-slate-100 text-xs font-semibold text-slate-700">
-                      {categories.map((cat, index) => (
-                        <tr key={cat.slug} className="hover:bg-slate-50/50 transition-colors">
-                          <td className="py-3 px-3 sm:px-6 text-center font-bold text-slate-400">
-                            {index + 1}
-                          </td>
-                          <td className="py-3 px-3 sm:px-6">
-                            <span className="font-bold text-slate-850 text-sm uppercase">
-                              {cat.name}
-                            </span>
-                          </td>
-                          <td className="py-3 px-3 sm:px-6">
-                            <div className="flex items-center justify-center gap-2">
-                              <button
-                                onClick={() => openCategoryForm(cat)}
-                                className="p-2 border border-slate-200 hover:border-blue-350 text-slate-500 hover:text-blue-600 hover:bg-blue-50/50 rounded-md transition-colors cursor-pointer"
-                                title="Edit category"
-                              >
-                                <Pencil className="w-3.5 h-3.5" />
-                              </button>
-                              <button
-                                onClick={() => handleDeleteCategory(cat.slug, cat.name)}
-                                className="p-2 border border-slate-200 hover:border-rose-350 text-slate-500 hover:text-rose-600 hover:bg-rose-50/50 rounded-md transition-colors cursor-pointer"
-                                title="Delete category"
-                              >
-                                <Trash2 className="w-3.5 h-3.5" />
-                              </button>
-                            </div>
-                          </td>
-                        </tr>
-                      ))}
+                      {paginatedCategories.map((cat, index) => {
+                        const globalIndex = (categoryCurrentPage - 1) * ITEMS_PER_PAGE + index + 1;
+                        return (
+                          <tr key={cat.slug} className="hover:bg-slate-50/50 transition-colors">
+                            <td className="py-3 px-3 sm:px-6 text-center font-bold text-slate-400">
+                              {globalIndex}
+                            </td>
+                            <td className="py-3 px-3 sm:px-6">
+                              <span className="font-bold text-slate-850 text-sm uppercase">
+                                {cat.name}
+                              </span>
+                            </td>
+                            <td className="py-3 px-3 sm:px-6">
+                              <div className="flex items-center justify-center gap-2">
+                                <button
+                                  onClick={() => openCategoryForm(cat)}
+                                  className="p-2 border border-slate-200 hover:border-blue-350 text-slate-500 hover:text-blue-600 hover:bg-blue-50/50 rounded-md transition-colors cursor-pointer"
+                                  title="Edit category"
+                                >
+                                  <Pencil className="w-3.5 h-3.5" />
+                                </button>
+                                <button
+                                  onClick={() => handleDeleteCategory(cat.slug, cat.name)}
+                                  className="p-2 border border-slate-200 hover:border-rose-350 text-slate-500 hover:text-rose-600 hover:bg-rose-50/50 rounded-md transition-colors cursor-pointer"
+                                  title="Delete category"
+                                >
+                                  <Trash2 className="w-3.5 h-3.5" />
+                                </button>
+                              </div>
+                            </td>
+                          </tr>
+                        );
+                      })}
                     </tbody>
                   </table>
                 </div>
@@ -1781,6 +1822,55 @@ export const AdminPage: React.FC<AdminPageProps> = ({
                   >
                     Add Your First Category
                   </button>
+                </div>
+              )}
+
+              {/* Category Pagination Controls */}
+              {categoryTotalPages > 1 && (
+                <div className="px-4 sm:px-6 py-3 border-t border-slate-100 flex items-center justify-between gap-2 flex-wrap">
+                  <span className="text-[10px] font-bold text-slate-400">
+                    Showing {(categoryCurrentPage - 1) * ITEMS_PER_PAGE + 1}–{Math.min(categoryCurrentPage * ITEMS_PER_PAGE, categories.length)} of {categories.length} categories
+                  </span>
+                  <div className="flex items-center gap-1">
+                    <button
+                      onClick={() => setCategoryCurrentPage(p => Math.max(1, p - 1))}
+                      disabled={categoryCurrentPage === 1}
+                      className="px-2.5 py-1.5 rounded-md text-[10px] font-bold border border-slate-200 text-slate-500 hover:bg-slate-100 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                    >
+                      ‹ Prev
+                    </button>
+                    {Array.from({ length: categoryTotalPages }, (_, i) => i + 1)
+                      .filter(p => p === 1 || p === categoryTotalPages || Math.abs(p - categoryCurrentPage) <= 1)
+                      .reduce<(number | 'ellipsis')[]>((acc, p, idx, arr) => {
+                        if (idx > 0 && p - (arr[idx - 1] as number) > 1) acc.push('ellipsis');
+                        acc.push(p);
+                        return acc;
+                      }, [])
+                      .map((item, idx) =>
+                        item === 'ellipsis' ? (
+                          <span key={`cat-ellipsis-${idx}`} className="px-1 text-slate-300 text-[10px] font-bold select-none">…</span>
+                        ) : (
+                          <button
+                            key={`cat-page-${item}`}
+                            onClick={() => setCategoryCurrentPage(item as number)}
+                            className={`w-7 h-7 rounded-md text-[10px] font-bold border transition-all ${categoryCurrentPage === item
+                              ? 'bg-blue-600 text-white border-blue-600 shadow-sm'
+                              : 'border-slate-200 text-slate-500 hover:bg-slate-100'
+                              }`}
+                          >
+                            {item}
+                          </button>
+                        )
+                      )
+                    }
+                    <button
+                      onClick={() => setCategoryCurrentPage(p => Math.min(categoryTotalPages, p + 1))}
+                      disabled={categoryCurrentPage === categoryTotalPages}
+                      className="px-2.5 py-1.5 rounded-md text-[10px] font-bold border border-slate-200 text-slate-500 hover:bg-slate-100 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                    >
+                      Next ›
+                    </button>
+                  </div>
                 </div>
               )}
             </div>
@@ -1810,45 +1900,97 @@ export const AdminPage: React.FC<AdminPageProps> = ({
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-slate-100 text-xs font-semibold text-slate-700">
-                      {users.map((usr, index) => (
-                        <tr key={usr._id || usr.email} className="hover:bg-slate-50/50 transition-colors">
-                          <td className="py-3 px-3 sm:px-6 text-center font-bold text-slate-400">
-                            {index + 1}
-                          </td>
-                          <td className="py-3 px-3 sm:px-6">
-                            <div className="flex items-center gap-3">
-                              <div className="w-8 h-8 rounded-full bg-linear-to-r from-blue-600 to-indigo-650 text-white flex items-center justify-center font-black text-[10px] uppercase shrink-0 select-none shadow-sm shadow-blue-500/10 border border-slate-100">
-                                {usr.name ? usr.name.trim().charAt(0).toUpperCase() : 'U'}
+                      {paginatedUsers.map((usr, index) => {
+                        const globalIndex = (userCurrentPage - 1) * ITEMS_PER_PAGE + index + 1;
+                        return (
+                          <tr key={usr._id || usr.email} className="hover:bg-slate-50/50 transition-colors">
+                            <td className="py-3 px-3 sm:px-6 text-center font-bold text-slate-400">
+                              {globalIndex}
+                            </td>
+                            <td className="py-3 px-3 sm:px-6">
+                              <div className="flex items-center gap-3">
+                                <div className="w-8 h-8 rounded-full bg-blue-400 text-white flex items-center justify-center font-black text-[10px] uppercase shrink-0 select-none shadow-sm shadow-blue-500/10 border border-slate-100">
+                                  {usr.name ? usr.name.trim().charAt(0).toUpperCase() : 'U'}
+                                </div>
+                                <span className="font-bold text-slate-850 text-xs uppercase tracking-wide">
+                                  {usr.name}
+                                </span>
                               </div>
-                              <span className="font-bold text-slate-850 text-xs uppercase tracking-wide">
-                                {usr.name}
+                            </td>
+                            <td className="py-3 px-3 sm:px-6 text-slate-600 font-medium">{usr.email}</td>
+                            <td className="py-3 px-3 sm:px-6">
+                              <span className={`px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider ${usr.role === 'admin'
+                                ? 'bg-blue-50 border border-blue-100 text-blue-600'
+                                : 'bg-slate-100 border border-slate-250 text-slate-655'
+                                }`}>
+                                {usr.role || 'Customer'}
                               </span>
-                            </div>
-                          </td>
-                          <td className="py-3 px-3 sm:px-6 text-slate-600 font-medium">{usr.email}</td>
-                          <td className="py-3 px-3 sm:px-6">
-                            <span className={`px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider ${usr.role === 'admin'
-                              ? 'bg-blue-50 border border-blue-100 text-blue-600'
-                              : 'bg-slate-100 border border-slate-250 text-slate-655'
-                              }`}>
-                              {usr.role || 'Customer'}
-                            </span>
-                          </td>
-                          <td className="py-3 px-3 sm:px-6 text-slate-500 font-mono">
-                            {usr.createdAt ? new Date(usr.createdAt).toLocaleDateString(undefined, {
-                              year: 'numeric',
-                              month: 'short',
-                              day: 'numeric'
-                            }) : '—'}
-                          </td>
-                        </tr>
-                      ))}
+                            </td>
+                            <td className="py-3 px-3 sm:px-6 text-slate-500 font-mono">
+                              {usr.createdAt ? new Date(usr.createdAt).toLocaleDateString(undefined, {
+                                year: 'numeric',
+                                month: 'short',
+                                day: 'numeric'
+                              }) : '—'}
+                            </td>
+                          </tr>
+                        );
+                      })}
                     </tbody>
                   </table>
                 </div>
               ) : (
                 <div className="p-16 text-center space-y-3">
                   <p className="text-slate-400 text-sm font-semibold">No registered users found in the database.</p>
+                </div>
+              )}
+
+              {/* User Pagination Controls */}
+              {userTotalPages > 1 && (
+                <div className="px-4 sm:px-6 py-3 border-t border-slate-100 flex items-center justify-between gap-2 flex-wrap">
+                  <span className="text-[10px] font-bold text-slate-400">
+                    Showing {(userCurrentPage - 1) * ITEMS_PER_PAGE + 1}–{Math.min(userCurrentPage * ITEMS_PER_PAGE, users.length)} of {users.length} users
+                  </span>
+                  <div className="flex items-center gap-1">
+                    <button
+                      onClick={() => setUserCurrentPage(p => Math.max(1, p - 1))}
+                      disabled={userCurrentPage === 1}
+                      className="px-2.5 py-1.5 rounded-md text-[10px] font-bold border border-slate-200 text-slate-500 hover:bg-slate-100 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                    >
+                      ‹ Prev
+                    </button>
+                    {Array.from({ length: userTotalPages }, (_, i) => i + 1)
+                      .filter(p => p === 1 || p === userTotalPages || Math.abs(p - userCurrentPage) <= 1)
+                      .reduce<(number | 'ellipsis')[]>((acc, p, idx, arr) => {
+                        if (idx > 0 && p - (arr[idx - 1] as number) > 1) acc.push('ellipsis');
+                        acc.push(p);
+                        return acc;
+                      }, [])
+                      .map((item, idx) =>
+                        item === 'ellipsis' ? (
+                          <span key={`usr-ellipsis-${idx}`} className="px-1 text-slate-300 text-[10px] font-bold select-none">…</span>
+                        ) : (
+                          <button
+                            key={`usr-page-${item}`}
+                            onClick={() => setUserCurrentPage(item as number)}
+                            className={`w-7 h-7 rounded-md text-[10px] font-bold border transition-all ${userCurrentPage === item
+                              ? 'bg-blue-600 text-white border-blue-600 shadow-sm'
+                              : 'border-slate-200 text-slate-500 hover:bg-slate-100'
+                              }`}
+                          >
+                            {item}
+                          </button>
+                        )
+                      )
+                    }
+                    <button
+                      onClick={() => setUserCurrentPage(p => Math.min(userTotalPages, p + 1))}
+                      disabled={userCurrentPage === userTotalPages}
+                      className="px-2.5 py-1.5 rounded-md text-[10px] font-bold border border-slate-200 text-slate-500 hover:bg-slate-100 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                    >
+                      Next ›
+                    </button>
+                  </div>
                 </div>
               )}
             </div>

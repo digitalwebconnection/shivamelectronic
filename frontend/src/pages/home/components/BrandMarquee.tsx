@@ -4,7 +4,7 @@ export const BrandMarquee: React.FC = () => {
   return (
     <section className="py-16 bg-slate-50 border-b border-slate-100 overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-0 mb-6 text-center">
-        <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-1">
+        <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest block mb-1">
           Certified Dealer
         </span>
         <h2 className="text-2xl sm:text-3xl font-black text-slate-900 font-serif tracking-tight">

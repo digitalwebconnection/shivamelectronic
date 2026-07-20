@@ -46,7 +46,7 @@ export const WishlistDrawer: React.FC<WishlistDrawerProps> = ({
           </div>
           <button 
             onClick={onClose}
-            className="p-1.5 text-slate-400 hover:text-slate-800 rounded-lg hover:bg-slate-100 transition-colors"
+            className="p-1.5 text-slate-400 hover:text-slate-800 rounded-md hover:bg-slate-100 transition-colors cursor-pointer"
           >
             <X className="w-5 h-5" />
           </button>
@@ -65,7 +65,7 @@ export const WishlistDrawer: React.FC<WishlistDrawerProps> = ({
               </p>
               <button 
                 onClick={onExploreProducts}
-                className="px-5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white text-sm font-semibold rounded-xl transition-all cursor-pointer"
+                className="px-5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white text-sm font-semibold rounded-md transition-all cursor-pointer"
               >
                 Explore Products
               </button>
@@ -74,10 +74,10 @@ export const WishlistDrawer: React.FC<WishlistDrawerProps> = ({
             wishlist.map((product) => (
               <div 
                 key={product.id}
-                className="flex gap-4 p-3 bg-slate-50/50 border border-slate-200 rounded-xl hover:border-slate-350 transition-colors"
+                className="flex gap-4 p-3 bg-slate-50/50 border border-slate-200 rounded-md hover:border-slate-350 transition-colors"
               >
                 {/* Product Image */}
-                <div className="w-20 h-20 rounded-lg overflow-hidden bg-white flex-shrink-0 border border-slate-150">
+                <div className="w-20 h-20 rounded-md overflow-hidden bg-white flex-shrink-0">
                   <img 
                     src={product.image} 
                     alt={product.name} 
@@ -100,7 +100,7 @@ export const WishlistDrawer: React.FC<WishlistDrawerProps> = ({
                     {/* Add to Cart button */}
                     <button
                       onClick={() => onMoveToCart(product)}
-                      className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-600 hover:bg-blue-500 text-xs font-semibold text-white rounded-lg transition-all active:scale-95"
+                      className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-600 hover:bg-blue-500 text-xs font-semibold text-white rounded-md transition-all active:scale-95 cursor-pointer"
                     >
                       <ShoppingCart className="w-3.5 h-3.5" />
                       Add to Cart
@@ -109,7 +109,7 @@ export const WishlistDrawer: React.FC<WishlistDrawerProps> = ({
                     {/* Remove button */}
                     <button 
                       onClick={() => onRemoveFromWishlist(product.id)}
-                      className="p-1.5 text-slate-400 hover:text-red-650 rounded-lg hover:bg-red-50 transition-colors"
+                      className="p-1.5 text-slate-400 hover:text-red-650 rounded-md cursor-pointer hover:bg-red-50 transition-colors"
                       title="Remove from wishlist"
                     >
                       <Trash2 className="w-4 h-4" />

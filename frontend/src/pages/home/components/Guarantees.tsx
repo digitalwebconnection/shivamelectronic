@@ -70,10 +70,10 @@ export const Guarantees: React.FC = () => {
           {guaranteeItems.map((item, idx) => (
             <div 
               key={idx}
-              className={`flex flex-col items-center text-center p-6 rounded-3xl bg-white/95 backdrop-blur-md border border-slate-200/60 transition-all duration-300 hover:-translate-y-1 ${item.hoverBorder} ${item.hoverShadow} shadow-md shadow-slate-200/30`}
+              className={`flex flex-col items-center text-center p-6 rounded-md bg-white/95 backdrop-blur-md border border-slate-200/60 transition-all duration-300 hover:-translate-y-1 ${item.hoverBorder} ${item.hoverShadow} shadow-md shadow-slate-200/30`}
             >
               {/* Large Icon Container */}
-              <div className={`w-16 h-16 rounded-2xl flex items-center justify-center border mb-4 shrink-0 transition-transform duration-300 group-hover:scale-105 ${item.iconBg}`}>
+              <div className={`w-16 h-16 rounded-full flex items-center justify-center border mb-4 shrink-0 transition-transform duration-300 group-hover:scale-105 ${item.iconBg}`}>
                 {item.icon}
               </div>
               

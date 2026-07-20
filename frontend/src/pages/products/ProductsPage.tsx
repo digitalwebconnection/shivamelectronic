@@ -191,7 +191,7 @@ export const ProductsPage: React.FC<ProductsPageProps> = ({
         {isFiltered && (
           <button 
             onClick={handleClearFilters}
-            className="text-[10px] font-black text-rose-600 hover:text-rose-700 bg-rose-50 px-2 py-1 rounded-lg transition-all"
+            className="text-[10px] font-black text-rose-600 hover:text-rose-700 bg-rose-50 px-2 py-1 rounded-md transition-all cursor-pointer"
           >
             Clear All
           </button>
@@ -201,7 +201,7 @@ export const ProductsPage: React.FC<ProductsPageProps> = ({
       {/* Categories */}
       <div className="space-y-3">
         <div className="flex items-center justify-between">
-          <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Categories</h3>
+          <h3 className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Categories</h3>
           {categorySearch && (
             <span className="text-[8px] text-blue-650 bg-blue-50 px-1.5 py-0.5 rounded font-black">
               Filtered
@@ -210,7 +210,7 @@ export const ProductsPage: React.FC<ProductsPageProps> = ({
         </div>
 
         {/* Category Search Input */}
-        <div className="relative flex items-center bg-slate-50 border border-slate-200 focus-within:border-blue-500 focus-within:ring-2 focus-within:ring-blue-500/10 rounded-xl px-3 py-2 transition-all">
+        <div className="relative flex items-center bg-slate-50 border border-slate-200 focus-within:border-blue-500 focus-within:ring-2 focus-within:ring-blue-500/10 rounded-md px-3 py-2 transition-all">
           <span className="text-slate-400 mr-2 shrink-0">
             <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
           </span>
@@ -236,7 +236,7 @@ export const ProductsPage: React.FC<ProductsPageProps> = ({
           {(!categorySearch.trim() || 'all categories'.includes(categorySearch.toLowerCase())) && (
             <button
               onClick={() => setSelectedCategory('All')}
-              className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-left text-xs font-bold transition-all ${
+              className={`w-full flex items-center justify-between px-3 py-2 rounded-md text-left text-xs font-bold transition-all cursor-pointer ${
                 selectedCategory === 'All'
                   ? 'bg-blue-600 text-white shadow-md shadow-blue-600/10'
                   : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100/60'
@@ -268,7 +268,7 @@ export const ProductsPage: React.FC<ProductsPageProps> = ({
                   <button
                     key={cat.slug}
                     onClick={() => setSelectedCategory(cat.slug)}
-                    className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-left text-xs font-bold transition-all ${
+                    className={`w-full flex items-center justify-between px-3 py-2 rounded-md text-left text-xs font-bold transition-all cursor-pointer ${
                       isSelected
                         ? 'bg-blue-600 text-white shadow-md shadow-blue-600/10'
                         : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100/60'
@@ -298,10 +298,10 @@ export const ProductsPage: React.FC<ProductsPageProps> = ({
       {/* Brands (Dropdown Selector) */}
       <div className="space-y-3 pt-4 border-t border-slate-100">
         <div className="space-y-1">
-          <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
+          <h3 className="text-[10px] font-black text-slate-500 uppercase tracking-widest">
             {selectedCategory === 'All' ? 'All Brands' : 'Brands'}
           </h3>
-          <p className="text-[9px] text-slate-455 italic leading-none">
+          <p className="text-[9px] text-slate-500 italic leading-none">
             Showing all brands
           </p>
         </div>
@@ -314,7 +314,7 @@ export const ProductsPage: React.FC<ProductsPageProps> = ({
                 const val = e.target.value;
                 setSelectedBrands(val ? [val] : []);
               }}
-              className="w-full bg-slate-50 border border-slate-200 hover:border-slate-350 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10 px-3.5 py-2.5 rounded-xl text-xs font-bold text-slate-700 outline-none transition-all cursor-pointer"
+              className="w-full bg-slate-50 border border-slate-200 hover:border-slate-350 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10 px-3.5 py-2.5 rounded-md text-xs font-bold text-slate-700 outline-none transition-all cursor-pointer"
             >
               <option value="">All Brands ({availableBrands.reduce((acc, b) => acc + b.count, 0)})</option>
               {availableBrands.map((brand) => (
@@ -366,13 +366,13 @@ export const ProductsPage: React.FC<ProductsPageProps> = ({
           {/* DESKTOP SIDEBAR FILTERS */}
           <aside 
             data-lenis-prevent
-            className="hidden lg:block w-64 xl:w-72 shrink-0 bg-white border border-slate-200 rounded-3xl p-6 shadow-sm sticky top-24 max-h-[calc(100vh-130px)] overflow-y-auto custom-scrollbar"
+            className="hidden lg:block w-64 xl:w-72 shrink-0 bg-white border border-slate-200 rounded-md p-6 shadow-sm sticky top-24 max-h-[calc(100vh-130px)] overflow-y-auto custom-scrollbar"
           >
             {renderSidebarFilters()}
           </aside>
 
           {/* MOBILE FILTERS DRAWER TRIGGER & SORT */}
-          <div className="w-full lg:hidden flex items-center justify-between gap-3 mb-6 bg-white p-3 rounded-2xl border border-slate-200 shadow-sm">
+          <div className="w-full lg:hidden flex items-center justify-between gap-3 mb-6 bg-white p-3 rounded-md border border-slate-200 shadow-sm">
             <button
               onClick={() => setIsMobileFiltersOpen(true)}
               className="flex items-center gap-1.5 px-4 py-2 border border-slate-200 rounded-xl text-xs font-bold text-slate-700 bg-slate-50/50 hover:bg-slate-50 active:scale-98 transition-all"
@@ -386,7 +386,7 @@ export const ProductsPage: React.FC<ProductsPageProps> = ({
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value)}
-                className="bg-slate-50/50 border border-slate-200 px-2.5 py-1.5 rounded-xl text-xs font-bold text-slate-700 outline-none focus:border-blue-500 cursor-pointer"
+                className="bg-slate-50/50 border border-slate-200 px-2.5 py-1.5 rounded-md text-xs font-bold text-slate-700 outline-none focus:border-blue-500 cursor-pointer"
               >
                 <option value="default">Recommended</option>
                 <option value="rating">Top Rated</option>
@@ -397,7 +397,7 @@ export const ProductsPage: React.FC<ProductsPageProps> = ({
           {/* MAIN PRODUCT LIST COLUMN */}
           <div className="grow w-full">
             {/* Header: Results count and Desktop Sort Dropdown */}
-            <div className="hidden lg:flex items-center justify-between mb-6 bg-white px-5 py-3.5 rounded-2xl border border-slate-200/80 shadow-xs">
+            <div className="hidden lg:flex items-center justify-between mb-6 bg-white px-5 py-3.5 rounded-md border border-slate-200/80 shadow-xs">
               <span className="text-xs font-bold text-slate-500">
                 Showing <strong className="text-slate-800">{filteredProducts.length}</strong> of <strong className="text-slate-800">{products.length}</strong> products
               </span>
@@ -407,7 +407,7 @@ export const ProductsPage: React.FC<ProductsPageProps> = ({
                 <select
                   value={sortBy}
                   onChange={(e) => setSortBy(e.target.value)}
-                  className="bg-slate-50/60 border border-slate-200/80 hover:border-slate-300 hover:bg-slate-50/30 px-3 py-1.5 rounded-xl text-xs font-bold text-slate-700 outline-none focus:ring-2 focus:ring-blue-500/10 focus:border-blue-500 transition-all cursor-pointer"
+                  className="bg-slate-50/60 border border-slate-200/80 hover:border-slate-300 hover:bg-slate-50/30 px-3 py-1.5 rounded-md text-xs font-bold text-slate-700 outline-none focus:ring-2 focus:ring-blue-500/10 focus:border-blue-500 transition-all cursor-pointer"
                 >
                   <option value="default">Recommended</option>
                   <option value="rating">Top Rated</option>
@@ -423,7 +423,7 @@ export const ProductsPage: React.FC<ProductsPageProps> = ({
                   return (
                     <div 
                       key={product.id}
-                      className="group relative flex flex-col bg-slate-50/40 hover:bg-white border border-slate-200/80 hover:border-slate-300 rounded-lg overflow-hidden transition-all duration-300  shadow-lg shadow-black hover:-translate-y-1"
+                      className="group relative flex flex-col bg-slate-50/40 hover:bg-white border border-slate-200/80 hover:border-slate-300 rounded-md overflow-hidden transition-all duration-300  shadow-lg shadow-black hover:-translate-y-1"
                     >
                       {/* Badges */}
                       <div className="absolute top-3.5 left-3.5 z-10 flex flex-col gap-1.5">
@@ -437,7 +437,7 @@ export const ProductsPage: React.FC<ProductsPageProps> = ({
                       {/* Wishlist Button */}
                       <button
                         onClick={() => handleWishlistClick(product)}
-                        className={`absolute top-3.5 right-3.5 z-10 p-2.5 rounded-xl transition-all duration-300 border cursor-pointer ${
+                        className={`absolute top-3.5 right-3.5 z-10 p-2.5 rounded-md transition-all duration-300 border cursor-pointer ${
                           hasHeart 
                             ? 'bg-rose-500 border-rose-500 text-white shadow-md shadow-rose-500/20' 
                             : 'bg-white/95 border-slate-200 text-slate-400 hover:text-rose-500 hover:border-rose-350 hover:bg-white'
@@ -459,7 +459,7 @@ export const ProductsPage: React.FC<ProductsPageProps> = ({
                         />
                         {/* Overlay */}
                         <div className="absolute inset-0 bg-slate-950/10 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity duration-300">
-                          <span className="flex items-center gap-1.5 px-4 py-2 bg-white/95 backdrop-blur-md text-slate-800 text-[10px] font-black rounded-xl border border-slate-200 transition-all shadow-md">
+                          <span className="flex items-center gap-1.5 px-4 py-2 bg-white/95 backdrop-blur-md text-slate-800 text-[10px] font-black rounded-md border border-slate-200 transition-all shadow-md">
                             <Eye className="w-3.5 h-3.5 text-blue-600" />
                             Quick View
                           </span>
@@ -508,7 +508,7 @@ export const ProductsPage: React.FC<ProductsPageProps> = ({
                         <div className="flex items-center justify-end mt-auto pt-4 border-t border-slate-100">
                           <button
                             onClick={() => onAddToCart(product)}
-                            className="flex items-center justify-center gap-1.5 py-2 px-4 rounded-xl bg-linear-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white text-[10px] font-black shadow-md shadow-blue-500/10 active:scale-95 transition-all duration-300 cursor-pointer"
+                            className="flex items-center justify-center gap-1.5 py-2 px-4 rounded-md bg-linear-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white text-[10px] font-black shadow-md shadow-blue-500/10 active:scale-95 transition-all duration-300 cursor-pointer"
                             title="Add to Cart"
                           >
                             <ShoppingCart className="w-3.5 h-3.5" />
@@ -536,7 +536,7 @@ export const ProductsPage: React.FC<ProductsPageProps> = ({
                         window.scrollTo({ top: 0, behavior: 'smooth' });
                       }}
                       disabled={currentPage === 1}
-                      className="px-3.5 py-2 rounded-xl text-xs font-black border border-slate-200 text-slate-600 hover:bg-slate-100 hover:text-slate-800 disabled:opacity-40 disabled:cursor-not-allowed transition-all cursor-pointer select-none"
+                      className="px-3.5 py-2 rounded-md text-xs font-black border border-slate-200 text-slate-600 hover:bg-slate-100 hover:text-slate-800 disabled:opacity-40 disabled:cursor-not-allowed transition-all cursor-pointer select-none"
                     >
                       ‹ Prev
                     </button>
@@ -559,7 +559,7 @@ export const ProductsPage: React.FC<ProductsPageProps> = ({
                               setCurrentPage(item as number);
                               window.scrollTo({ top: 0, behavior: 'smooth' });
                             }}
-                            className={`w-9 h-9 rounded-xl text-xs font-black border transition-all cursor-pointer select-none ${
+                            className={`w-9 h-9 rounded-md text-xs font-black border transition-all cursor-pointer select-none ${
                               currentPage === item
                                 ? 'bg-blue-600 text-white border-blue-600 shadow-md shadow-blue-500/20'
                                 : 'border-slate-200 text-slate-600 hover:bg-slate-100 hover:text-slate-800'
@@ -578,7 +578,7 @@ export const ProductsPage: React.FC<ProductsPageProps> = ({
                         window.scrollTo({ top: 0, behavior: 'smooth' });
                       }}
                       disabled={currentPage === totalPages}
-                      className="px-3.5 py-2 rounded-xl text-xs font-black border border-slate-200 text-slate-600 hover:bg-slate-100 hover:text-slate-800 disabled:opacity-40 disabled:cursor-not-allowed transition-all cursor-pointer select-none"
+                      className="px-3.5 py-2 rounded-md text-xs font-black border border-slate-200 text-slate-600 hover:bg-slate-100 hover:text-slate-800 disabled:opacity-40 disabled:cursor-not-allowed transition-all cursor-pointer select-none"
                     >
                       Next ›
                     </button>

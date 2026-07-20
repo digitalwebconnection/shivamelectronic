@@ -181,7 +181,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
             {isCheckingOut ? (
               <button 
                 onClick={() => setIsCheckingOut(false)}
-                className="flex items-center gap-1.5 text-xs font-bold text-slate-600 hover:text-slate-900 transition-colors mr-2 p-1 hover:bg-slate-100 rounded-lg"
+                className="flex items-center gap-1.5 text-xs font-bold text-slate-600 hover:text-slate-900 transition-colors mr-2 p-1 hover:bg-slate-100 rounded-md cursor-pointer"
               >
                 <ArrowLeft className="w-4 h-4" />
                 <span>Back</span>
@@ -200,7 +200,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
           </div>
           <button 
             onClick={onClose}
-            className="p-1.5 text-slate-400 hover:text-slate-800 rounded-lg hover:bg-slate-100 transition-colors"
+            className="p-1.5 text-slate-400 hover:text-slate-800 rounded-md hover:bg-slate-100 transition-colors cursor-pointer"
           >
             <X className="w-5 h-5" />
           </button>
@@ -218,7 +218,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                 Thank you for your order. Your components have been reserved, and your order has been logged in your profile history.
               </p>
               
-              <div className="bg-slate-50 border border-slate-200 rounded-2xl p-4 w-full text-left space-y-2.5">
+              <div className="bg-slate-50 border border-slate-200 rounded-md p-4 w-full text-left space-y-2.5">
                 <div className="flex justify-between text-xs text-slate-400 font-bold">
                   <span>ORDER ID</span>
                   <span className="text-slate-800 font-mono">{orderSuccessId}</span>
@@ -240,14 +240,14 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                     const whatsappUrl = `https://wa.me/${storePhone}?text=${encodeURIComponent(lastMessage)}`;
                     window.open(whatsappUrl, '_blank');
                   }}
-                  className="w-full py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl transition-all flex items-center justify-center gap-2 cursor-pointer shadow-md shadow-emerald-500/20 active:scale-95"
+                  className="w-full py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-md transition-all flex items-center justify-center gap-2 cursor-pointer shadow-md shadow-emerald-500/20 active:scale-95"
                 >
                   <MessageSquare className="w-4 h-4 fill-green/30 text-white animate-pulse" />
                   <span>Open WhatsApp Details</span>
                 </button>
                 <button
                   onClick={onClose}
-                  className="w-full py-2.5 bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold rounded-xl transition-all cursor-pointer active:scale-95 border border-slate-800"
+                  className="w-full py-2.5 bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold rounded-md transition-all cursor-pointer active:scale-95 border border-slate-800"
                 >
                   Continue Shopping
                 </button>
@@ -265,7 +265,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                   value={customerName}
                   onChange={(e) => setCustomerName(e.target.value)}
                   placeholder="Enter your full name"
-                  className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 hover:border-slate-350 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10 text-slate-900 placeholder-slate-400 rounded-xl transition-all outline-none text-sm font-medium"
+                  className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 hover:border-slate-350 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10 text-slate-900 placeholder-slate-400 rounded-md transition-all outline-none text-sm font-medium"
                 />
               </div>
 
@@ -286,7 +286,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                   maxLength={10}
                   inputMode="numeric"
                   placeholder="e.g. 9601072015"
-                  className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 hover:border-slate-350 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10 text-slate-900 placeholder-slate-400 rounded-xl transition-all outline-none text-sm font-medium"
+                  className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 hover:border-slate-350 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10 text-slate-900 placeholder-slate-400 rounded-md transition-all outline-none text-sm font-medium"
                 />
               </div>
 
@@ -300,7 +300,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                   value={customerAddress}
                   onChange={(e) => setCustomerAddress(e.target.value)}
                   placeholder="Street address, City, ZIP Code"
-                  className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 hover:border-slate-350 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10 text-slate-900 placeholder-slate-400 rounded-xl transition-all outline-none text-sm resize-none font-medium"
+                  className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 hover:border-slate-350 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10 text-slate-900 placeholder-slate-400 rounded-md transition-all outline-none text-sm resize-none font-medium"
                 />
               </div>
 
@@ -313,7 +313,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                   value={customerNote}
                   onChange={(e) => setCustomerNote(e.target.value)}
                   placeholder="Add any specific instructions or requirements..."
-                  className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 hover:border-slate-350 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10 text-slate-900 placeholder-slate-400 rounded-xl transition-all outline-none text-sm resize-none font-medium"
+                  className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 hover:border-slate-350 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10 text-slate-900 placeholder-slate-400 rounded-md transition-all outline-none text-sm resize-none font-medium"
                 />
               </div>
             </form>
@@ -328,7 +328,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
               </p>
               <button 
                 onClick={onStartShopping}
-                className="px-5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white text-sm font-semibold rounded-xl transition-all cursor-pointer"
+                className="px-5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white text-sm font-semibold rounded-md transition-all cursor-pointer"
               >
                 Start Shopping
               </button>
@@ -337,10 +337,10 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
             cartItems.map((item) => (
               <div 
                 key={item.product.id}
-                className="flex gap-4 p-3 bg-slate-50/50 border border-slate-200 rounded-xl hover:border-slate-300 transition-colors text-left"
+                className="flex gap-4 p-3 bg-slate-50/50 border border-slate-200 rounded-md hover:border-slate-300 transition-colors text-left"
               >
                 {/* Product Image */}
-                <div className="w-20 h-20 rounded-lg overflow-hidden bg-white shrink-0 border border-slate-150">
+                <div className="w-20 h-20 rounded-md overflow-hidden bg-white shrink-0">
                   <img 
                     src={item.product.image} 
                     alt={item.product.name} 
@@ -361,7 +361,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
 
                   <div className="flex items-center justify-between mt-2">
                     {/* Quantity Selector */}
-                    <div className="flex items-center bg-white border border-slate-200 rounded-lg p-0.5">
+                    <div className="flex items-center bg-white border border-slate-200 rounded-md p-0.5">
                       <button 
                         onClick={() => onUpdateQuantity(item.product.id, -1)}
                         className="p-1 text-slate-450 hover:text-slate-800 hover:bg-slate-100 rounded transition-colors"
@@ -383,7 +383,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                     {/* Trash Button */}
                     <button 
                       onClick={() => onRemoveItem(item.product.id)}
-                      className="p-1 text-slate-400 hover:text-red-600 rounded-lg hover:bg-red-50 transition-colors"
+                      className="p-1 text-slate-400 hover:text-red-600 rounded-md hover:bg-red-50 transition-colors cursor-pointer"
                     >
                       <Trash2 className="w-4 h-4" />
                     </button>
@@ -408,7 +408,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
               <button 
                 type="submit"
                 form="checkout-form"
-                className="w-full py-3 bg-linear-to-r from-emerald-600 to-green-500 hover:from-emerald-500 hover:to-green-400 text-white font-bold rounded-xl transition-all duration-300 shadow-lg shadow-green-500/20 active:scale-[0.98] flex items-center justify-center gap-2 cursor-pointer text-sm"
+                className="w-full py-3 bg-linear-to-r from-emerald-600 to-green-500 hover:from-emerald-500 hover:to-green-400 text-white font-bold rounded-md transition-all duration-300 shadow-lg shadow-green-500/20 active:scale-[0.98] flex items-center justify-center gap-2 cursor-pointer text-sm"
               >
                 <MessageSquare className="w-4 h-4 fill-white text-emerald-600" />
                 <span>Send Inquiry on WhatsApp</span>
@@ -422,7 +422,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                     setIsCheckingOut(true);
                   }
                 }}
-                className="w-full py-3 bg-linear-to-r from-blue-600 to-cyan-500 hover:from-blue-500 hover:to-cyan-400 text-white font-bold rounded-xl transition-all duration-300 shadow-lg shadow-blue-500/20 active:scale-[0.98] text-sm cursor-pointer"
+                className="w-full py-3 bg-linear-to-r from-blue-600 to-cyan-500 hover:from-blue-500 hover:to-cyan-400 text-white font-bold rounded-md transition-all duration-300 shadow-lg shadow-blue-500/20 active:scale-[0.98] text-sm cursor-pointer"
               >
                 Proceed to Checkout
               </button>

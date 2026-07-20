@@ -35,17 +35,17 @@ export const BestSellers: React.FC<BestSellersProps> = ({
         {/* Section Header */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-10 border-b border-slate-100 pb-6">
           <div className="flex items-center gap-3.5">
-            <div className="w-12 h-12 rounded-2xl bg-blue-50 border border-blue-100 flex items-center justify-center text-blue-600 shadow-sm shadow-blue-100">
+            <div className="w-12 h-12 rounded-md bg-blue-50 border border-blue-100 flex items-center justify-center text-blue-600 shadow-sm shadow-blue-100">
               <Sparkles className="w-6 h-6 animate-pulse" />
             </div>
             <div>
               <h2 className="text-2xl sm:text-3xl font-black text-slate-900 font-serif tracking-tight">Our Best Sellers</h2>
-              <p className="text-xs text-slate-400 mt-0.5">Top performing professional grade connectors and premium wiring units.</p>
+              <p className="text-xs text-slate-600 mt-0.5">Top performing professional grade connectors and premium wiring units.</p>
             </div>
           </div>
           <button 
             onClick={onNavigateToProducts}
-            className="flex items-center gap-1.5 px-4 py-2 border border-slate-200 hover:border-blue-550 hover:text-blue-600 rounded-xl text-xs font-bold text-slate-650 transition-all bg-white cursor-pointer self-start sm:self-auto shadow-sm"
+            className="flex items-center gap-1.5 px-4 py-2 border border-slate-200 hover:border-blue-550 hover:text-blue-600 rounded-md text-xs font-bold text-slate-650 transition-all bg-white cursor-pointer self-start sm:self-auto shadow-sm"
           >
             <span>View All Products</span>
             <ArrowRight className="w-3.5 h-3.5" />

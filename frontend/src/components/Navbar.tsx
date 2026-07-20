@@ -254,7 +254,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           </button>
 
           {isDropdownOpen && (
-            <div className="absolute top-[calc(100%+8px)] right-0 w-[240px] bg-white border border-slate-200 rounded-2xl shadow-2xl overflow-hidden z-[60] animate-in fade-in slide-in-from-top-1 duration-150 p-1.5">
+            <div className="absolute top-[calc(100%+8px)] right-0 w-[240px] bg-white border border-slate-200 rounded-md shadow-2xl overflow-hidden z-[60] animate-in fade-in slide-in-from-top-1 duration-150 p-1.5">
               <span className="block text-[10px] font-bold text-slate-400 uppercase tracking-widest px-3 py-2 border-b border-slate-100 text-left">
                 Select Category
               </span>
@@ -398,7 +398,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                 }}
                 className={`relative h-full flex items-center text-sm font-bold py-2 after:absolute after:bottom-0 after:left-0 after:w-full after:h-[3px] after:bg-linear-to-r after:from-[#e11d48] after:to-[#0057ff] after:transition-transform after:duration-300 ${currentPage === 'products'
                   ? 'text-slate-950 after:scale-x-100'
-                  : 'text-slate-800 hover:text-slate-900 after:scale-x-0 hover:after:scale-x-100 after:origin-left'
+                  : 'text-slate-800 hover:text-slate-900 after:scale-x-0 hover:after:scale-x-100 after:origin-left cursor-pointer'
                   }`}
               >
                 Products
@@ -414,7 +414,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               e.preventDefault();
               if (setCurrentPage) setCurrentPage('home');
             }}
-            className="flex items-center group transition-transform duration-300 hover:scale-102"
+            className="flex items-center"
           >
             <img src={logo} alt="logo" className="h-14 md:h-28 w-auto object-contain" />
           </a>
@@ -441,7 +441,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             {user && (
               <button
                 onClick={onOpenWishlist}
-                className="p-2.5 text-slate-655 hover:text-red-500 hover:bg-red-50/50 rounded-full transition-colors relative"
+                className="p-2.5 text-slate-655 cursor-pointer hover:text-red-500 hover:bg-red-50/50 rounded-full transition-colors relative"
                 title="Wishlist"
               >
                 <Heart className="w-5 h-5 transition-transform hover:scale-110 active:scale-95" />
@@ -456,7 +456,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             {/* Cart Icon button */}
             <button
               onClick={onOpenCart}
-              className="bg-blue-50 hover:bg-blue-100/90 text-blue-600 rounded-full px-5 py-2.5 text-xs font-bold transition-all duration-300 flex items-center gap-1.5 border border-blue-100 hover:shadow-md hover:shadow-blue-500/5 hover:-translate-y-px active:translate-y-0 active:scale-95"
+              className="bg-blue-50 hover:bg-blue-100/90 cursor-pointer text-blue-600 rounded-full px-5 py-2.5 text-xs font-bold transition-all duration-300 flex items-center gap-1.5 border border-blue-100 hover:shadow-md hover:shadow-blue-500/5 hover:-translate-y-px active:translate-y-0 active:scale-95"
               title="Cart Drawer"
             >
               <ShoppingCart className="w-3.5 h-3.5" />
@@ -477,7 +477,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                 className="flex items-center gap-1 focus:outline-none hover:scale-105 active:scale-95 transition-all"
                 title="My Account"
               >
-                <div className="w-8 h-8 rounded-full bg-linear-to-r from-blue-600 to-indigo-650 text-white flex items-center justify-center font-black text-xs uppercase border border-slate-200 hover:border-blue-600 transition-colors select-none shadow-sm shadow-blue-500/10">
+                <div className="w-8 h-8 rounded-full bg-blue-500 cursor-pointer text-white flex items-center justify-center font-black text-xs uppercase border border-slate-200 hover:border-blue-600 transition-colors select-none shadow-sm shadow-blue-500/10">
                   {user.name ? user.name.trim().charAt(0).toUpperCase() : 'U'}
                 </div>
               </button>
@@ -541,7 +541,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                   }}
                   className="block text-lg font-bold text-slate-900 hover:text-blue-600 transition-colors"
                 >
-                  My Account
+                    
                 </a>
               </div>
 

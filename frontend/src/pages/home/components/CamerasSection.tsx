@@ -46,17 +46,17 @@ export const CamerasSection: React.FC<CamerasSectionProps> = ({
         {/* Section Header */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-10 border-b border-slate-100 pb-6">
           <div className="flex items-center gap-3.5">
-            <div className="w-12 h-12 rounded-2xl bg-amber-50 border border-amber-100 flex items-center justify-center text-amber-600 shadow-sm shadow-amber-100">
+            <div className="w-12 h-12 rounded-md bg-amber-50 border border-amber-100 flex items-center justify-center text-amber-600 shadow-sm shadow-amber-100">
               <Sun className="w-6 h-6 animate-pulse" />
             </div>
             <div>
               <h2 className="text-2xl sm:text-3xl font-black text-slate-900 font-serif tracking-tight">Spotlight Optoelectronics</h2>
-              <p className="text-xs text-slate-400 mt-0.5">High luminosity diffusing red Light Emitting Diodes (LEDs) and dashboard signals.</p>
+              <p className="text-xs text-slate-600 mt-0.5">High luminosity diffusing red Light Emitting Diodes (LEDs) and dashboard signals.</p>
             </div>
           </div>
           <button 
             onClick={() => onViewAll('optoelectronics')}
-            className="flex items-center gap-1.5 px-4 py-2 border border-slate-200 hover:border-amber-550 hover:text-amber-650 rounded-xl text-xs font-bold text-slate-650 transition-all bg-white cursor-pointer shadow-sm self-start sm:self-auto"
+            className="flex items-center gap-1.5 px-4 py-2 border border-slate-200 hover:border-amber-50 hover:text-amber-500 rounded-md text-xs font-bold text-slate-650 transition-all bg-white cursor-pointer self-start sm:self-auto shadow-sm"
           >
             <span>View Indicators</span>
             <ArrowRight className="w-3.5 h-3.5" />
@@ -73,13 +73,13 @@ export const CamerasSection: React.FC<CamerasSectionProps> = ({
               <div 
                 key={p.id}
                 onClick={() => onSelectProduct(p)}
-                className={`group flex flex-col ${isEven ? 'md:flex-row' : 'md:flex-row-reverse'} gap-8 items-stretch bg-white border border-slate-200 p-6 sm:p-8 rounded-3xl shadow-xl shadow-slate-800/15 hover:shadow-2xl hover:shadow-amber-550/15 transition-all duration-500 cursor-pointer relative overflow-hidden`}
+                className={`group flex flex-col ${isEven ? 'md:flex-row' : 'md:flex-row-reverse'} gap-8 items-stretch bg-white border border-slate-200 p-6 sm:p-8 rounded-md shadow-xl shadow-slate-800/15 hover:shadow-2xl hover:shadow-amber-550/15 transition-all duration-500 cursor-pointer relative overflow-hidden`}
               >
                 {/* Visual anchor line */}
                 <div className={`absolute top-0 bottom-0 w-1.5 bg-amber-500 ${isEven ? 'left-0' : 'right-0'}`} />
 
                 {/* Left/Right Product Image Container */}
-                <div className="w-full md:w-[38%] bg-slate-50 border border-slate-200 rounded-2xl p-6 flex items-center justify-center relative overflow-hidden group/img min-h-[220px] md:min-h-auto">
+                <div className="w-full md:w-[38%] bg-slate-50 border border-slate-200 rounded-md p-6 flex items-center justify-center relative overflow-hidden group/img min-h-[220px] md:min-h-auto">
                   {/* Internal design cues */}
                   <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(245,158,11,0.03),transparent_70%)]" />
                   <div className="absolute top-3 left-3 w-3 h-3 border-t border-l border-slate-300 group-hover/img:border-amber-400 transition-colors" />
@@ -133,7 +133,7 @@ export const CamerasSection: React.FC<CamerasSectionProps> = ({
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-4 border-t border-slate-150">
                     <div>
                       <span className="text-[9px] text-slate-400 font-bold block uppercase tracking-wider">PRICING</span>
-                      <span className="text-xs sm:text-sm font-extrabold text-amber-600 bg-amber-50 border border-amber-100 px-2.5 py-1 rounded-lg uppercase tracking-wider inline-block mt-0.5">Bulk Quote</span>
+                      <span className="text-xs sm:text-sm font-extrabold text-amber-600 bg-amber-50 border border-amber-100 px-2.5 py-1 rounded-md uppercase tracking-wider inline-block mt-0.5">Bulk Quote</span>
                     </div>
 
                     <div className="flex items-center gap-3">
@@ -146,7 +146,7 @@ export const CamerasSection: React.FC<CamerasSectionProps> = ({
                             onToggleWishlist(p);
                           }
                         }}
-                        className={`p-3 rounded-xl border transition-all duration-300 cursor-pointer ${
+                        className={`p-3 rounded-md border transition-all duration-300 cursor-pointer ${
                           isWishlisted 
                             ? 'bg-amber-500 border-amber-500 text-white shadow-lg shadow-amber-500/20' 
                             : 'bg-slate-50 border-slate-100 text-slate-400 hover:text-amber-500 hover:border-amber-250 shadow-sm'
@@ -161,7 +161,7 @@ export const CamerasSection: React.FC<CamerasSectionProps> = ({
                           e.stopPropagation();
                           onAddToCart(p);
                         }}
-                        className="flex items-center justify-center gap-2 py-3 px-6 rounded-xl bg-slate-900 hover:bg-amber-600 text-white text-xs font-black tracking-widest shadow-md shadow-slate-950/20 active:scale-95 transition-all duration-300 cursor-pointer border border-transparent"
+                        className="flex items-center justify-center gap-2 py-3 px-6 rounded-md bg-slate-900 hover:bg-amber-600 text-white text-xs font-black tracking-widest shadow-md shadow-slate-950/20 active:scale-95 transition-all duration-300 cursor-pointer border border-transparent"
                       >
                         <ShoppingCart className="w-4 h-4" />
                         <span>ADD TO CART</span>

@@ -193,7 +193,7 @@ export const Hero: React.FC<HeroProps> = ({ products, onSelectProduct, onNavigat
                   <div className="flex flex-col sm:flex-row gap-3 justify-center lg:justify-start pt-2">
                     <button
                       onClick={() => onSelectProduct(slide.product)}
-                      className={`px-6 py-3.5 bg-linear-to-r ${slide.gradient} hover:opacity-90 text-white text-xs font-bold rounded-xl shadow-lg transition-all text-center flex items-center justify-center gap-2 cursor-pointer active:scale-95`}
+                      className={`px-6 py-3.5 bg-linear-to-r ${slide.gradient} hover:opacity-90 text-white text-xs font-bold rounded-md shadow-lg transition-all text-center flex items-center justify-center gap-2 cursor-pointer active:scale-95`}
                       style={{ boxShadow: `0 10px 25px -5px ${slide.shadowColor}` }}
                     >
                       <ShoppingBag className="w-4 h-4" />
@@ -202,7 +202,7 @@ export const Hero: React.FC<HeroProps> = ({ products, onSelectProduct, onNavigat
                     {onNavigateToProducts && (
                       <button
                         onClick={onNavigateToProducts}
-                        className="px-6 py-3.5 bg-white/15 backdrop-blur-md border border-white/20 hover:bg-white/25 text-white text-xs font-bold rounded-xl transition-all text-center cursor-pointer active:scale-95"
+                        className="px-6 py-3.5 bg-white/15 backdrop-blur-md border border-white/20 hover:bg-white/25 text-white text-xs font-bold rounded-md transition-all text-center cursor-pointer active:scale-95"
                       >
                         Explore Full Catalog
                       </button>
@@ -212,19 +212,19 @@ export const Hero: React.FC<HeroProps> = ({ products, onSelectProduct, onNavigat
                   {/* Trust guarantees badges */}
                   <div className="grid grid-cols-3 gap-4 pt-6 max-w-sm mx-auto lg:mx-0 text-left border-t border-white/10 mt-6">
                     <div className="flex items-center gap-2">
-                      <div className="w-7 h-7 rounded-lg bg-white/10 border border-white/10 flex items-center justify-center text-white shrink-0">
+                      <div className="w-7 h-7 rounded-md bg-white/10 border border-white/10 flex items-center justify-center text-white shrink-0">
                         <ShieldCheck className="w-3.5 h-3.5 text-blue-400" />
                       </div>
                       <span className="text-[10px] font-bold text-slate-300">Genuine Pick</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <div className="w-7 h-7 rounded-lg bg-white/10 border border-white/10 flex items-center justify-center text-white shrink-0">
+                      <div className="w-7 h-7 rounded-md bg-white/10 border border-white/10 flex items-center justify-center text-white shrink-0">
                         <Zap className="w-3.5 h-3.5 text-blue-400" />
                       </div>
                       <span className="text-[10px] font-bold text-slate-300">Fast Shipping</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <div className="w-7 h-7 rounded-lg bg-white/10 border border-white/10 flex items-center justify-center text-white shrink-0">
+                      <div className="w-7 h-7 rounded-md bg-white/10 border border-white/10 flex items-center justify-center text-white shrink-0">
                         <Award className="w-3.5 h-3.5 text-blue-400" />
                       </div>
                       <span className="text-[10px] font-bold text-slate-300">Full Warranty</span>

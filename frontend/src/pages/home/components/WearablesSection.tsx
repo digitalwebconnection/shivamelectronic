@@ -40,17 +40,17 @@ export const WearablesSection: React.FC<WearablesSectionProps> = ({
         {/* Section Header */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-10 border-b border-slate-100 pb-6">
           <div className="flex items-center gap-3.5">
-            <div className="w-12 h-12 rounded-2xl bg-emerald-50 border border-emerald-100 flex items-center justify-center text-emerald-600 shadow-sm shadow-emerald-100">
+            <div className="w-12 h-12 rounded-md bg-emerald-50 border border-emerald-100 flex items-center justify-center text-emerald-600 shadow-sm shadow-emerald-100">
               <Settings className="w-6 h-6" />
             </div>
             <div>
               <h2 className="text-2xl sm:text-3xl font-black text-slate-900 font-serif tracking-tight">Hardware & Accessories</h2>
-              <p className="text-xs text-slate-400 mt-0.5">Rubber strain relief grommets and anti-vibration chassis isolating feet.</p>
+              <p className="text-xs text-slate-600 mt-0.5">Rubber strain relief grommets and anti-vibration chassis isolating feet.</p>
             </div>
           </div>
           <button
             onClick={() => onViewAll('hardware')}
-            className="flex items-center gap-1.5 px-4 py-2 border border-slate-200 hover:border-emerald-550 hover:text-emerald-650 rounded-xl text-xs font-bold text-slate-650 transition-all bg-white cursor-pointer self-start sm:self-auto shadow-sm"
+            className="flex items-center gap-1.5 px-4 py-2 border border-slate-200 hover:border-emerald-50 hover:text-emerald-500 rounded-md text-xs font-bold text-slate-650 transition-all bg-white cursor-pointer self-start sm:self-auto shadow-sm"
           >
             <span>View All</span>
             <ArrowRight className="w-3.5 h-3.5" />
