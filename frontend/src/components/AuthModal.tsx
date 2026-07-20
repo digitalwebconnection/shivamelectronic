@@ -384,6 +384,13 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLoginSu
               {/* ── NEW PASSWORD FIELDS ── */}
               {mode === 'reset' && (
                 <>
+                  <div className="flex items-center justify-between p-3 bg-emerald-50 border border-emerald-200 rounded-xl mb-1">
+                    <div className="flex items-center gap-2">
+                      <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+                      <span className="text-xs font-extrabold text-emerald-800">OTP Verified Successfully</span>
+                    </div>
+                  </div>
+
                   <div>
                     <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5">New Password</label>
                     <div className="relative">

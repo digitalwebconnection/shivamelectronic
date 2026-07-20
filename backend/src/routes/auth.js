@@ -207,6 +207,10 @@ router.post('/verify-otp', async (req, res) => {
       return res.status(400).json({ success: false, message: 'OTP has expired. Please request a new one.' });
     }
 
+    // Once OTP is verified, extend expiry session to 1 hour so user has unlimited time to set their new password
+    user.otpExpiry = new Date(Date.now() + 60 * 60 * 1000);
+    await user.save();
+
     res.json({ success: true, message: 'OTP verified successfully.' });
   } catch (error) {
     console.error('Verify OTP error:', error.message);
