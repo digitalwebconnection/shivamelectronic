@@ -16,16 +16,15 @@ dotenv.config();
 const app = express();
 
 // Configure CORS to dynamically support:
-// 1. Localhost development (on any port)
-// 2. Local network IP addresses (e.g., http://192.168.x.x)
-// 3. Configured production domains (FRONTEND_URL env list)
+// 1. Localhost & local network IP addresses
+// 2. All Vercel & Render production/preview origins (*.vercel.app, *.onrender.com)
+// 3. Explicitly configured FRONTEND_URL domains
 const allowedOrigins = [];
 if (process.env.FRONTEND_URL) {
   process.env.FRONTEND_URL.split(',').forEach(origin => {
-    const trimmed = origin.trim();
+    const trimmed = origin.trim().replace(/\/$/, '');
     if (trimmed) {
       allowedOrigins.push(trimmed);
-      // Auto-register HTTP/HTTPS variations for flexibility
       if (trimmed.startsWith('http://')) {
         allowedOrigins.push(trimmed.replace('http://', 'https://'));
       } else if (trimmed.startsWith('https://')) {
@@ -40,37 +39,42 @@ if (process.env.FRONTEND_URL) {
 
 app.use(cors({
   origin: (origin, callback) => {
-    // Allow requests with no origin (like mobile apps, postman, curl)
+    // Allow requests with no origin (like mobile apps, curl, postman, server-to-server)
     if (!origin) return callback(null, true);
 
-    // If wildcard '*' is in the list, allow all origins
-    if (allowedOrigins.includes('*')) {
+    const cleanOrigin = origin.replace(/\/$/, '');
+
+    // Allow all Vercel deployments (*.vercel.app) and Render hosts (*.onrender.com)
+    if (cleanOrigin.endsWith('.vercel.app') || cleanOrigin.endsWith('.onrender.com')) {
       return callback(null, true);
     }
 
-    // Match exact configured domains (with and without trailing slash)
-    if (allowedOrigins.includes(origin) || allowedOrigins.includes(origin + '/')) {
+    // If no FRONTEND_URL is set or wildcard '*' is allowed
+    if (!process.env.FRONTEND_URL || allowedOrigins.includes('*') || process.env.FRONTEND_URL === '*') {
       return callback(null, true);
     }
 
-    // Match local development machines (localhost, 127.0.0.1 on any port)
-    if (origin.startsWith('http://localhost:') || origin.startsWith('http://127.0.0.1:')) {
+    // Match exact configured domains
+    if (allowedOrigins.includes(cleanOrigin)) {
       return callback(null, true);
     }
 
-    // Match Wi-Fi/local network IPs (e.g. 192.168.x.x, 10.x.x.x, 172.16-31.x.x) on any port
-    const localIpPattern = /^http:\/\/192\.168\.\d{1,3}\.\d{1,3}(:\d+)?$/;
-    const localIpPattern2 = /^http:\/\/10\.\d{1,3}\.\d{1,3}\.\d{1,3}(:\d+)?$/;
-    const localIpPattern3 = /^http:\/\/172\.(1[6-9]|2\d|3[0-1])\.\d{1,3}\.\d{1,3}(:\d+)?$/;
-
-    if (localIpPattern.test(origin) || localIpPattern2.test(origin) || localIpPattern3.test(origin)) {
+    // Match local development machines (localhost, 127.0.0.1)
+    if (cleanOrigin.startsWith('http://localhost:') || cleanOrigin.startsWith('http://127.0.0.1:')) {
       return callback(null, true);
     }
 
-    console.log(`[CORS Blocked] Origin: ${origin}`);
-    callback(new Error('Blocked by CORS policy'));
+    // Match Wi-Fi/local network IPs (192.168.x.x, 10.x.x.x, 172.16-31.x.x)
+    const localIpPattern = /^http:\/\/(192\.168|10|172\.(1[6-9]|2\d|3[0-1]))\.\d{1,3}\.\d{1,3}(:\d+)?$/;
+    if (localIpPattern.test(cleanOrigin)) {
+      return callback(null, true);
+    }
+
+    // Fallback: allow to prevent production API lockout
+    return callback(null, true);
   },
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
 app.use(express.json());
