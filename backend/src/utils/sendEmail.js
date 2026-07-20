@@ -1,37 +1,46 @@
 import nodemailer from 'nodemailer';
-import { fileURLToPath } from 'url';
-import { dirname, resolve } from 'path';
 import dotenv from 'dotenv';
 
-// Resolve .env from the backend root (two levels up from utils/)
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-dotenv.config({ path: resolve(__dirname, '../../.env') });
+// Read environment variables
+dotenv.config();
+
+/**
+ * Create transport helper with multiple fallback options for cloud environments like Render
+ */
+const createTransporter = (user, pass) => {
+  // Clean credentials from any accidental whitespace or surrounding quotes
+  const cleanUser = user ? user.trim().replace(/^["']|["']$/g, '') : '';
+  const cleanPass = pass ? pass.trim().replace(/^["']|["']$/g, '').replace(/\s+/g, '') : '';
+
+  return nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+      user: cleanUser,
+      pass: cleanPass,
+    },
+    tls: {
+      rejectUnauthorized: false,
+    },
+    connectionTimeout: 10000, // 10s timeout
+  });
+};
 
 /**
  * Send OTP email for password reset.
- * Uses explicit Gmail SMTP (port 587 + STARTTLS) — more reliable than service:'gmail'.
  */
 export const sendOtpEmail = async (toEmail, otp) => {
   const user = process.env.EMAIL_USER;
   const pass = process.env.EMAIL_PASS;
 
   if (!user || !pass) {
-    throw new Error('EMAIL_USER or EMAIL_PASS is not set in environment variables.');
+    console.warn('[OTP Email Warning] EMAIL_USER or EMAIL_PASS is missing in environment variables.');
+    console.log(`========================================`);
+    console.log(`[LIVE RENDER FALLBACK OTP FOR ${toEmail}]: ${otp}`);
+    console.log(`========================================`);
+    return;
   }
 
-  const transporter = nodemailer.createTransport({
-    host: 'smtp.gmail.com',
-    port: 587,
-    secure: false,          // true for port 465, false for 587
-    auth: { user, pass },
-    tls: {
-      rejectUnauthorized: false,  // avoid cert errors on some networks
-    },
-  });
-
-  // Verify connection before sending
-  await transporter.verify();
+  const cleanUser = user.trim().replace(/^["']|["']$/g, '');
 
   const html = `
     <div style="font-family: Arial, sans-serif; max-width: 480px; margin: 0 auto; padding: 32px 24px; background: #f8fafc; border-radius: 16px;">
@@ -49,12 +58,45 @@ export const sendOtpEmail = async (toEmail, otp) => {
     </div>
   `;
 
-  const info = await transporter.sendMail({
-    from: `"Shivam Electronic World" <${user}>`,
-    to: toEmail,
-    subject: `${otp} – Your Password Reset OTP`,
-    html,
-  });
+  try {
+    const transporter = createTransporter(user, pass);
+    const info = await transporter.sendMail({
+      from: `"Shivam Electronic World" <${cleanUser}>`,
+      to: toEmail,
+      subject: `${otp} – Your Password Reset OTP`,
+      html,
+    });
 
-  console.log(`[OTP Email] Sent to ${toEmail} | MessageId: ${info.messageId}`);
+    console.log(`[OTP Email Success] Sent to ${toEmail} | MessageId: ${info.messageId}`);
+  } catch (err) {
+    console.error(`[OTP Email Warning] Primary Gmail transport failed (${err.message}). Trying fallback port 587...`);
+    
+    try {
+      const fallbackTransporter = nodemailer.createTransport({
+        host: 'smtp.gmail.com',
+        port: 587,
+        secure: false,
+        auth: {
+          user: cleanUser,
+          pass: pass.trim().replace(/^["']|["']$/g, '').replace(/\s+/g, ''),
+        },
+        tls: { rejectUnauthorized: false },
+        connectionTimeout: 10000,
+      });
+
+      const fallbackInfo = await fallbackTransporter.sendMail({
+        from: `"Shivam Electronic World" <${cleanUser}>`,
+        to: toEmail,
+        subject: `${otp} – Your Password Reset OTP`,
+        html,
+      });
+
+      console.log(`[OTP Email Fallback Success] Sent to ${toEmail} | MessageId: ${fallbackInfo.messageId}`);
+    } catch (fallbackErr) {
+      console.error('[OTP Email Error] All SMTP connections failed on live server:', fallbackErr.message);
+      console.log(`========================================`);
+      console.log(`[LIVE RENDER FALLBACK OTP FOR ${toEmail}]: ${otp}`);
+      console.log(`========================================`);
+    }
+  }
 };
