@@ -64,7 +64,7 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
         <div className="mb-6">
           <button 
             onClick={onBack}
-            className="inline-flex items-center gap-1.5 px-4 py-2 bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 text-xs font-bold rounded-xl transition-all shadow-sm cursor-pointer active:scale-95"
+            className="inline-flex items-center gap-1.5 px-4 py-2 bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 text-xs font-bold rounded-md transition-all shadow-sm cursor-pointer active:scale-95"
           >
             <ArrowLeft className="w-3.5 h-3.5" />
             <span>Back to Products</span>
@@ -77,14 +77,14 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
           <div className="absolute top-0 right-0 w-96 h-96 bg-blue-500/5 rounded-full blur-3xl pointer-events-none" />
 
           {/* Left Column: Image Showcase */}
-          <div className="lg:col-span-6 shadow-lg shadow-black flex flex-col items-center justify-center bg-slate-50/50 border border-slate-100 rounded-lg  relative aspect-square">
+          <div className="lg:col-span-6 shadow-lg shadow-black flex flex-col items-center justify-center bg-slate-50/50 border border-slate-100 rounded-md  relative aspect-square">
             <img 
               src={product.image} 
               alt={product.name} 
               className="w-full h-full object-fill transition-transform duration-700  drop-"
             />
             {product.isHot && (
-              <span className="absolute top-4 left-4 bg-linear-to-r from-red-600 to-rose-500 text-white text-[9px] font-black uppercase tracking-widest px-3 py-1 rounded-lg shadow-md shadow-red-500/10">
+              <span className="absolute top-4 left-4 bg-linear-to-r from-red-600 to-rose-500 text-white text-[9px] font-black uppercase tracking-widest px-3 py-1 rounded-md shadow-md shadow-red-500/10">
                 Hot Seller
               </span>
             )}
@@ -115,7 +115,7 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
                   <span className="text-xs font-bold text-slate-650 ml-1.5">{product.rating} Rating</span>
                 </div>
                 <span className="text-slate-200">|</span>
-                <span className="text-xs font-bold text-emerald-600 bg-emerald-50 border border-emerald-100 px-2.5 py-0.5 rounded-lg">In Stock</span>
+                <span className="text-xs font-bold text-emerald-600 bg-emerald-50 border border-emerald-100 px-2.5 py-0.5 rounded-md">In Stock</span>
               </div>
 
               {/* Price */}
@@ -150,14 +150,14 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
             <div className="flex gap-3 pt-6">
               <button
                 onClick={() => onAddToCart(product)}
-                className="flex-1 py-3.5 px-6 bg-linear-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold rounded-xl shadow-lg shadow-blue-500/15 transition-all duration-300 flex items-center justify-center gap-2 text-sm cursor-pointer active:scale-95"
+                className="flex-1 py-3.5 px-6 bg-linear-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold rounded-md shadow-lg shadow-blue-500/15 transition-all duration-300 flex items-center justify-center gap-2 text-sm cursor-pointer active:scale-95"
               >
                 <ShoppingCart className="w-4 h-4" />
                 <span>Add to Cart</span>
               </button>
               <button
                 onClick={handleWishlistClick}
-                className={`p-3.5 border rounded-xl transition-all duration-300 flex items-center justify-center cursor-pointer active:scale-95 ${
+                className={`p-3.5 border rounded-md transition-all duration-300 flex items-center justify-center cursor-pointer active:scale-95 ${
                   isWishlisted 
                     ? 'bg-rose-500 border-rose-500 text-white shadow-lg shadow-rose-500/15' 
                     : 'bg-white border-slate-200 text-slate-400 hover:text-rose-500 hover:border-rose-300'
@@ -173,7 +173,7 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
         {/* Related Products Grid (4 layout grid) */}
         <div>
           <div className="flex items-center gap-2 mb-6">
-            <div className="w-8 h-8 rounded-lg bg-blue-50 border border-blue-100 flex items-center justify-center text-blue-600">
+            <div className="w-8 h-8 rounded-md bg-blue-50 border border-blue-100 flex items-center justify-center text-blue-600">
               <Sparkles className="w-4 h-4" />
             </div>
             <div>

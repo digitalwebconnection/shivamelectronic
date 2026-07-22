@@ -96,7 +96,7 @@ export const AboutPage: React.FC = () => {
 
       {/* Trust Stats Metrics */}
       <section className="relative -mt-10 z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 bg-white border border-slate-200 p-6 sm:p-8 rounded-3xl shadow-xl">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 bg-white border border-slate-200 p-6 sm:p-8 rounded-full shadow-xl">
           <div className="text-center space-y-1">
             <span className="block text-3xl sm:text-4xl font-black text-slate-950">10+</span>
             <span className="text-[10px] text-slate-400 font-extrabold uppercase tracking-widest block">Years of Trust</span>
@@ -123,12 +123,12 @@ export const AboutPage: React.FC = () => {
             
             {/* Visual Frame */}
             <div className="lg:col-span-6 relative group">
-              <div className="absolute inset-0 bg-linear-to-r from-blue-650 to-indigo-600 rounded-3xl blur-xl opacity-20 group-hover:opacity-30 transition-opacity duration-500" />
-              <div className="relative border border-slate-200 bg-white p-3 rounded-3xl shadow-2xl">
+              <div className="absolute inset-0 bg-linear-to-r from-blue-650 to-indigo-600 rounded-md blur-xl opacity-20 group-hover:opacity-30 transition-opacity duration-500" />
+              <div className="relative border border-slate-200 bg-white p-3 rounded-md shadow-2xl">
                 <img 
                   src="/electronics_showroom.png" 
                   alt="Shivam Electronic World Showroom Experience" 
-                  className="rounded-2xl w-full h-[350px] object-cover"
+                  className="rounded-md w-full h-[350px] object-cover"
                 />
               </div>
             </div>
@@ -164,8 +164,8 @@ export const AboutPage: React.FC = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {values.map((val, idx) => (
-              <div key={idx} className="bg-slate-50 border border-slate-200/80 p-6 rounded-2xl shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 space-y-4">
-                <div className="w-12 h-12 rounded-xl bg-white border border-slate-200 flex items-center justify-center shadow-sm">
+              <div key={idx} className="bg-slate-50 border border-slate-200/80 p-6 rounded-md shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 space-y-4">
+                <div className="w-12 h-12 rounded-full bg-white border border-slate-200 flex items-center justify-center shadow-sm">
                   {val.icon}
                 </div>
                 <h3 className="text-sm font-bold text-slate-900">{val.title}</h3>
@@ -202,7 +202,7 @@ export const AboutPage: React.FC = () => {
                 </span>
 
                 {/* Content card */}
-                <div className="bg-white border border-slate-200 p-6 rounded-2xl shadow-sm">
+                <div className="bg-white border border-slate-200 p-6 rounded-3xl shadow-sm">
                   <span className="inline-block md:hidden text-xs font-black text-blue-600 mb-1">{m.year}</span>
                   <h3 className="text-sm font-extrabold text-slate-900 mb-2">{m.title}</h3>
                   <p className="text-xs text-slate-500 leading-relaxed">{m.description}</p>
@@ -224,13 +224,13 @@ export const AboutPage: React.FC = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {team.map((t, idx) => (
-              <div key={idx} className="bg-slate-50 border border-slate-200 p-5 rounded-3xl text-center space-y-4 hover:-translate-y-1 hover:shadow-xl transition-all duration-300">
+              <div key={idx} className="bg-slate-50 border border-slate-200 p-5 rounded-md shadow-2xl text-center space-y-4 hover:-translate-y-1 hover:shadow-xl transition-all duration-300">
                 <div className="w-24 h-24 rounded-full overflow-hidden mx-auto border-2 border-white shadow-md">
                   <img src={t.image} alt={t.name} className="w-full h-full object-cover" />
                 </div>
                 <div>
                   <h3 className="text-sm font-black text-slate-900">{t.name}</h3>
-                  <span className="text-[10px] text-blue-600 bg-blue-50 border border-blue-100 px-2 py-0.5 rounded font-black uppercase mt-1 inline-block">
+                  <span className="text-[10px] text-blue-600 bg-blue-50 border border-blue-100 px-2 py-0.5 rounded-full font-black uppercase mt-1 inline-block">
                     {t.role}
                   </span>
                 </div>

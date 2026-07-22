@@ -68,7 +68,7 @@ export const ProductGrid: React.FC<ProductGridProps> = ({
           return (
             <div 
               key={product.id}
-              className="group relative flex flex-col bg-slate-50/40 hover:bg-white border border-slate-200/80 hover:border-slate-350 rounded-2xl overflow-hidden transition-all duration-300 hover:shadow-xl hover:shadow-slate-200/50 hover:-translate-y-1"
+              className="group relative flex flex-col bg-slate-50/40 hover:bg-white border border-slate-200/80 hover:border-slate-350 rounded-md overflow-hidden transition-all duration-300 hover:shadow-xl hover:shadow-slate-200/50 hover:-translate-y-1"
             >
               {/* Badges (Hot / New) */}
               <div className="absolute top-3 left-3 z-10 flex flex-col gap-1.5">
@@ -82,7 +82,7 @@ export const ProductGrid: React.FC<ProductGridProps> = ({
               {/* Wishlist Button */}
               <button
                 onClick={() => handleWishlistClick(product)}
-                className={`absolute top-3 right-3 z-10 p-2 rounded-xl transition-all duration-300 border cursor-pointer ${
+                className={`absolute top-3 right-3 z-10 p-2 rounded-full transition-all duration-300 border cursor-pointer ${
                   hasHeart 
                     ? 'bg-rose-500 border-rose-500 text-white shadow-md shadow-rose-500/20' 
                     : 'bg-white/90 border-slate-200 text-slate-400 hover:text-rose-500 hover:border-rose-300 hover:bg-white'
@@ -104,7 +104,7 @@ export const ProductGrid: React.FC<ProductGridProps> = ({
                 />
                 {/* Overlay on hover */}
                 <div className="absolute inset-0 bg-slate-950/15 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity duration-300">
-                  <span className="flex items-center gap-1.5 px-3.5 py-1.5 bg-white/90 hover:bg-white backdrop-blur-md text-slate-800 text-[10px] font-bold rounded-xl border border-slate-200 transition-all shadow-md">
+                  <span className="flex items-center gap-1.5 px-3.5 py-1.5 bg-white/90 hover:bg-white backdrop-blur-md text-slate-800 text-[10px] font-bold rounded-md border border-slate-200 transition-all shadow-md">
                     <Eye className="w-3.5 h-3.5 text-blue-600" />
                     Quick View
                   </span>
@@ -147,10 +147,9 @@ export const ProductGrid: React.FC<ProductGridProps> = ({
                   <span className="text-[10px] font-extrabold uppercase tracking-wider text-slate-400">
                     Quote on Request
                   </span>
-
                   <button
                     onClick={() => onAddToCart(product)}
-                    className="flex items-center justify-center gap-1 py-1.5 px-3.5 rounded-xl bg-linear-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white text-[10px] font-black shadow-md shadow-blue-600/10 active:scale-95 transition-all duration-300 cursor-pointer"
+                    className="flex items-center justify-center gap-1 py-1.5 px-3.5 rounded-md bg-linear-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white text-[10px] font-black shadow-md shadow-blue-600/10 active:scale-95 transition-all duration-300 cursor-pointer"
                     title="Add to Cart"
                   >
                     <ShoppingCart className="w-3 h-3" />
@@ -158,7 +157,6 @@ export const ProductGrid: React.FC<ProductGridProps> = ({
                   </button>
                 </div>
               </div>
-
             </div>
           );
         })}
@@ -169,7 +167,7 @@ export const ProductGrid: React.FC<ProductGridProps> = ({
         <div className="flex justify-center mt-12">
           <button
             onClick={onNavigateToProducts}
-            className="flex items-center gap-1.5 px-7 py-3.5 bg-linear-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white text-xs font-black rounded-xl shadow-lg hover:shadow-xl hover:shadow-blue-500/25 active:scale-95 transition-all duration-300 cursor-pointer"
+            className="flex items-center gap-1.5 px-7 py-3.5 bg-linear-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white text-xs font-black rounded-md shadow-lg hover:shadow-xl hover:shadow-blue-500/25 active:scale-95 transition-all duration-300 cursor-pointer"
           >
             <span>View All Products</span>
             <ArrowRight className="w-4 h-4" />

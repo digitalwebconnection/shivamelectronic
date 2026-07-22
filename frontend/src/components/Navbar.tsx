@@ -306,17 +306,17 @@ export const Navbar: React.FC<NavbarProps> = ({
 
         {/* Suggestions Dropdown */}
         {searchResults.length > 0 && (
-          <div className="absolute top-[calc(100%+8px)] left-0 right-0 bg-white/95 backdrop-blur-md border border-slate-200/80 rounded-2xl shadow-2xl overflow-hidden z-50 animate-in fade-in slide-in-from-top-1 duration-150 p-2 space-y-1">
+          <div className="absolute top-[calc(100%+8px)] left-0 right-0 bg-white/95 backdrop-blur-md border border-slate-200/80 rounded-md shadow-2xl overflow-hidden z-50 animate-in fade-in slide-in-from-top-1 duration-150 p-2 space-y-1">
             <span className="block text-[10px] font-bold text-slate-400 uppercase tracking-widest px-3 py-1.5 border-b border-slate-100 text-left">
               Suggested Products
             </span>
             {searchResults.map((product) => (
               <div
                 key={product.id}
-                className="flex items-center justify-between p-2 hover:bg-blue-50/50 rounded-xl transition-all duration-200 gap-3"
+                className="flex items-center justify-between p-2 hover:bg-blue-500/50 rounded-md transition-all duration-200 gap-3"
               >
                 <div className="flex items-center gap-3">
-                  <div className="w-9 h-9 rounded-lg overflow-hidden bg-slate-50 border border-slate-200 shrink-0">
+                  <div className="w-9 h-9 rounded-md overflow-hidden bg-slate-50 border border-slate-200 shrink-0">
                     <img src={product.image} alt={product.name} className="w-full h-full object-cover" />
                   </div>
                   <div className="text-left">
@@ -331,7 +331,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                     onProductClick(product);
                     handleClearInput();
                   }}
-                  className="px-2.5 py-1.5 bg-blue-600 hover:bg-blue-500 text-white text-[10px] font-bold rounded-lg transition-all shrink-0 hover:shadow-sm"
+                  className="px-2.5 py-1.5 bg-blue-600 hover:bg-blue-500 text-white text-[10px] font-bold rounded-md transition-all shrink-0 hover:shadow-sm"
                 >
                   View
                 </button>
