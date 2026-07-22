@@ -133,6 +133,7 @@ function App() {
   const handleLogout = () => {
     setUser(null);
     localStorage.removeItem('currentUser');
+    localStorage.removeItem('userToken');
     setCurrentPage('home');
   };
   const [cartItems, setCartItems] = useState<CartItem[]>(() => {
@@ -307,6 +308,7 @@ function App() {
               onLogout={handleLogout}
               onPromptAuth={() => setIsAuthOpen(true)}
               orders={orders}
+              onNavigateToProducts={() => setCurrentPage('products')}
             />
           )}
 
@@ -340,9 +342,10 @@ function App() {
         <AuthModal 
           isOpen={isAuthOpen}
           onClose={() => setIsAuthOpen(false)}
-          onLoginSuccess={(user) => {
+          onLoginSuccess={(user, token) => {
             setUser(user);
             localStorage.setItem('currentUser', JSON.stringify(user));
+            localStorage.setItem('userToken', token);
             setIsAuthOpen(false);
           }}
         />

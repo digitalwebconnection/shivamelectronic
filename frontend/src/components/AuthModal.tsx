@@ -5,7 +5,7 @@ import { API_URL } from '../config';
 interface AuthModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onLoginSuccess: (user: { name: string; email: string; avatar: string; role: string }) => void;
+  onLoginSuccess: (user: { id?: string; name: string; email: string; avatar: string; role: string }, token: string) => void;
 }
 
 type Mode = 'login' | 'signup' | 'forgot' | 'otp' | 'reset' | 'reset-success';
@@ -127,7 +127,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLoginSu
           body: JSON.stringify({ email, password }),
         });
         const data = await res.json();
-        if (res.ok && data.success) { onLoginSuccess(data.user); onClose(); }
+        if (res.ok && data.success) { onLoginSuccess(data.user, data.token); onClose(); }
         else setError(data.message || 'Invalid email or password.');
 
       /* SIGNUP */
@@ -138,7 +138,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLoginSu
           body: JSON.stringify({ name, email, password }),
         });
         const data = await res.json();
-        if (res.ok && data.success) { onLoginSuccess(data.user); onClose(); }
+        if (res.ok && data.success) { onLoginSuccess(data.user, data.token); onClose(); }
         else setError(data.message || 'Registration failed.');
 
       /* STEP 1 – send OTP */
@@ -211,7 +211,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLoginSu
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm">
       <div
-        className="relative w-full max-w-md bg-white border border-slate-200 rounded-3xl shadow-2xl animate-in fade-in zoom-in-95 duration-200 overflow-hidden"
+        className="relative w-full max-w-md bg-white border border-slate-200 rounded-md shadow-2xl animate-in fade-in zoom-in-95 duration-200 overflow-hidden"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Top gradient strip */}
@@ -229,7 +229,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLoginSu
 
           {/* Icon */}
           <div className="flex justify-center mb-5">
-            <div className="w-13 h-13 flex items-center justify-center rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 text-white shadow-lg shadow-blue-500/25">
+            <div className="w-13 h-13 flex items-center justify-center rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 text-white shadow-lg shadow-blue-500/25">
               {mode === 'reset-success'
                 ? <CheckCircle2 className="w-7 h-7" />
                 : mode === 'otp' || mode === 'reset'
@@ -258,7 +258,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLoginSu
 
           {/* Error */}
           {error && (
-            <div className="p-3 mb-4 bg-rose-50 border border-rose-100 text-rose-700 text-xs rounded-xl text-center leading-relaxed font-semibold">
+            <div className="p-3 mb-4 bg-rose-50 border border-rose-100 text-rose-700 text-xs rounded-md text-center leading-relaxed font-semibold">
               {error}
             </div>
           )}
@@ -266,12 +266,12 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLoginSu
           {/* ── RESET SUCCESS ── */}
           {mode === 'reset-success' ? (
             <div className="space-y-4">
-              <div className="p-4 bg-emerald-50 border border-emerald-100 rounded-2xl text-center text-xs text-emerald-800 leading-relaxed font-semibold">
+              <div className="p-4 bg-emerald-50 border border-emerald-100 rounded-md text-center text-xs text-emerald-800 leading-relaxed font-semibold">
                 You can now log in with your new password.
               </div>
               <button
                 onClick={() => { resetAll(); switchMode('login'); }}
-                className="w-full py-3.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold rounded-2xl shadow-lg shadow-blue-500/20 active:scale-95 transition-all text-sm cursor-pointer"
+                className="w-full py-3.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold rounded-md shadow-lg shadow-blue-500/20 active:scale-95 transition-all text-sm cursor-pointer"
               >
                 Go to Login
               </button>
@@ -306,7 +306,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLoginSu
                       type="email" required value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       placeholder="name@example.com"
-                      className="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10 text-slate-900 placeholder-slate-400 rounded-xl outline-none text-sm transition-all"
+                      className="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10 text-slate-900 placeholder-slate-400 rounded-md outline-none text-sm transition-all"
                     />
                   </div>
                 </div>
@@ -322,7 +322,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLoginSu
                       type={showPassword ? 'text' : 'password'} required value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       placeholder="••••••••"
-                      className="w-full pl-10 pr-10 py-3 bg-slate-50 border border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10 text-slate-900 placeholder-slate-400 rounded-xl outline-none text-sm transition-all"
+                      className="w-full pl-10 pr-10 py-3 bg-slate-50 border border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10 text-slate-900 placeholder-slate-400 rounded-md outline-none text-sm transition-all"
                     />
                     <button type="button" onClick={() => setShowPassword(!showPassword)}
                       className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 cursor-pointer">
@@ -361,7 +361,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLoginSu
                         value={digit}
                         onChange={(e) => handleOtpChange(i, e.target.value)}
                         onKeyDown={(e) => handleOtpKeyDown(i, e)}
-                        className={`w-11 h-13 text-center text-xl font-black border-2 rounded-xl outline-none transition-all bg-slate-50 text-slate-900 ${
+                        className={`w-11 h-13 text-center text-xl font-black border-2 rounded-md outline-none transition-all bg-slate-50 text-slate-900 ${
                           digit ? 'border-blue-600 bg-blue-50 text-blue-700' : 'border-slate-200 focus:border-blue-500'
                         }`}
                       />
@@ -384,7 +384,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLoginSu
               {/* ── NEW PASSWORD FIELDS ── */}
               {mode === 'reset' && (
                 <>
-                  <div className="flex items-center justify-between p-3 bg-emerald-50 border border-emerald-200 rounded-xl mb-1">
+                  <div className="flex items-center justify-between p-3 bg-emerald-50 border border-emerald-200 rounded-md mb-1">
                     <div className="flex items-center gap-2">
                       <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
                       <span className="text-xs font-extrabold text-emerald-800">OTP Verified Successfully</span>
@@ -399,7 +399,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLoginSu
                         type={showNew ? 'text' : 'password'} required value={newPassword}
                         onChange={(e) => setNewPassword(e.target.value)}
                         placeholder="Minimum 6 characters"
-                        className="w-full pl-10 pr-10 py-3 bg-slate-50 border border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10 text-slate-900 placeholder-slate-400 rounded-xl outline-none text-sm transition-all"
+                        className="w-full pl-10 pr-10 py-3 bg-slate-50 border border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10 text-slate-900 placeholder-slate-400 rounded-md outline-none text-sm transition-all"
                       />
                       <button type="button" onClick={() => setShowNew(!showNew)}
                         className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 cursor-pointer">
@@ -415,7 +415,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLoginSu
                         type={showConfirm ? 'text' : 'password'} required value={confirmPassword}
                         onChange={(e) => setConfirmPassword(e.target.value)}
                         placeholder="Re-enter your password"
-                        className={`w-full pl-10 pr-10 py-3 bg-slate-50 border-2 focus:ring-2 text-slate-900 placeholder-slate-400 rounded-xl outline-none text-sm transition-all ${
+                        className={`w-full pl-10 pr-10 py-3 bg-slate-50 border-2 focus:ring-2 text-slate-900 placeholder-slate-400 rounded-md outline-none text-sm transition-all ${
                           confirmPassword
                             ? confirmPassword === newPassword
                               ? 'border-emerald-400 focus:ring-emerald-500/10'
@@ -435,7 +435,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLoginSu
               {/* Submit */}
               <button
                 type="submit" disabled={loading}
-                className="w-full py-3.5 mt-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold rounded-2xl shadow-lg shadow-blue-500/20 active:scale-[0.98] transition-all text-sm cursor-pointer disabled:opacity-60"
+                className="w-full py-3.5 mt-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold rounded-md shadow-lg shadow-blue-500/20 active:scale-[0.98] transition-all text-sm cursor-pointer disabled:opacity-60"
               >
                 {loading ? 'Please wait…' : (
                   <>

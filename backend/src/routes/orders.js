@@ -1,6 +1,6 @@
 import express from 'express';
 import Order from '../models/Order.js';
-import { protectAdmin } from '../middleware/auth.js';
+import { protectAdmin, protect } from '../middleware/auth.js';
 
 const router = express.Router();
 
@@ -67,6 +67,31 @@ router.post('/', async (req, res) => {
   } catch (error) {
     console.error('Error placing order:', error.message);
     res.status(500).json({ message: error.message || 'Server error placing order' });
+  }
+});
+
+/**
+ * @route   GET /api/orders/my
+ * @desc    Get current customer's orders
+ * @access  Private (Customer or Admin)
+ */
+router.get('/my', protect, async (req, res) => {
+  try {
+    const query = {};
+    if (req.user.id) {
+      query.$or = [
+        { user: req.user.id },
+        { customerEmail: req.user.email }
+      ];
+    } else {
+      query.customerEmail = req.user.email;
+    }
+
+    const orders = await Order.find(query).sort({ createdAt: -1 });
+    res.json(orders);
+  } catch (error) {
+    console.error('Error fetching my orders:', error.message);
+    res.status(500).json({ message: 'Server error fetching your orders' });
   }
 });
 

@@ -59,8 +59,8 @@ export const ContactPage: React.FC = () => {
           
           {/* Left Column: Contact Cards */}
           <div className="lg:col-span-5 space-y-6">
-            <div className="bg-white border border-slate-200 p-6 rounded-3xl shadow-sm flex gap-4">
-              <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center text-blue-600 shrink-0">
+            <div className="bg-white border border-slate-200 p-6 rounded-md shadow-sm flex gap-4">
+              <div className="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center text-blue-600 shrink-0">
                 <MapPin className="w-5 h-5" />
               </div>
               <div className="space-y-1">
@@ -71,8 +71,8 @@ export const ContactPage: React.FC = () => {
               </div>
             </div>
 
-            <div className="bg-white border border-slate-200 p-6 rounded-3xl shadow-sm flex gap-4">
-              <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center text-blue-600 shrink-0">
+            <div className="bg-white border border-slate-200 p-6 rounded-md shadow-sm flex gap-4">
+              <div className="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center text-blue-600 shrink-0">
                 <Phone className="w-5 h-5" />
               </div>
               <div className="space-y-1">
@@ -83,8 +83,8 @@ export const ContactPage: React.FC = () => {
               </div>
             </div>
 
-            <div className="bg-white border border-slate-200 p-6 rounded-3xl shadow-sm flex gap-4">
-              <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center text-blue-600 shrink-0">
+            <div className="bg-white border border-slate-200 p-6 rounded-md shadow-sm flex gap-4">
+              <div className="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center text-blue-600 shrink-0">
                 <Mail className="w-5 h-5" />
               </div>
               <div className="space-y-1">
@@ -101,11 +101,11 @@ export const ContactPage: React.FC = () => {
 
           {/* Right Column: Contact Form */}
           <div className="lg:col-span-7">
-            <div className="bg-white border border-slate-200 rounded-3xl p-8 shadow-sm">
+            <div className="bg-white border border-slate-200 rounded-md p-8 shadow-sm">
               <h2 className="text-xl font-bold text-slate-900 font-serif mb-6">Send Us a Direct Message</h2>
               
               {submitted ? (
-                <div className="bg-green-50 border border-green-200 text-green-700 text-xs font-bold p-4 rounded-xl text-center">
+                <div className="bg-green-50 border border-green-200 text-green-700 text-xs font-bold p-4 rounded-md text-center">
                   Thank you! Your message has been received. Our team will contact you shortly.
                 </div>
               ) : (
@@ -119,7 +119,7 @@ export const ContactPage: React.FC = () => {
                         value={name}
                         onChange={(e) => setName(e.target.value)}
                         placeholder="Shivam Gupta"
-                        className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-xs text-slate-905 outline-none focus:border-blue-500 focus:bg-white transition-all"
+                        className="w-full bg-slate-50 border border-slate-200 rounded-md px-4 py-3 text-xs text-slate-905 outline-none focus:border-blue-500 focus:bg-white transition-all"
                       />
                     </div>
                     <div className="space-y-1.5 text-left">
@@ -130,7 +130,7 @@ export const ContactPage: React.FC = () => {
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         placeholder="shivam@example.com"
-                        className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-xs text-slate-905 outline-none focus:border-blue-500 focus:bg-white transition-all"
+                        className="w-full bg-slate-50 border border-slate-200 rounded-md px-4 py-3 text-xs text-slate-905 outline-none focus:border-blue-500 focus:bg-white transition-all"
                       />
                     </div>
                   </div>
@@ -143,13 +143,13 @@ export const ContactPage: React.FC = () => {
                       value={message}
                       onChange={(e) => setMessage(e.target.value)}
                       placeholder="Hi, I am interested in ordering bulk GX16 aviation plugs and custom rocker switches..."
-                      className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-xs text-slate-905 outline-none focus:border-blue-500 focus:bg-white transition-all resize-none"
+                      className="w-full bg-slate-50 border border-slate-200 rounded-md px-4 py-3 text-xs text-slate-905 outline-none focus:border-blue-500 focus:bg-white transition-all resize-none"
                     />
                   </div>
 
                   <button 
                     type="submit"
-                    className="w-full bg-linear-to-r from-blue-600 to-cyan-500 hover:from-blue-500 hover:to-cyan-400 text-white font-bold text-xs py-3.5 rounded-xl flex items-center justify-center gap-2 transition-all cursor-pointer shadow-lg shadow-blue-500/10 active:scale-[0.99]"
+                    className="w-full bg-linear-to-r from-blue-600 to-cyan-500 hover:from-blue-500 hover:to-cyan-400 text-white font-bold text-xs py-3.5 rounded-md flex items-center justify-center gap-2 transition-all cursor-pointer shadow-lg shadow-blue-500/10 active:scale-[0.99]"
                   >
                     <Send className="w-3.5 h-3.5" />
                     <span>Submit Inquiry Message</span>
@@ -174,7 +174,7 @@ export const ContactPage: React.FC = () => {
             {faqs.map((faq, idx) => (
               <div 
                 key={idx}
-                className="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm transition-all"
+                className="bg-white border border-slate-200 rounded-md overflow-hidden shadow-sm transition-all"
               >
                 <button
                   onClick={() => setOpenFaqIndex(openFaqIndex === idx ? null : idx)}

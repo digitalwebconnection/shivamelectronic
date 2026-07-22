@@ -6,25 +6,45 @@ export const AboutPage: React.FC = () => {
       year: '2016',
       title: 'The Humble Repair Shop',
       description: 'Shivam Electronic World was founded in a modest 400 sq. ft. workshop, specializing in precision repairs for motherboard micro-soldering and custom cabling.',
-      icon: <Cpu className="w-5 h-5" />
+      icon: <Cpu className="w-5 h-5" />,
+      colorClass: {
+        bg: 'bg-blue-50/70',
+        border: 'border-blue-100/50',
+        text: 'text-blue-600'
+      }
     },
     {
       year: '2019',
       title: 'First Distribution Hub',
       description: 'We opened our first physical warehouse and retail outlet, distributing premium switches, aviation connectors, and power cables to electronic vendors.',
-      icon: <Building className="w-5 h-5" />
+      icon: <Building className="w-5 h-5" />,
+      colorClass: {
+        bg: 'bg-emerald-50/70',
+        border: 'border-emerald-100/50',
+        text: 'text-emerald-600'
+      }
     },
     {
       year: '2022',
       title: 'Custom Electronic Solutions',
       description: 'Launched custom industrial wire harnessing services and specialized components supply for manufacturers and developers.',
-      icon: <Zap className="w-5 h-5" />
+      icon: <Zap className="w-5 h-5" />,
+      colorClass: {
+        bg: 'bg-rose-50/70',
+        border: 'border-rose-100/50',
+        text: 'text-rose-600'
+      }
     },
     {
       year: '2026',
       title: 'The Digital Revolution',
       description: 'Pioneered an AI-driven online shop with glassmorphic designs, express nationwide shipping, and dedicated 24/7 technical support.',
-      icon: <Calendar className="w-5 h-5" />
+      icon: <Calendar className="w-5 h-5" />,
+      colorClass: {
+        bg: 'bg-violet-50/70',
+        border: 'border-violet-100/50',
+        text: 'text-violet-600'
+      }
     }
   ];
 
@@ -179,37 +199,66 @@ export const AboutPage: React.FC = () => {
       </section>
 
       {/* Vertical Timeline History */}
-      <section className="py-20 bg-slate-50">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="py-20 bg-slate-50/50 relative overflow-hidden">
+        {/* Subtle background decoration */}
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(245,158,11,0.03),transparent_70%)] pointer-events-none" />
+
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 relative">
           <div className="text-center mb-16 space-y-2">
             <h2 className="text-2xl sm:text-3xl font-black text-slate-900 font-serif tracking-tight">Milestones in Our Journey</h2>
-            <p className="text-xs text-slate-500">A look back at how we started and where we are heading.</p>
+            <p className="text-xs text-slate-550">A look back at how we started and where we are heading.</p>
           </div>
 
-          {/* Timeline track */}
-          <div className="relative border-l-2 border-slate-250 ml-4 md:ml-32 space-y-12">
-            {milestones.map((m, idx) => (
-              <div key={idx} className="relative pl-8 md:pl-12">
-                
-                {/* Year tag left */}
-                <div className="hidden md:block absolute right-[calc(100%+32px)] top-1 text-right">
-                  <span className="text-lg font-black text-blue-600">{m.year}</span>
-                </div>
+          {/* Timeline container */}
+          <div className="relative">
+            {/* Central Timeline Line: Gold/Amber theme matching the uploaded layout */}
+            <div className="absolute left-4 md:left-1/2 top-10 bottom-10 w-0.5 bg-amber-500/20 -translate-x-1/2" />
 
-                {/* Timeline node icon */}
-                <span className="absolute left-[-17px] top-1.5 w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center shadow-lg shadow-blue-500/20 border-4 border-slate-50">
-                  {m.icon}
-                </span>
+            <div className="space-y-12 md:space-y-16">
+              {milestones.map((m, idx) => {
+                const isLeft = idx % 2 === 0;
+                return (
+                  <div 
+                    key={idx} 
+                    className={`flex flex-col md:flex-row items-start ${
+                      isLeft ? '' : 'md:flex-row-reverse'
+                    } relative`}
+                  >
+                    {/* Timeline Node Ring: Gold/Amber ring with white center */}
+                    <div className="absolute left-4 md:left-1/2 top-[44px] w-4.5 h-4.5 rounded-full border-4 border-amber-500 bg-white -translate-x-1/2 -translate-y-1/2 z-10 shadow-[0_0_8px_rgba(245,158,11,0.3)]" />
 
-                {/* Content card */}
-                <div className="bg-white border border-slate-200 p-6 rounded-3xl shadow-sm">
-                  <span className="inline-block md:hidden text-xs font-black text-blue-600 mb-1">{m.year}</span>
-                  <h3 className="text-sm font-extrabold text-slate-900 mb-2">{m.title}</h3>
-                  <p className="text-xs text-slate-500 leading-relaxed">{m.description}</p>
-                </div>
+                    {/* Card Container */}
+                    <div className={`w-full md:w-1/2 pl-12 md:pl-0 ${
+                      isLeft ? 'md:pr-12' : 'md:pl-12'
+                    }`}>
+                      <div className="bg-white rounded-3xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.03)] border border-slate-100/50 hover:shadow-[0_12px_40px_rgb(0,0,0,0.05)] hover:-translate-y-0.5 transition-all duration-300">
+                        {/* Card Header with Icon */}
+                        <div className="flex items-center gap-3.5 mb-3">
+                          <div className={`w-10 h-10 rounded-full ${m.colorClass.bg} border ${m.colorClass.border} flex items-center justify-center ${m.colorClass.text} flex-shrink-0 shadow-xs`}>
+                            {m.icon}
+                          </div>
+                          <div>
+                            <span className={`inline-block text-[10px] font-black uppercase tracking-wider ${m.colorClass.text} mb-0.5`}>
+                              {m.year}
+                            </span>
+                            <h3 className="text-base sm:text-lg font-black text-slate-900 font-serif leading-tight">
+                              {m.title}
+                            </h3>
+                          </div>
+                        </div>
+                        {/* Card Body */}
+                        <p className="text-xs sm:text-sm text-slate-500 leading-relaxed pl-1">
+                          {m.description}
+                        </p>
+                      </div>
+                    </div>
 
-              </div>
-            ))}
+                    {/* Spacer Column */}
+                    <div className="hidden md:block w-1/2" />
+                  </div>
+                );
+              })}
+            </div>
           </div>
         </div>
       </section>

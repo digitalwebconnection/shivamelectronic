@@ -80,17 +80,10 @@ export const CamerasSection: React.FC<CamerasSectionProps> = ({
 
                 {/* Left/Right Product Image Container */}
                 <div className="w-full md:w-[38%] bg-slate-50 border border-slate-200 rounded-md p-6 flex items-center justify-center relative overflow-hidden group/img min-h-[220px] md:min-h-auto">
-                  {/* Internal design cues */}
-                  <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(245,158,11,0.03),transparent_70%)]" />
-                  <div className="absolute top-3 left-3 w-3 h-3 border-t border-l border-slate-300 group-hover/img:border-amber-400 transition-colors" />
-                  <div className="absolute top-3 right-3 w-3 h-3 border-t border-r border-slate-300 group-hover/img:border-amber-400 transition-colors" />
-                  <div className="absolute bottom-3 left-3 w-3 h-3 border-b border-l border-slate-300 group-hover/img:border-amber-400 transition-colors" />
-                  <div className="absolute bottom-3 right-3 w-3 h-3 border-b border-r border-slate-300 group-hover/img:border-amber-400 transition-colors" />
-
                   <img 
                     src={p.image} 
                     alt={p.name} 
-                    className="w-[76%] h-[76%] object-contain z-10 transition-transform duration-700 group-hover/img:scale-106 drop-shadow-[0_8px_16px_rgba(0,0,0,0.05)]"
+                    className="object-contain z-10 transition-transform duration-700 group-hover/img:scale-106 drop-shadow-[0_8px_16px_rgba(0,0,0,0.05)]"
                   />
                 </div>
 

@@ -484,7 +484,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             ) : (
               <button
                 onClick={onOpenAuth}
-                className="bg-linear-to-r from-[#e11d48] to-[#0057ff] hover:opacity-90 hover:scale-102 text-white rounded-full px-5 py-2.5 text-xs font-bold transition-all shadow-md shadow-blue-500/10 hover:shadow-lg hover:shadow-blue-500/20 hover:-translate-y-px active:translate-y-0 active:scale-95"
+                className="bg-linear-to-r from-[#e11d48] to-[#0057ff] cursor-pointer hover:opacity-90 hover:scale-102 text-white rounded-full px-5 py-2.5 text-xs font-bold transition-all shadow-md shadow-blue-500/10 hover:shadow-lg hover:shadow-blue-500/20 hover:-translate-y-px active:translate-y-0 active:scale-95"
               >
                 Sign In
               </button>
