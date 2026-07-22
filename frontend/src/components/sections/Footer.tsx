@@ -2,6 +2,8 @@ import React from 'react';
 import { MapPin, Phone, Mail } from 'lucide-react';
 import logo from '../../assets/image.png';
 
+
+
 interface FooterProps {
   onNavigate?: (page: 'home' | 'products' | 'about' | 'contact') => void;
 }

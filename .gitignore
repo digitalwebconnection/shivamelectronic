@@ -46,3 +46,7 @@ pnpm-debug.log*
 uploads/
 
 AI_INSTRUCTION/
+
+ai_int/
+
+CHANGELOG.md

@@ -1,6 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
+import { initSentry, Sentry } from './src/config/sentry.js';
 import connectDB from './src/config/db.js';
 import authRoutes from './src/routes/auth.js';
 import productRoutes from './src/routes/products.js';
@@ -13,7 +14,11 @@ import { defaultCategories } from './src/config/seedData.js';
 // Load environment variables
 dotenv.config();
 
+// Initialize Sentry error tracking early
+initSentry();
+
 const app = express();
+
 
 // Configure CORS to dynamically support:
 // 1. Localhost & local network IP addresses
@@ -110,8 +115,12 @@ app.get('/', (req, res) => {
   res.send('Shivam Electronic World API is running.');
 });
 
+// Sentry Error Handler (must be registered before custom error handlers)
+Sentry.setupExpressErrorHandler(app);
+
 // Error handling middleware
 app.use((err, req, res, next) => {
+
   console.error(err.stack);
   res.status(500).json({
     success: false,

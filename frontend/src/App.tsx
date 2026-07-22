@@ -1,11 +1,13 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import Lenis from 'lenis';
+import { ErrorBoundary } from './components/ErrorBoundary';
 import { Navbar } from './components/Navbar';
 import { AuthModal } from './components/AuthModal';
 import { CartDrawer } from './components/CartDrawer';
 import { WishlistDrawer } from './components/WishlistDrawer';
 import { API_URL } from './config';
+
 
 // Pages
 import { Home } from './pages/home/Home';
@@ -224,155 +226,158 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen bg-white text-slate-800 flex flex-col font-sans antialiased selection:bg-blue-600 selection:text-white">
-      
-      {/* NAVBAR */}
-      {currentPage !== 'admin' && (
-        <Navbar 
-          cartItems={cartItems}
-          wishlist={wishlist}
-          user={user}
-          onOpenAuth={() => setIsAuthOpen(true)}
-          onLogout={handleLogout}
-          onOpenCart={() => setIsCartOpen(true)}
-          onOpenWishlist={() => setIsWishlistOpen(true)}
-          onProductClick={handleSelectProduct}
-          searchQuery={searchQuery}
-          setSearchQuery={setSearchQuery}
-          selectedCategory={selectedCategory}
-          setSelectedCategory={setSelectedCategory}
-          sortBy={sortBy}
-          setSortBy={setSortBy}
-          currentPage={currentPage}
-          setCurrentPage={setCurrentPage}
-          categories={categories}
-          products={products}
-        />
-      )}
-
-      {/* MAIN ROUTED PAGES */}
-      <main className="grow">
-        {currentPage === 'home' && (
-          <Home 
-            products={products}
+    <ErrorBoundary>
+      <div className="min-h-screen bg-white text-slate-800 flex flex-col font-sans antialiased selection:bg-blue-600 selection:text-white">
+        
+        {/* NAVBAR */}
+        {currentPage !== 'admin' && (
+          <Navbar 
+            cartItems={cartItems}
             wishlist={wishlist}
-            onToggleWishlist={handleToggleWishlist}
-            onAddToCart={handleAddToCart}
-            onSelectProduct={handleSelectProduct}
-            isLoggedIn={user !== null}
-            onPromptAuth={() => setIsAuthOpen(true)}
-            onNavigateToProducts={() => setCurrentPage('products')}
-            onSelectCategory={setSelectedCategory}
-            categories={categories}
-          />
-        )}
-
-        {currentPage === 'products' && (
-          <ProductsPage 
-            products={products}
-            wishlist={wishlist}
-            onToggleWishlist={handleToggleWishlist}
-            onAddToCart={handleAddToCart}
-            onSelectProduct={handleSelectProduct}
-            isLoggedIn={user !== null}
-            onPromptAuth={() => setIsAuthOpen(true)}
-            selectedCategory={selectedCategory}
-            setSelectedCategory={setSelectedCategory}
+            user={user}
+            onOpenAuth={() => setIsAuthOpen(true)}
+            onLogout={handleLogout}
+            onOpenCart={() => setIsCartOpen(true)}
+            onOpenWishlist={() => setIsWishlistOpen(true)}
+            onProductClick={handleSelectProduct}
             searchQuery={searchQuery}
             setSearchQuery={setSearchQuery}
+            selectedCategory={selectedCategory}
+            setSelectedCategory={setSelectedCategory}
             sortBy={sortBy}
             setSortBy={setSortBy}
+            currentPage={currentPage}
+            setCurrentPage={setCurrentPage}
             categories={categories}
-          />
-        )}
-
-        {currentPage === 'about' && (
-          <AboutPage />
-        )}
-
-        {currentPage === 'contact' && (
-          <ContactPage />
-        )}
-
-        {currentPage === 'profile' && (
-          <ProfilePage 
-            user={user}
-            wishlist={wishlist}
-            onToggleWishlist={handleToggleWishlist}
-            onAddToCart={handleAddToCart}
-            onProductClick={handleSelectProduct}
-            onLogout={handleLogout}
-            onPromptAuth={() => setIsAuthOpen(true)}
-            orders={orders}
-          />
-        )}
-
-        {currentPage === 'product-details' && selectedProduct && (
-          <ProductDetailPage 
-            product={selectedProduct}
             products={products}
-            wishlist={wishlist}
-            onToggleWishlist={handleToggleWishlist}
-            onAddToCart={handleAddToCart}
-            onSelectProduct={handleSelectProduct}
-            isLoggedIn={user !== null}
-            onPromptAuth={() => setIsAuthOpen(true)}
-            onBack={() => setCurrentPage('products')}
           />
         )}
 
-        {currentPage === 'admin' && (
-          <AdminPage 
-            products={products}
-            categories={categories}
-            onProductsChange={fetchProductsAndCategories}
-          />
-        )}
-      </main>
+        {/* MAIN ROUTED PAGES */}
+        <main className="grow">
+          {currentPage === 'home' && (
+            <Home 
+              products={products}
+              wishlist={wishlist}
+              onToggleWishlist={handleToggleWishlist}
+              onAddToCart={handleAddToCart}
+              onSelectProduct={handleSelectProduct}
+              isLoggedIn={user !== null}
+              onPromptAuth={() => setIsAuthOpen(true)}
+              onNavigateToProducts={() => setCurrentPage('products')}
+              onSelectCategory={setSelectedCategory}
+              categories={categories}
+            />
+          )}
 
-      {/* GLOBAL FOOTER */}
-      {currentPage !== 'admin' && <Footer onNavigate={setCurrentPage} />}
+          {currentPage === 'products' && (
+            <ProductsPage 
+              products={products}
+              wishlist={wishlist}
+              onToggleWishlist={handleToggleWishlist}
+              onAddToCart={handleAddToCart}
+              onSelectProduct={handleSelectProduct}
+              isLoggedIn={user !== null}
+              onPromptAuth={() => setIsAuthOpen(true)}
+              selectedCategory={selectedCategory}
+              setSelectedCategory={setSelectedCategory}
+              searchQuery={searchQuery}
+              setSearchQuery={setSearchQuery}
+              sortBy={sortBy}
+              setSortBy={setSortBy}
+              categories={categories}
+            />
+          )}
 
-      {/* DRAWERS & MODALS CONTAINER */}
-      <AuthModal 
-        isOpen={isAuthOpen}
-        onClose={() => setIsAuthOpen(false)}
-        onLoginSuccess={(user) => {
-          setUser(user);
-          localStorage.setItem('currentUser', JSON.stringify(user));
-          setIsAuthOpen(false);
-        }}
-      />
+          {currentPage === 'about' && (
+            <AboutPage />
+          )}
 
-      <CartDrawer 
-        isOpen={isCartOpen}
-        onClose={() => setIsCartOpen(false)}
-        cartItems={cartItems}
-        onUpdateQuantity={handleUpdateCartQuantity}
-        onRemoveItem={handleRemoveCartItem}
-        user={user}
-        onPromptAuth={() => setIsAuthOpen(true)}
-        onPlaceOrder={handlePlaceOrder}
-        onStartShopping={() => {
-          setIsCartOpen(false);
-          setCurrentPage('products');
-        }}
-      />
+          {currentPage === 'contact' && (
+            <ContactPage />
+          )}
 
-      <WishlistDrawer 
-        isOpen={isWishlistOpen}
-        onClose={() => setIsWishlistOpen(false)}
-        wishlist={wishlist}
-        onRemoveFromWishlist={(id) => setWishlist(prev => prev.filter(p => p.id !== id))}
-        onMoveToCart={handleMoveToCart}
-        onExploreProducts={() => {
-          setIsWishlistOpen(false);
-          setCurrentPage('products');
-        }}
-      />
+          {currentPage === 'profile' && (
+            <ProfilePage 
+              user={user}
+              wishlist={wishlist}
+              onToggleWishlist={handleToggleWishlist}
+              onAddToCart={handleAddToCart}
+              onProductClick={handleSelectProduct}
+              onLogout={handleLogout}
+              onPromptAuth={() => setIsAuthOpen(true)}
+              orders={orders}
+            />
+          )}
 
-    </div>
+          {currentPage === 'product-details' && selectedProduct && (
+            <ProductDetailPage 
+              product={selectedProduct}
+              products={products}
+              wishlist={wishlist}
+              onToggleWishlist={handleToggleWishlist}
+              onAddToCart={handleAddToCart}
+              onSelectProduct={handleSelectProduct}
+              isLoggedIn={user !== null}
+              onPromptAuth={() => setIsAuthOpen(true)}
+              onBack={() => setCurrentPage('products')}
+            />
+          )}
+
+          {currentPage === 'admin' && (
+            <AdminPage 
+              products={products}
+              categories={categories}
+              onProductsChange={fetchProductsAndCategories}
+            />
+          )}
+        </main>
+
+        {/* GLOBAL FOOTER */}
+        {currentPage !== 'admin' && <Footer onNavigate={setCurrentPage} />}
+
+        {/* DRAWERS & MODALS CONTAINER */}
+        <AuthModal 
+          isOpen={isAuthOpen}
+          onClose={() => setIsAuthOpen(false)}
+          onLoginSuccess={(user) => {
+            setUser(user);
+            localStorage.setItem('currentUser', JSON.stringify(user));
+            setIsAuthOpen(false);
+          }}
+        />
+
+        <CartDrawer 
+          isOpen={isCartOpen}
+          onClose={() => setIsCartOpen(false)}
+          cartItems={cartItems}
+          onUpdateQuantity={handleUpdateCartQuantity}
+          onRemoveItem={handleRemoveCartItem}
+          user={user}
+          onPromptAuth={() => setIsAuthOpen(true)}
+          onPlaceOrder={handlePlaceOrder}
+          onStartShopping={() => {
+            setIsCartOpen(false);
+            setCurrentPage('products');
+          }}
+        />
+
+        <WishlistDrawer 
+          isOpen={isWishlistOpen}
+          onClose={() => setIsWishlistOpen(false)}
+          wishlist={wishlist}
+          onRemoveFromWishlist={(id) => setWishlist(prev => prev.filter(p => p.id !== id))}
+          onMoveToCart={handleMoveToCart}
+          onExploreProducts={() => {
+            setIsWishlistOpen(false);
+            setCurrentPage('products');
+          }}
+        />
+
+      </div>
+    </ErrorBoundary>
   );
 }
+
 
 export default App;
