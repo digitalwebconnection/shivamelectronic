@@ -35,16 +35,16 @@ export const CamerasSection: React.FC<CamerasSectionProps> = ({
   return (
     <section 
       id="category-optoelectronics" 
-      className="py-16 bg-slate-50/50 border-b border-slate-100 scroll-mt-20 relative overflow-hidden"
+      className="pt-10 md:py-16 bg-slate-50/50 border-b border-slate-100 scroll-mt-20 relative overflow-hidden"
     >
       {/* Background design elements */}
-      <div className="absolute top-1/4 left-1/4 w-[450px] h-[450px] bg-amber-500/5 rounded-full blur-[130px] pointer-events-none" />
-      <div className="absolute bottom-10 right-10 w-[300px] h-[300px] bg-yellow-500/5 rounded-full blur-[100px] pointer-events-none" />
+      <div className="absolute top-1/4 left-1/4 w-112.5 h-112.5 bg-amber-500/5 rounded-full blur-[130px] pointer-events-none" />
+      <div className="absolute bottom-10 right-10 w-75 h-75 bg-yellow-500/5 rounded-full blur-[100px] pointer-events-none" />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-0 relative z-10">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-6 relative z-10">
         
         {/* Section Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-10 border-b border-slate-100 pb-6">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-10 border-b border-slate-100">
           <div className="flex items-center gap-3.5">
             <div className="w-12 h-12 rounded-md bg-amber-50 border border-amber-100 flex items-center justify-center text-amber-600 shadow-sm shadow-amber-100">
               <Sun className="w-6 h-6 animate-pulse" />
@@ -64,22 +64,23 @@ export const CamerasSection: React.FC<CamerasSectionProps> = ({
         </div>
 
         {/* Alternating Spotlight Rows */}
-        <div className="space-y-10">
-          {optoelectronics.slice(0, 3).map((p, idx) => {
+        <div className="flex overflow-x-auto gap-4 pb-4 snap-x hide-scrollbar lg:flex-col lg:space-y-10 lg:gap-0 lg:pb-0 lg:snap-none lg:overflow-visible -mx-4 px-4 sm:mx-0 sm:px-0">
+          {optoelectronics.slice(0, 4).map((p, idx) => {
             const isWishlisted = wishlist.some(item => item.id === p.id);
             const isEven = idx % 2 === 0;
+            const displayClass = idx >= 2 ? 'lg:hidden' : '';
 
             return (
               <div 
                 key={p.id}
                 onClick={() => onSelectProduct(p)}
-                className={`group flex flex-col ${isEven ? 'md:flex-row' : 'md:flex-row-reverse'} gap-8 items-stretch bg-white border border-slate-200 p-6 sm:p-8 rounded-md shadow-xl shadow-slate-800/15 hover:shadow-2xl hover:shadow-amber-550/15 transition-all duration-500 cursor-pointer relative overflow-hidden`}
+                className={`group flex flex-col ${isEven ? 'lg:flex-row' : 'lg:flex-row-reverse'} gap-4 lg:gap-8 items-stretch bg-white border border-slate-200 p-4 sm:p-8 rounded-md shadow-xl shadow-slate-800/15 hover:shadow-2xl hover:shadow-amber-550/15 transition-all duration-500 cursor-pointer relative overflow-hidden shrink-0 snap-start w-70 sm:w-85 lg:w-auto lg:shrink ${displayClass}`}
               >
                 {/* Visual anchor line */}
                 <div className={`absolute top-0 bottom-0 w-1.5 bg-amber-500 ${isEven ? 'left-0' : 'right-0'}`} />
 
                 {/* Left/Right Product Image Container */}
-                <div className="w-full md:w-[38%] bg-slate-50 border border-slate-200 rounded-md p-6 flex items-center justify-center relative overflow-hidden group/img min-h-[220px] md:min-h-auto">
+                <div className="w-full lg:w-[38%] bg-slate-50 border border-slate-200 rounded-md p-4 lg:p-6 flex items-center justify-center relative overflow-hidden group/img h-45 lg:min-h-auto">
                   <img 
                     src={p.image} 
                     alt={p.name} 
@@ -88,7 +89,7 @@ export const CamerasSection: React.FC<CamerasSectionProps> = ({
                 </div>
 
                 {/* Info and action panel */}
-                <div className="flex-1 flex flex-col justify-between space-y-6">
+                <div className="flex-1 flex flex-col justify-between space-y-4 lg:space-y-6">
                   
                   {/* Top Meta info */}
                   <div className="space-y-3.5">

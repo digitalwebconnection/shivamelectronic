@@ -483,7 +483,7 @@ export const ProductsPage: React.FC<ProductsPageProps> = ({
                           {/* Product Title */}
                           <h3 
                             onClick={() => onSelectProduct(product)}
-                            className="text-sm font-bold text-slate-800 line-clamp-2 min-h-[40px] group-hover:text-blue-600 transition-colors cursor-pointer leading-snug mb-2"
+                            className="text-sm font-bold text-slate-800 line-clamp-2 min-h-10 group-hover:text-blue-600 transition-colors cursor-pointer leading-snug mb-2"
                           >
                             {product.name}
                           </h3>

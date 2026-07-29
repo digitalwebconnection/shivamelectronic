@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  User as UserIcon, LogOut, Mail, Calendar, ShoppingBag, 
-  Clock, CheckCircle2, XCircle, MapPin, Phone, 
+import {
+  User as UserIcon, LogOut, Mail, Calendar, ShoppingBag,
+  Clock, CheckCircle2, XCircle, MapPin, Phone,
   ChevronDown, ChevronUp, RefreshCw, FileText,
   ChevronLeft, ChevronRight
 } from 'lucide-react';
@@ -35,7 +35,7 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
   const [loadingOrders, setLoadingOrders] = useState(true);
   const [errorOrders, setErrorOrders] = useState('');
   const [expandedOrderId, setExpandedOrderId] = useState<string | null>(null);
-  
+
   // Pagination State for Orders
   const [orderCurrentPage, setOrderCurrentPage] = useState(1);
   const ORDERS_PER_PAGE = 5;
@@ -46,10 +46,23 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
     orderCurrentPage * ORDERS_PER_PAGE
   );
 
-  // Reset page to 1 on orders length changes
+  // Pagination State for Wishlist
+  const [wishlistCurrentPage, setWishlistCurrentPage] = useState(1);
+  const WISHLIST_PER_PAGE = 5;
+  const totalWishlistPages = Math.max(1, Math.ceil(wishlist.length / WISHLIST_PER_PAGE));
+  const paginatedWishlist = wishlist.slice(
+    (wishlistCurrentPage - 1) * WISHLIST_PER_PAGE,
+    wishlistCurrentPage * WISHLIST_PER_PAGE
+  );
+
+  // Reset page to 1 on lists length changes
   useEffect(() => {
     setOrderCurrentPage(1);
   }, [myOrders.length]);
+
+  useEffect(() => {
+    setWishlistCurrentPage(1);
+  }, [wishlist.length]);
 
   // Prevent unused variables warning from typescript compiler
   useEffect(() => {
@@ -92,7 +105,7 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
     return (
       <div className="min-h-screen bg-slate-50 flex items-center justify-center p-6">
         <div className="max-w-sm w-full bg-white border border-slate-200 rounded-3xl p-10 shadow-xl shadow-slate-100 text-center space-y-7 animate-in fade-in duration-300">
-          <div className="mx-auto w-20 h-20 rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center text-white shadow-lg shadow-blue-500/25">
+          <div className="mx-auto w-20 h-20 rounded-2xl bg-linear-to-br from-blue-600 to-indigo-600 flex items-center justify-center text-white shadow-lg shadow-blue-500/25">
             <UserIcon className="w-10 h-10" />
           </div>
           <div className="space-y-2">
@@ -103,7 +116,7 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
           </div>
           <button
             onClick={onPromptAuth}
-            className="w-full py-3.5 bg-gradient-to-r from-blue-600 to-indigo-650 hover:from-blue-700 hover:to-indigo-700 text-white font-black text-xs uppercase tracking-wider rounded-2xl shadow-lg shadow-blue-500/20 active:scale-95 transition-all cursor-pointer border-none outline-none"
+            className="w-full py-3.5 bg-linear-to-r from-blue-600 to-indigo-650 hover:from-blue-700 hover:to-indigo-700 text-white font-black text-xs uppercase tracking-wider rounded-2xl shadow-lg shadow-blue-500/20 active:scale-95 transition-all cursor-pointer border-none outline-none"
           >
             Sign In / Create Account
           </button>
@@ -112,7 +125,6 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
     );
   }
 
-  const initial = user.name ? user.name.trim().charAt(0).toUpperCase() : 'U';
   const joinedDate = user.createdAt
     ? new Date(user.createdAt).toLocaleDateString('en-IN', { year: 'numeric', month: 'long', day: 'numeric' })
     : null;
@@ -152,59 +164,41 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
   return (
     <div className="min-h-screen bg-slate-50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto space-y-8">
-        
-        {/* Profile Heading Section */}
-        <div className="bg-slate-900 rounded-md overflow-hidden shadow-xl text-white relative">
-          {/* Subtle design blobs */}
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_30%,rgba(59,130,246,0.15),transparent_60%)] animate-pulse duration-10000" />
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_80%,rgba(225,29,72,0.1),transparent_50%)]" />
-          
-          <div className="relative px-6 py-10 sm:p-12 flex flex-col sm:flex-row items-center gap-6 z-10">
-            <div className="w-24 h-24 rounded-full bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center text-white font-black text-4xl uppercase shadow-2xl select-none shrink-0">
-              {initial}
-            </div>
-            <div className="text-center sm:text-left space-y-1.5 flex-1">
-              <span className="inline-flex items-center px-2.5 py-0.5 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-[10px] font-black uppercase tracking-wider">
-                {user.role || 'Customer'}
-              </span>
-              <h1 className="text-3xl font-black font-serif tracking-tight">{user.name}</h1>
-              <p className="text-sm text-slate-400 font-medium">{user.email}</p>
-            </div>
-          </div>
-        </div>
+
+
 
         {/* Two-Column Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-          
+
           {/* Left Column: Account Details & Actions */}
-          <div className="lg:col-span-4 space-y-6">
-            
+          <div className="lg:col-span-4 space-y-4">
+
             {/* Account Details Card */}
-            <div className="bg-white border border-slate-200/80 rounded-md shadow-sm overflow-hidden">
-              <div className="px-6 py-4 border-b border-slate-100 bg-slate-50/50">
-                <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest block text-left">Account Specifications</span>
+            <div className="bg-white border border-slate-200/80 rounded-sm shadow-sm overflow-hidden">
+              <div className="px-2 py-2 border-b text-center border-slate-500 bg-linear-to-r from-[#e11d48] to-[#0057ff]">
+                <span className="text-sm font-serif font-black text-white uppercase tracking-widest block">Account Specifications</span>
               </div>
 
-              <div className="divide-y divide-slate-100">
+              <div className="divide-y divide-slate-200">
                 {/* Full Name */}
-                <div className="flex items-center gap-4 px-6 py-4">
-                  <div className="w-10 h-10 rounded-full bg-blue-50 border border-blue-100 flex items-center justify-center text-blue-600 shrink-0 shadow-2xs">
+                <div className="flex items-center gap-4 px-4 py-4">
+                  <div className="w-10 h-10 rounded-full bg-blue-50 border border-blue-600 flex items-center justify-center text-blue-600 shrink-0 shadow-2xs">
                     <UserIcon className="w-4.5 h-4.5" />
                   </div>
                   <div className="min-w-0 text-left">
-                    <span className="text-[9px] font-extrabold text-slate-400 uppercase tracking-wider block">Full Name</span>
-                    <span className="text-sm font-bold text-slate-800 mt-0.5 block">{user.name}</span>
+                    <span className="text-[9px] font-extrabold text-slate-600 uppercase tracking-wider block">Full Name</span>
+                    <span className="text-sm font-bold font-serif text-slate-800 mt-0.5 block">{user.name}</span>
                   </div>
                 </div>
 
                 {/* Email Address */}
-                <div className="flex items-center gap-4 px-6 py-4">
-                  <div className="w-10 h-10 rounded-full bg-indigo-50 border border-indigo-100 flex items-center justify-center text-indigo-600 shrink-0 shadow-2xs">
+                <div className="flex items-center gap-4 px-4 py-4">
+                  <div className="w-10 h-10 rounded-full bg-indigo-50 border border-blue-600 flex items-center justify-center text-blue-600 shrink-0 shadow-2xs">
                     <Mail className="w-4.5 h-4.5" />
                   </div>
                   <div className="min-w-0 text-left">
-                    <span className="text-[9px] font-extrabold text-slate-400 uppercase tracking-wider block">Email Address</span>
-                    <span className="text-sm font-bold text-slate-800 mt-0.5 block truncate">{user.email}</span>
+                    <span className="text-[9px] font-extrabold text-slate-600 uppercase tracking-wider block">Email Address</span>
+                    <span className="text-sm font-serif font-bold text-slate-800 mt-0.5 block truncate">{user.email}</span>
                   </div>
                 </div>
 
@@ -224,18 +218,16 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
             </div>
 
             {/* Quick Metrics */}
-            <div className="bg-white border border-slate-200/80 rounded-md p-6 shadow-sm">
-              <div className="grid grid-cols-2 gap-4 text-center">
-                <div className="p-4 bg-slate-50 rounded-md border border-slate-200">
-                  <span className="block text-3xl font-black text-slate-900">{myOrders.length}</span>
-                  <span className="text-[9px] text-slate-400 font-extrabold uppercase tracking-widest block mt-1">Total Quotes</span>
-                </div>
-                <div className="p-4 bg-slate-50 rounded-md border border-slate-200">
-                  <span className="block text-3xl font-black text-amber-600">
-                    {myOrders.filter(o => o.status === 'Pending').length}
-                  </span>
-                  <span className="text-[9px] text-slate-400 font-extrabold uppercase tracking-widest block mt-1">Pending</span>
-                </div>
+            <div className="grid grid-cols-2 gap-4 text-center">
+              <div className="p-4 bg-slate-50 rounded-sm border border-slate-600">
+                <span className="block text-3xl font-black text-slate-900">{myOrders.length}</span>
+                <span className="text-[9px] text-slate-800 font-extrabold uppercase tracking-widest block mt-1">Total Quotes</span>
+              </div>
+              <div className="p-4 bg-slate-50 rounded-sm border border-slate-600">
+                <span className="block text-3xl font-black text-amber-600">
+                  {myOrders.filter(o => o.status === 'Pending').length}
+                </span>
+                <span className="text-[9px] text-slate-800 font-extrabold uppercase tracking-widest block mt-1">Pending</span>
               </div>
             </div>
 
@@ -244,16 +236,16 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
               <div className="bg-white border border-slate-200/80 rounded-3xl p-6 shadow-sm">
                 <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-4 text-left">Saved in Wishlist</span>
                 <div className="space-y-3.5">
-                  {wishlist.slice(0, 3).map((item) => (
+                  {paginatedWishlist.map((item) => (
                     <div key={item.id} className="flex items-center gap-3">
-                      <img 
-                        src={item.image} 
-                        alt={item.name} 
+                      <img
+                        src={item.image}
+                        alt={item.name}
                         className="w-10 h-10 rounded-xl object-cover border border-slate-100 cursor-pointer hover:opacity-85 transition-opacity"
                         onClick={() => onProductClick(item)}
                       />
                       <div className="flex-1 min-w-0 text-left">
-                        <p 
+                        <p
                           className="text-xs font-bold text-slate-800 truncate hover:text-blue-650 cursor-pointer"
                           onClick={() => onProductClick(item)}
                         >
@@ -269,9 +261,26 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
                       </button>
                     </div>
                   ))}
-                  {wishlist.length > 3 && (
-                    <div className="text-center pt-1 border-t border-slate-100 mt-2">
-                      <span className="text-[10px] text-slate-400 font-bold">and {wishlist.length - 3} more items...</span>
+                  
+                  {totalWishlistPages > 1 && (
+                    <div className="flex items-center justify-between mt-4 border-t border-slate-100 pt-3">
+                      <button 
+                        onClick={() => setWishlistCurrentPage(p => Math.max(p - 1, 1))}
+                        disabled={wishlistCurrentPage === 1}
+                        className="p-1 text-slate-400 hover:text-blue-600 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                      >
+                        <ChevronLeft className="w-4 h-4" />
+                      </button>
+                      <span className="text-[10px] font-bold text-slate-500">
+                        Page {wishlistCurrentPage} of {totalWishlistPages}
+                      </span>
+                      <button 
+                        onClick={() => setWishlistCurrentPage(p => Math.min(p + 1, totalWishlistPages))}
+                        disabled={wishlistCurrentPage === totalWishlistPages}
+                        className="p-1 text-slate-400 hover:text-blue-600 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                      >
+                        <ChevronRight className="w-4 h-4" />
+                      </button>
                     </div>
                   )}
                 </div>
@@ -281,7 +290,7 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
             {/* Sign Out Button */}
             <button
               onClick={() => setShowConfirmLogout(true)}
-              className="w-full flex items-center justify-center gap-2.5 py-4 bg-white border border-rose-250 hover:bg-rose-50 hover:border-rose-350 text-rose-600 font-bold text-xs uppercase tracking-wider rounded-full shadow-xs hover:shadow-md transition-all active:scale-98 cursor-pointer font-sans"
+              className="w-full flex items-center justify-center gap-2.5 py-4 bg-white border border-rose-250 hover:bg-rose-50 hover:border-rose-350 text-rose-600 font-bold text-xs uppercase tracking-wider rounded-sm shadow-xs hover:shadow-md transition-all active:scale-98 cursor-pointer font-sans"
             >
               <LogOut className="w-4 h-4" />
               Sign Out Account
@@ -291,9 +300,9 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
           {/* Right Column: Order History */}
           <div className="lg:col-span-8 space-y-6">
             <div className="flex items-center justify-between">
-              <div className="space-y-1 text-left">
-                <h2 className="text-2xl font-black text-slate-900 font-serif tracking-tight">Your Quote & Order History</h2>
-                <p className="text-xs text-slate-500 font-medium">Track and view quotes you requested on WhatsApp for electronic components.</p>
+              <div className="space-y-1 text-center">
+                <h2 className="text-2xl  font-black text-slate-900 font-serif tracking-tight">Your Quote & Order History</h2>
+                <p className="text-xs text-slate-900 font-medium">Track and view quotes you requested on WhatsApp for electronic components.</p>
               </div>
               <button
                 onClick={fetchMyOrders}
@@ -356,7 +365,7 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
                 {onNavigateToProducts && (
                   <button
                     onClick={onNavigateToProducts}
-                    className="px-5 py-3 bg-gradient-to-r from-blue-600 to-indigo-650 hover:from-blue-700 hover:to-indigo-700 text-white font-bold text-xs uppercase tracking-wider rounded-2xl shadow-lg shadow-blue-500/20 active:scale-95 transition-all cursor-pointer border-none"
+                    className="px-5 py-3 bg-linear-to-r from-blue-600 to-indigo-650 hover:from-blue-700 hover:to-indigo-700 text-white font-bold text-xs uppercase tracking-wider rounded-2xl shadow-lg shadow-blue-500/20 active:scale-95 transition-all cursor-pointer border-none"
                   >
                     Browse Components Catalog
                   </button>
@@ -370,20 +379,20 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
                 <div className="space-y-4">
                   {paginatedOrders.map((order) => {
                     const isExpanded = expandedOrderId === order.orderId;
-                    const dateStr = order.createdAt 
+                    const dateStr = order.createdAt
                       ? new Date(order.createdAt).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })
                       : order.date;
-                    
+
                     const itemCount = order.items?.reduce((sum, item) => sum + item.quantity, 0) || 0;
                     const hasPrice = order.totalAmount && order.totalAmount > 0;
 
                     return (
-                      <div 
+                      <div
                         key={order.orderId || order.id}
                         className="bg-white border border-slate-250 rounded-md overflow-hidden shadow-xs hover:border-slate-305 transition-all text-left"
                       >
                         {/* Order Summary Header */}
-                        <div 
+                        <div
                           onClick={() => toggleExpandOrder(order.orderId || order.id || '')}
                           className="p-5 sm:p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 cursor-pointer hover:bg-slate-50/40 transition-colors"
                         >
@@ -417,7 +426,7 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
                         {/* Expanded Section Details */}
                         {isExpanded && (
                           <div className="border-t border-slate-100 bg-slate-50/30 p-6 space-y-6">
-                            
+
                             {/* Shipping / Inquiry Information */}
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 bg-white border border-slate-200 p-5 rounded-md">
                               <div className="space-y-3 text-left">
@@ -464,16 +473,16 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
                                   const priceVal = item.price;
                                   const hasItemPrice = priceVal && priceVal > 0;
                                   return (
-                                    <div 
-                                      key={item.productId || idx} 
+                                    <div
+                                      key={item.productId || idx}
                                       className="flex items-center gap-4 p-4 hover:bg-slate-50/30 transition-colors"
                                     >
                                       {/* Thumbnail */}
                                       <div className="w-12 h-12 bg-white border border-slate-200 rounded-xl overflow-hidden shrink-0 flex items-center justify-center">
                                         {item.image ? (
-                                          <img 
-                                            src={item.image} 
-                                            alt={item.productName} 
+                                          <img
+                                            src={item.image}
+                                            alt={item.productName}
                                             className="w-full h-full object-cover"
                                           />
                                         ) : (
@@ -570,11 +579,10 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
                               key={pageNum}
                               onClick={() => setOrderCurrentPage(pageNum)}
                               aria-current={orderCurrentPage === pageNum ? 'page' : undefined}
-                              className={`relative inline-flex items-center px-3.5 py-2 text-xs font-black ring-1 ring-inset focus:z-20 focus:outline-offset-0 transition-all cursor-pointer ${
-                                orderCurrentPage === pageNum
+                              className={`relative inline-flex items-center px-3.5 py-2 text-xs font-black ring-1 ring-inset focus:z-20 focus:outline-offset-0 transition-all cursor-pointer ${orderCurrentPage === pageNum
                                   ? 'z-10 bg-blue-600 text-white ring-blue-600'
                                   : 'text-slate-900 bg-white hover:bg-slate-50 ring-slate-200'
-                              }`}
+                                }`}
                             >
                               {pageNum}
                             </button>
@@ -630,7 +638,7 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
               </button>
               <button
                 onClick={() => { setShowConfirmLogout(false); onLogout(); }}
-                className="flex-1 py-3 bg-gradient-to-r from-rose-500 to-rose-600 hover:from-rose-600 hover:to-rose-700 text-white font-bold text-xs uppercase tracking-wider rounded-md shadow-lg shadow-rose-500/25 active:scale-95 transition-all cursor-pointer border-none"
+                className="flex-1 py-3 bg-linear-to-r from-rose-500 to-rose-600 hover:from-rose-600 hover:to-rose-700 text-white font-bold text-xs uppercase tracking-wider rounded-md shadow-lg shadow-rose-500/25 active:scale-95 transition-all cursor-pointer border-none"
               >
                 Sign Out
               </button>

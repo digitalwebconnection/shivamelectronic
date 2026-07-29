@@ -122,7 +122,7 @@ export const ProductGrid: React.FC<ProductGridProps> = ({
                   {/* Title */}
                   <h3 
                     onClick={() => onSelectProduct(product)}
-                    className="text-xs sm:text-sm font-bold text-slate-800 line-clamp-2 min-h-[36px] group-hover:text-blue-600 transition-colors cursor-pointer leading-tight mb-2"
+                    className="text-xs sm:text-sm font-bold text-slate-800 line-clamp-2 min-h-9 group-hover:text-blue-600 transition-colors cursor-pointer leading-tight mb-2"
                   >
                     {product.name}
                   </h3>

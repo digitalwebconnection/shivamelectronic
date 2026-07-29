@@ -103,8 +103,9 @@ export const GamingSection: React.FC<GamingSectionProps> = ({
 
   return (
     <section id="category-gaming" className="py-16 bg-slate-950 border-b border-slate-900 text-white scroll-mt-20 relative overflow-hidden">
-      <div className="absolute top-0 left-1/3 w-[350px] h-[350px] bg-red-650/5 rounded-full blur-[100px] pointer-events-none" />
-      <div className="absolute bottom-0 right-10 w-[200px] h-[200px] bg-purple-650/5 rounded-full blur-[80px] pointer-events-none" />
+      {/* Red ambient glow */}
+      <div className="absolute top-0 left-1/3 w-87.5 h-87.5 bg-red-950/5 rounded-full blur-[100px] pointer-events-none" />
+      <div className="absolute bottom-0 right-10 w-50 h-50 bg-purple-950/5 rounded-full blur-[80px] pointer-events-none" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-0 relative z-10">
 
@@ -153,7 +154,7 @@ export const GamingSection: React.FC<GamingSectionProps> = ({
                     e.preventDefault();
                   }
                 }}
-                className="group relative flex flex-col bg-slate-900 border border-slate-850 hover:border-red-500/50 rounded-2xl overflow-hidden transition-all duration-300 hover:shadow-xl hover:shadow-red-650/5 hover:-translate-y-1 cursor-pointer w-[250px] sm:w-[280px] flex-shrink-0"
+                className="group relative flex flex-col bg-slate-900 border border-slate-850 hover:border-red-500/50 rounded-2xl overflow-hidden transition-all duration-300 hover:shadow-xl hover:shadow-red-650/5 hover:-translate-y-1 cursor-pointer w-62.5 sm:w-70 shrink-0"
               >
                 {/* Badges */}
                 <div className="absolute top-3 left-3 z-10 flex flex-col gap-1">
@@ -204,7 +205,7 @@ export const GamingSection: React.FC<GamingSectionProps> = ({
                     <span className="text-[9px] text-red-500 uppercase tracking-widest font-black block mb-1">
                       {p.category}
                     </span>
-                    <h3 className="text-xs sm:text-sm font-bold text-slate-100 line-clamp-2 min-h-[36px] group-hover:text-red-400 transition-colors leading-tight mb-2">
+                    <h3 className="text-xs sm:text-sm font-bold text-slate-100 line-clamp-2 min-h-9 group-hover:text-red-400 transition-colors leading-tight mb-2">
                       {p.name}
                     </h3>
                     <div className="flex items-center gap-1 mb-3">
@@ -225,11 +226,11 @@ export const GamingSection: React.FC<GamingSectionProps> = ({
                   {/* Promo Showcase Footer - No Price/Cart */}
                   <div className="mt-auto pt-3 border-t border-slate-850 flex items-center justify-between">
                     {isRecentProduct(p) ? (
-                      <span className="text-[9.5px] font-black bg-gradient-to-r from-cyan-500 to-blue-500 text-white px-2.5 py-1 rounded-lg uppercase tracking-wider shadow-sm shadow-blue-900/20 animate-pulse">
+                      <span className="text-[9.5px] font-black bg-linear-to-r from-cyan-500 to-blue-500 text-white px-2.5 py-1 rounded-lg uppercase tracking-wider shadow-sm shadow-blue-900/20 animate-pulse">
                         Upcoming Launch
                       </span>
                     ) : p.isHot ? (
-                      <span className="text-[9.5px] font-black bg-gradient-to-r from-red-600 to-amber-500 text-white px-2.5 py-1 rounded-lg uppercase tracking-wider shadow-sm shadow-red-900/20">
+                      <span className="text-[9.5px] font-black bg-linear-to-r from-red-600 to-amber-500 text-white px-2.5 py-1 rounded-lg uppercase tracking-wider shadow-sm shadow-red-900/20">
                         Exclusive Deal
                       </span>
                     ) : (

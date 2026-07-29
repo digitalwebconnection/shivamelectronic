@@ -87,7 +87,7 @@ export const Hero: React.FC<HeroProps> = ({ products }) => {
       <div className="absolute inset-0 overflow-hidden pointer-events-none select-none z-10">
         {/* Glow Spheres */}
         <div
-          className="absolute -top-20 -left-20 w-[450px] h-[450px] rounded-full blur-[120px] opacity-25 animate-float-1 transition-all duration-1000"
+          className="absolute -top-20 -left-20 w-112.5 h-112.5 rounded-full blur-[120px] opacity-25 animate-float-1 transition-all duration-1000"
           style={{
             background:
               currentSlide === 1
@@ -98,7 +98,7 @@ export const Hero: React.FC<HeroProps> = ({ products }) => {
           }}
         />
         <div
-          className="absolute -bottom-20 -right-20 w-[500px] h-[500px] rounded-full blur-[130px] opacity-20 animate-float-2 transition-all duration-1000"
+          className="absolute -bottom-20 -right-20 w-125 h-125 rounded-full blur-[130px] opacity-20 animate-float-2 transition-all duration-1000"
           style={{
             background:
               currentSlide === 1
@@ -126,7 +126,7 @@ export const Hero: React.FC<HeroProps> = ({ products }) => {
           {slides.map((slide, index) => (
             <div
               key={index}
-              className="w-full shrink-0 relative min-h-[480px] sm:min-h-[520px] lg:min-h-[580px] flex items-center py-12 lg:py-20"
+              className="w-full shrink-0 relative min-h-120 sm:min-h-130 lg:min-h-145 flex items-center py-12 lg:py-20"
             >
               {/* Full Background Image */}
               <img

@@ -3,7 +3,7 @@ import {
   Lock, KeyRound, ShieldAlert, Cpu, Info,
   Plus, Pencil, Trash2, LogOut, CheckCircle2, Loader2, ChevronUp, ChevronDown,
   Image as ImageIcon, Eye, EyeOff, AlertTriangle,
-  Layers, Menu, Package, Tag, LayoutDashboard, Search, Users, ShoppingBag, Calendar, Clock, Check, XCircle, RefreshCw
+  Layers, Menu, Package, Tag, LayoutDashboard, Search, Users, ShoppingBag, Calendar, RefreshCw
 } from 'lucide-react';
 import type { Product, Order } from '../../types';
 import { API_URL } from '../../config';
@@ -375,7 +375,12 @@ export const AdminPage: React.FC<AdminPageProps> = ({
   const [orderDateEnd, setOrderDateEnd] = useState('');
   const [orderSortBy, setOrderSortBy] = useState<'date-desc' | 'date-asc' | 'qty-desc' | 'qty-asc'>('date-desc');
   const [orderCurrentPage, setOrderCurrentPage] = useState(1);
+  const [expandedProductOrders, setExpandedProductOrders] = useState<Record<string, boolean>>({});
   const ORDERS_PER_PAGE = 10;
+
+  const toggleExpandOrder = (orderId: string) => {
+    setExpandedProductOrders(prev => ({ ...prev, [orderId]: !prev[orderId] }));
+  };
 
   const fetchOrders = async () => {
     if (!token) return;
@@ -869,7 +874,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({
             </div>
 
             {authError && (
-              <div className="flex items-center gap-2 p-3 bg-rose-50 border border-rose-100 text-rose-700 text-xs rounded-xl font-semibold">
+              <div className="flex items-center gap-2 p-3 bg-rose-50 border border-rose-100 text-rose-700 text-xs rounded-md font-semibold">
                 <ShieldAlert className="w-4 h-4 shrink-0 text-rose-500" />
                 <span>{authError}</span>
               </div>
@@ -925,7 +930,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({
               <button
                 disabled={!isCollapsed || isMobileMenuOpen}
                 onClick={() => isCollapsed && !isMobileMenuOpen && setIsCollapsed(false)}
-                className={`relative w-8 h-8 rounded-lg bg-gradient-to-tr from-amber-400 to-blue-600 flex items-center justify-center shadow-md shrink-0 group ${isCollapsed && !isMobileMenuOpen ? 'cursor-ew-resize hover:from-amber-500 hover:to-blue-700' : 'cursor-default'
+                className={`relative w-8 h-8 rounded-lg bg-linear-to-tr from-amber-400 to-blue-600 flex items-center justify-center shadow-md shrink-0 group ${isCollapsed && !isMobileMenuOpen ? 'cursor-ew-resize hover:from-amber-500 hover:to-blue-700' : 'cursor-default'
                   }`}
               >
                 <span className={`transition-opacity duration-150 ${isCollapsed && !isMobileMenuOpen ? 'group-hover:opacity-0' : 'opacity-100'}`}>
@@ -1223,7 +1228,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({
                 <div className="flex flex-col lg:flex-row gap-3 items-stretch lg:items-center justify-between">
                   
                   {/* Search Input (Product Name, Brand, Order ID) */}
-                  <div className="relative flex-1 min-w-[240px]">
+                  <div className="relative flex-1 min-w-60">
                     <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
                     <input
                       type="text"
@@ -1353,8 +1358,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({
                           <th className="py-3 px-4">User Name & Email</th>
                           <th className="py-3 px-4">Product Name & Brand</th>
                           <th className="py-3 px-4 text-center">Qty</th>
-                          <th className="py-3 px-4 text-center">Status</th>
-                          <th className="py-3 px-4 text-center">Toggle Action</th>
+                          <th className="py-3 px-4 text-center">Status Action</th>
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-slate-100 text-xs">
@@ -1399,22 +1403,34 @@ export const AdminPage: React.FC<AdminPageProps> = ({
                               {/* Product Name & Brand */}
                               <td className="py-3.5 px-4 align-top max-w-xs">
                                 <div className="space-y-1.5">
-                                  {orderItems.map((item, idx) => {
+                                  {orderItems.slice(0, expandedProductOrders[order._id || order.id || order.orderId || ''] ? undefined : 3).map((item, idx) => {
                                     const pName = item.productName || item.product?.name || 'Electronic Product';
                                     const pBrand = item.brand || item.product?.brand || 'Generic';
+                                    const pQty = item.quantity || 1;
                                     return (
                                       <div key={idx} className="flex items-center justify-between gap-2 bg-slate-50 p-1.5 rounded">
                                         <div className="min-w-0 flex-1">
-                                          <span className="font-semibold text-slate-800 text-[11px] block truncate">
+                                          <span className="font-semibold text-slate-800 text-[11px] block truncate" title={pName}>
                                             {pName}
                                           </span>
-                                          <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wider block">
-                                            Brand: <span className="text-slate-600">{pBrand}</span>
+                                          <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1.5 mt-0.5">
+                                            <span>Brand: <span className="text-slate-600">{pBrand}</span></span>
+                                            <span className="w-1 h-1 rounded-full bg-slate-300"></span>
+                                            <span>Qty: <span className="text-slate-700 bg-slate-200 px-1 rounded">{pQty}</span></span>
                                           </span>
                                         </div>
                                       </div>
                                     );
                                   })}
+                                  {orderItems.length > 3 && (
+                                    <button 
+                                      type="button"
+                                      onClick={() => toggleExpandOrder(order._id || order.id || order.orderId || '')}
+                                      className="text-[10px] font-bold text-blue-600 hover:text-blue-800 w-full text-left mt-1 py-1 cursor-pointer"
+                                    >
+                                      {expandedProductOrders[order._id || order.id || order.orderId || ''] ? 'View Less' : `+ View More (${orderItems.length - 3})`}
+                                    </button>
+                                  )}
                                 </div>
                               </td>
 
@@ -1425,63 +1441,27 @@ export const AdminPage: React.FC<AdminPageProps> = ({
                                 </span>
                               </td>
 
-                              {/* Current Status Badge */}
+                              {/* Status Action Dropdown */}
                               <td className="py-3.5 px-4 align-top text-center">
-                                <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider ${
-                                  currentStatus === 'Confirmed'
-                                    ? 'bg-emerald-100 border border-emerald-200 text-emerald-800'
-                                    : currentStatus === 'Cancelled'
-                                    ? 'bg-rose-100 border border-rose-200 text-rose-800'
-                                    : 'bg-amber-100 border border-amber-200 text-amber-800'
-                                }`}>
-                                  {currentStatus === 'Confirmed' && <Check className="w-3 h-3 text-emerald-600" />}
-                                  {currentStatus === 'Cancelled' && <XCircle className="w-3 h-3 text-rose-600" />}
-                                  {currentStatus === 'Pending' && <Clock className="w-3 h-3 text-amber-600" />}
-                                  <span>{currentStatus}</span>
-                                </span>
-                              </td>
-
-                              {/* 3 Status Toggle Buttons: Cancel order, Pending, Confirm */}
-                              <td className="py-3.5 px-4 align-top text-center">
-                                <div className="inline-flex items-center bg-slate-100 p-1 rounded-md border border-slate-200 gap-1">
-                                  {/* Cancel Order Toggle Button */}
-                                  <button
-                                    type="button"
-                                    onClick={() => handleUpdateOrderStatus(order._id || order.id || order.orderId || '', 'Cancelled')}
-                                    className={`px-2 py-1 rounded text-[10px] font-black uppercase transition-all cursor-pointer ${
-                                      currentStatus === 'Cancelled'
-                                        ? 'bg-rose-600 text-white shadow-xs'
-                                        : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200'
-                                    }`}
-                                  >
-                                    Cancel Order
-                                  </button>
-
-                                  {/* Pending Toggle Button */}
-                                  <button
-                                    type="button"
-                                    onClick={() => handleUpdateOrderStatus(order._id || order.id || order.orderId || '', 'Pending')}
-                                    className={`px-2 py-1 rounded text-[10px] font-black uppercase transition-all cursor-pointer ${
-                                      currentStatus === 'Pending'
-                                        ? 'bg-amber-500 text-white shadow-xs'
-                                        : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200'
-                                    }`}
-                                  >
-                                    Pending
-                                  </button>
-
-                                  {/* Confirm Toggle Button */}
-                                  <button
-                                    type="button"
-                                    onClick={() => handleUpdateOrderStatus(order._id || order.id || order.orderId || '', 'Confirmed')}
-                                    className={`px-2 py-1 rounded text-[10px] font-black uppercase transition-all cursor-pointer ${
+                                <div className="relative inline-block text-left w-full max-w-32.5 mx-auto">
+                                  <select
+                                    value={currentStatus}
+                                    onChange={(e) => handleUpdateOrderStatus(order._id || order.id || order.orderId || '', e.target.value as any)}
+                                    className={`w-full appearance-none pl-3 pr-8 py-1.5 rounded-md text-[10px] font-black uppercase tracking-wider cursor-pointer outline-none border transition-all ${
                                       currentStatus === 'Confirmed'
-                                        ? 'bg-emerald-600 text-white shadow-xs'
-                                        : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200'
+                                        ? 'bg-emerald-50 border-emerald-200 text-emerald-800 focus:ring-2 focus:ring-emerald-500/20'
+                                        : currentStatus === 'Cancelled'
+                                        ? 'bg-rose-50 border-rose-200 text-rose-800 focus:ring-2 focus:ring-rose-500/20'
+                                        : 'bg-amber-50 border-amber-200 text-amber-800 focus:ring-2 focus:ring-amber-500/20'
                                     }`}
                                   >
-                                    Confirm
-                                  </button>
+                                    <option value="Pending">PENDING</option>
+                                    <option value="Confirmed">CONFIRMED</option>
+                                    <option value="Cancelled">CANCELLED</option>
+                                  </select>
+                                  <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2.5 text-slate-500">
+                                    <ChevronDown className="w-3 h-3" />
+                                  </div>
                                 </div>
                               </td>
                             </tr>
@@ -1661,7 +1641,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({
                                 onChange={() => handleToggleHot(prod)}
                                 className="sr-only peer"
                               />
-                              <div className="w-9 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-red-600"></div>
+                              <div className="w-9 h-5 bg-slate-200 peer-focus:outline-none rounded-md peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:inset-s-0.5 after:bg-white after:border-slate-300 after:border after:rounded-md after:h-4 after:w-4 after:transition-all peer-checked:bg-red-600"></div>
                             </label>
                           </td>
                           <td className="py-3 px-3 sm:px-6">
@@ -1909,7 +1889,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({
                             </td>
                             <td className="py-3 px-3 sm:px-6">
                               <div className="flex items-center gap-3">
-                                <div className="w-8 h-8 rounded-full bg-blue-400 text-white flex items-center justify-center font-black text-[10px] uppercase shrink-0 select-none shadow-sm shadow-blue-500/10 border border-slate-100">
+                                <div className="w-8 h-8 rounded-md bg-blue-400 text-white flex items-center justify-center font-black text-[10px] uppercase shrink-0 select-none shadow-sm shadow-blue-500/10 border border-slate-100">
                                   {usr.name ? usr.name.trim().charAt(0).toUpperCase() : 'U'}
                                 </div>
                                 <span className="font-bold text-slate-850 text-xs uppercase tracking-wide">
@@ -1919,7 +1899,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({
                             </td>
                             <td className="py-3 px-3 sm:px-6 text-slate-600 font-medium">{usr.email}</td>
                             <td className="py-3 px-3 sm:px-6">
-                              <span className={`px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider ${usr.role === 'admin'
+                              <span className={`px-2 py-0.5 rounded-md text-[9px] font-black uppercase tracking-wider ${usr.role === 'admin'
                                 ? 'bg-blue-50 border border-blue-100 text-blue-600'
                                 : 'bg-slate-100 border border-slate-250 text-slate-655'
                                 }`}>
@@ -2155,7 +2135,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({
                       onChange={(e) => setProdIsHot(e.target.checked)}
                       className="sr-only peer"
                     />
-                    <div className="w-9 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-red-600"></div>
+                    <div className="w-9 h-5 bg-slate-200 peer-focus:outline-none rounded-md peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:inset-s-0.5 after:bg-white after:border-slate-300 after:border after:rounded-md after:h-4 after:w-4 after:transition-all peer-checked:bg-red-600"></div>
                   </label>
                 </div>
               </div>
@@ -2417,7 +2397,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({
 
         return (
           <div className={`fixed bottom-6 right-6 z-55 max-w-sm rounded-md p-4 shadow-2xl border flex items-start gap-3.5 animate-in slide-in-from-bottom-5 fade-in duration-300 ${containerBg}`}>
-            <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 border ${iconBg}`}>
+            <div className={`w-10 h-10 rounded-md flex items-center justify-center shrink-0 border ${iconBg}`}>
               {iconMarkup}
             </div>
             <div className="flex-1 min-w-0 pr-4">

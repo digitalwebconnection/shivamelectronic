@@ -29,11 +29,11 @@ export const BestSellers: React.FC<BestSellersProps> = ({
     .slice(0, 4);
 
   return (
-    <section className="py-16 bg-white border-b border-slate-100 relative overflow-hidden">
+    <section className="py-10 bg-white border-b border-slate-100 relative overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-0">
         
         {/* Section Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-10 border-b border-slate-100 pb-6">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-2 border-b border-slate-100 pb-6">
           <div className="flex items-center gap-3.5">
             <div className="w-12 h-12 rounded-md bg-blue-50 border border-blue-100 flex items-center justify-center text-blue-600 shadow-sm shadow-blue-100">
               <Sparkles className="w-6 h-6 animate-pulse" />
@@ -52,8 +52,8 @@ export const BestSellers: React.FC<BestSellersProps> = ({
           </button>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {bestSellers.map(p => (
+        <div className="flex overflow-x-auto gap-4 snap-x hide-scrollbar lg:custom-scrollbar lg:pb-6 px-4 sm:px-0 -mx-4 sm:mx-0">
+          {bestSellers.slice(0, 10).map(p => (
             <ProductCard 
               key={p.id}
               product={p}

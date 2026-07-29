@@ -91,7 +91,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   return (
     <div 
       onClick={() => onSelectProduct(product)}
-      className={`group relative flex flex-col bg-white ${borderHoverClass} rounded-md overflow-hidden shadow-lg shadow-slate-800/80 transition-all duration-300 hover:shadow-xl hover:-translate-y-1 cursor-pointer`}
+      className={`group relative flex flex-col bg-white ${borderHoverClass} rounded-md overflow-hidden shadow-sm md:shadow-lg shadow-slate-800/10 md:shadow-slate-800/80 transition-all duration-300 hover:shadow-xl hover:-translate-y-1 cursor-pointer w-35 min-w-35 sm:w-40 sm:min-w-40 md:w-45 md:min-w-45 lg:w-55 lg:min-w-55 shrink-0 snap-start`}
     >
       {/* Badges (Hot / New) */}
       <div className="absolute top-3 left-3 z-10 flex flex-col gap-1">
@@ -137,7 +137,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
       </div>
 
       {/* Details */}
-      <div className="p-4 flex-1 flex flex-col justify-between">
+      <div className="p-3 md:p-4 flex-1 flex flex-col justify-between">
         <div>
           {/* Category Label */}
           <span className={`text-[9px] ${textAccentClass} uppercase tracking-widest font-black block mb-1`}>
@@ -145,12 +145,12 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           </span>
           
           {/* Product Name */}
-          <h3 className="text-xs sm:text-sm font-bold text-slate-800 line-clamp-2 min-h-[36px] group-hover:text-blue-600 transition-colors leading-tight mb-2">
+          <h3 className="text-[11px] sm:text-xs md:text-sm font-bold text-slate-800 line-clamp-1 md:line-clamp-2 md:min-h-9 group-hover:text-blue-600 transition-colors leading-tight mb-1.5 md:mb-2" title={product.name}>
             {product.name}
           </h3>
 
           {/* Rating */}
-          <div className="flex items-center gap-1 mb-3">
+          <div className="flex items-center gap-1 mb-2 md:mb-3">
             <div className="flex text-yellow-500">
               {[...Array(5)].map((_, i) => (
                 <Star 
@@ -165,18 +165,18 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           </div>
         </div>
 
-        <div className="flex items-center justify-between mt-auto pt-3 border-t border-slate-100">
-          <span className="text-[10px] font-extrabold uppercase tracking-wider text-slate-400">
+        <div className="flex items-center justify-between mt-auto pt-2.5 md:pt-3 border-t border-slate-100">
+          <span className="text-[9px] md:text-[10px] font-extrabold uppercase tracking-wider text-slate-400 max-w-12.5 md:max-w-none leading-tight md:leading-normal">
             Quote on Request
           </span>
 
           <button
             onClick={handleCartClick}
-            className={`flex items-center justify-center gap-1 py-1.5 px-3 rounded-md bg-linear-to-r ${btnGradient} text-white text-[10px] font-black shadow-md ${shadowClass} active:scale-95 transition-all duration-300 cursor-pointer`}
+            className={`flex items-center justify-center gap-1 py-1 md:py-1.5 px-2 md:px-3 rounded-md bg-linear-to-r ${btnGradient} text-white text-[9px] md:text-[10px] font-black shadow-md ${shadowClass} active:scale-95 transition-all duration-300 cursor-pointer`}
             title="Add to Cart"
           >
             <ShoppingCart className="w-3 h-3" />
-            <span>ADD</span>
+            <span className="hidden md:inline">ADD</span>
           </button>
         </div>
       </div>

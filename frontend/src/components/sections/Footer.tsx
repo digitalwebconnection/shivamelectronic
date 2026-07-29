@@ -12,7 +12,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
   return (
     <footer className="bg-black border-t border-slate-800 pt-16 pb-8 mt-auto relative overflow-hidden text-slate-400">
       {/* Ambient background tech glow spheres */}
-      <div className="absolute top-0 left-1/4 -translate-x-1/2 w-[500px] h-[250px] bg-blue-500/5 rounded-full blur-[100px] pointer-events-none" />
+      <div className="absolute top-0 left-1/4 -translate-x-1/2 w-125 h-62.5 bg-blue-500/5 rounded-full blur-[100px] pointer-events-none" />
       <div className="absolute bottom-0 right-10 w-80 h-80 bg-cyan-500/5 rounded-full blur-[100px] pointer-events-none" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
