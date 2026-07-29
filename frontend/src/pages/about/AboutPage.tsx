@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Award, ShieldCheck, Zap, Users, Cpu, Calendar, Star, Building, Heart, ChevronRight, Sparkles } from 'lucide-react';
+import { Award, ShieldCheck, Zap, Users, Cpu, Calendar, Building, Heart, Sparkles } from 'lucide-react';
 
 export const AboutPage: React.FC = () => {
   const [isVisible, setIsVisible] = useState(false);
