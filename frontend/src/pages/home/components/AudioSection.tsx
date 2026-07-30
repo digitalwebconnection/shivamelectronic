@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { Power, ArrowRight, ArrowUpRight } from 'lucide-react';
+import { Power, ArrowRight, Sparkles } from 'lucide-react';
 import type { Product } from '../../../types';
 import { ProductCard } from './ProductCard';
 
@@ -71,11 +71,14 @@ export const AudioSection: React.FC<AudioSectionProps> = ({
   };
 
   return (
-    <section id="category-switches" className="py-16 bg-white border-b border-slate-100 scroll-mt-20 relative overflow-hidden">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-0">
+    <section 
+      id="category-switches" 
+      className="pt-10 bg-slate-50/50 border-b border-slate-100 scroll-mt-20 relative overflow-hidden"
+    >
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-6">
         
         {/* Section Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-10 border-b border-slate-100 pb-6">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-10 border-b border-slate-100">
           <div className="flex items-center gap-3.5">
             <div className="w-12 h-12 rounded-md bg-violet-50 border border-violet-100 flex items-center justify-center text-violet-600 shadow-sm shadow-violet-100">
               <Power className="w-6 h-6" />
@@ -97,25 +100,41 @@ export const AudioSection: React.FC<AudioSectionProps> = ({
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
           {/* Static Promo Card (Left) */}
           <div className="lg:col-span-3 shrink-0">
-            <div className="h-full rounded-md bg-linear-to-br from-slate-900 via-violet-955 to-slate-900 border border-slate-800 p-6 flex flex-col justify-between text-white relative overflow-hidden min-h-[300px] lg:min-h-auto">
-              <div className="absolute -bottom-8 -right-8 w-32 h-32 bg-violet-500/10 rounded-full blur-2xl pointer-events-none" />
-              <div className="space-y-4">
-                <span className="px-2.5 py-1 rounded-full bg-violet-500/20 border border-violet-500/30 text-violet-400 text-[8px] font-black uppercase tracking-wider inline-block">
-                  Control Panel
-                </span>
-                <h3 className="text-lg font-black tracking-tight leading-tight">
-                  High-Current <br/>Appliance Switches
-                </h3>
-                <p className="text-[11px] text-slate-300 leading-relaxed">
-                  Red neon-lit and plain black switches rated for 15A/20A load currents. Ideal for water dispensers, power strips, and dashboards.
-                </p>
+            <div className="h-full rounded-md bg-slate-900 p-6 sm:p-7 flex flex-col text-white relative overflow-hidden  shadow-xl shadow-slate-900/20 hover:shadow-2xl hover:shadow-violet-900/30 transition-all duration-500 group border border-slate-800">
+              
+              {/* Background Image & Overlay */}
+              <div className="absolute inset-0 z-0">
+                <img 
+                  src={switchesList[0]?.image || "https://images.unsplash.com/photo-1555664424-778a1e5e1b48?q=80&w=800"} 
+                  alt="Switches Category"
+                  className="w-full h-full object-cover opacity-40 group-hover:scale-110 transition-transform duration-700"
+                />
+                <div className="absolute inset-0 bg-linear-to-t from-slate-950 via-slate-900/80 to-transparent" />
+                <div className="absolute inset-0 bg-violet-600/20 mix-blend-overlay" />
               </div>
+              
+              <div className="space-y-6 relative z-10 flex-1">
+                <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/20 border border-white/30 text-[9px] font-black uppercase tracking-wider backdrop-blur-sm self-start">
+                  <Sparkles className="w-3.5 h-3.5 text-yellow-300" />
+                  CONTROL PANEL
+                </span>
+                
+                <div className="space-y-3">
+                  <h3 className="text-3xl font-black tracking-tight leading-tight text-white drop-shadow-sm">
+                    High-Current <br/>Appliance Switches
+                  </h3>
+                  <p className="text-xs text-white/90 leading-relaxed font-bold pr-4">
+                    Red neon-lit and plain black switches rated for 15A/20A load currents. Ideal for water dispensers, power strips, and dashboards.
+                  </p>
+                </div>
+              </div>
+
               <button 
                 onClick={() => onViewAll('switches')}
-                className="inline-flex items-center gap-1 text-[10px] font-bold text-violet-400 hover:text-violet-300 group self-start mt-8 cursor-pointer"
+                className="mt-6 w-full py-3.5 px-4 bg-white hover:bg-slate-50 text-violet-700 font-black text-[10px] tracking-widest rounded-lg flex items-center justify-center gap-2 active:scale-95 transition-all shadow-xl shadow-violet-900/10 cursor-pointer relative z-10"
               >
-                <span>Explore Control Switches</span>
-                <ArrowUpRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                <span>EXPLORE SWITCHES</span>
+                <ArrowRight className="w-4 h-4" />
               </button>
             </div>
           </div>
@@ -127,12 +146,12 @@ export const AudioSection: React.FC<AudioSectionProps> = ({
             onMouseLeave={handleMouseLeave}
             onMouseUp={handleMouseUp}
             onMouseMove={handleMouseMove}
-            className="lg:col-span-9 flex items-stretch gap-5 overflow-x-auto pb-4 custom-scrollbar scroll-smooth cursor-grab active:cursor-grabbing select-none"
+            className="lg:col-span-9 flex items-stretch gap-4 md:gap-5 overflow-x-auto pb-4 lg:pb-6 hide-scrollbar scroll-smooth cursor-grab active:cursor-grabbing select-none snap-x -mx-4 px-4 sm:mx-0 sm:px-0"
           >
             {switchesList.map(p => (
               <div 
                 key={p.id} 
-                className="w-[240px] sm:w-[260px] shrink-0"
+                className="w-35 sm:w-40 md:w-50 lg:w-55 shrink-0 snap-start"
                 onClickCapture={(e) => {
                   if (isDragging) {
                     e.stopPropagation();

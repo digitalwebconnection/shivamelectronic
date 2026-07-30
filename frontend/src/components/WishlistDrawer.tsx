@@ -60,7 +60,7 @@ export const WishlistDrawer: React.FC<WishlistDrawerProps> = ({
                 <Heart className="w-8 h-8" />
               </div>
               <h3 className="text-base font-semibold text-slate-900 mb-1">Your wishlist is empty</h3>
-              <p className="text-sm text-slate-550 max-w-[250px] mb-6">
+              <p className="text-sm text-slate-550 max-w-62.5 mb-6">
                 Save your favorite items here to purchase them later.
               </p>
               <button 
@@ -77,7 +77,7 @@ export const WishlistDrawer: React.FC<WishlistDrawerProps> = ({
                 className="flex gap-4 p-3 bg-slate-50/50 border border-slate-200 rounded-md hover:border-slate-350 transition-colors"
               >
                 {/* Product Image */}
-                <div className="w-20 h-20 rounded-md overflow-hidden bg-white flex-shrink-0">
+                <div className="w-20 h-20 rounded-md overflow-hidden bg-white shrink-0">
                   <img 
                     src={product.image} 
                     alt={product.name} 

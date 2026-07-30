@@ -55,7 +55,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
           <img 
             src={product.image} 
             alt={product.name} 
-            className="w-full max-h-[300px] md:max-h-[400px] object-contain rounded-xl"
+            className="w-full max-h-75 md:max-h-100 object-contain rounded-xl"
           />
         </div>
 

@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { CheckCircle2 } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import Lenis from 'lenis';
 import { ErrorBoundary } from './components/ErrorBoundary';
@@ -165,7 +166,14 @@ function App() {
   const [isWishlistOpen, setIsWishlistOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
 
-
+  // Toast state
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const showToast = (message: string) => {
+    setToastMessage(message);
+    setTimeout(() => {
+      setToastMessage(null);
+    }, 3000);
+  };
 
   // Cart Handlers
   const handleAddToCart = (product: Product) => {
@@ -181,7 +189,7 @@ function App() {
       return [...prevItems, { product, quantity: 1 }];
     });
     // Visual cue
-    setIsCartOpen(true);
+    showToast(`Added to cart!`);
   };
 
   const handleUpdateCartQuantity = (productId: string, delta: number) => {
@@ -376,6 +384,14 @@ function App() {
             setCurrentPage('products');
           }}
         />
+
+        {/* Toast Notification */}
+        {toastMessage && (
+          <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-100 bg-slate-900 text-white px-4 py-3 rounded-xl shadow-2xl flex items-center gap-3 animate-in fade-in slide-in-from-bottom-4 duration-300">
+            <CheckCircle2 className="w-5 h-5 text-green-400" />
+            <span className="text-sm font-medium">{toastMessage}</span>
+          </div>
+        )}
 
       </div>
     </ErrorBoundary>

@@ -7,7 +7,7 @@ interface PromoParallaxBannerProps {
 
 export const PromoParallaxBanner: React.FC<PromoParallaxBannerProps> = ({ onNavigateToProducts }) => {
   return (
-    <div className="h-[300px] w-full relative overflow-hidden flex items-center justify-center">
+    <div className="h-75 w-full relative overflow-hidden flex items-center justify-center">
       {/* Parallax Background Image with fixed position */}
       <div 
         className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&q=80&w=1600')] bg-fixed bg-cover bg-center"

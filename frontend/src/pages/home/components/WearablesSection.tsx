@@ -34,7 +34,7 @@ export const WearablesSection: React.FC<WearablesSectionProps> = ({
   );
 
   return (
-    <section id="category-hardware" className="py-16 bg-slate-50/50 border-b border-slate-100 scroll-mt-20 relative overflow-hidden">
+    <section id="category-hardware" className="pt-10 py-0 md:py-10 bg-slate-50/50 border-b border-slate-100 scroll-mt-20 relative overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-0">
 
         {/* Section Header */}
@@ -57,8 +57,8 @@ export const WearablesSection: React.FC<WearablesSectionProps> = ({
           </button>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {hardware.slice(0, 3).map(p => (
+        <div className="flex overflow-x-auto gap-4 pb-4 snap-x hide-scrollbar lg:custom-scrollbar lg:pb-6 px-4 sm:px-0 -mx-4 sm:mx-0 pt-2">
+          {hardware.slice(0, 10).map(p => (
             <ProductCard
               key={p.id}
               product={p}
