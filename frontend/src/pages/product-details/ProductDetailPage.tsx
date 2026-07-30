@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { ArrowLeft, ShoppingCart, Heart, Star, Sparkles } from 'lucide-react';
 import type { Product } from '../../types';
-import { ProductGrid } from '../../components/ProductGrid'; // Keep import in case needed later, or removed if strictly unused
+// import { ProductGrid } from '../../components/ProductGrid'; // Keep import in case needed later, or removed if strictly unused
 interface ProductDetailPageProps {
   product: Product;
   products: Product[];
