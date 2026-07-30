@@ -28,7 +28,7 @@ export const Pagination: React.FC<PaginationProps> = ({
         <button
           onClick={() => {
             setCurrentPage((p: number) => Math.max(1, p - 1));
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+            if ((window as any).lenis) { (window as any).lenis.scrollTo(0, { immediate: true }); } else { window.scrollTo(0, 0); }
           }}
           disabled={currentPage === 1}
           className="px-3.5 py-2 rounded-md text-xs font-black border border-slate-200 text-slate-600 hover:bg-slate-100 hover:text-slate-800 disabled:opacity-40 disabled:cursor-not-allowed transition-all cursor-pointer select-none"
@@ -52,7 +52,7 @@ export const Pagination: React.FC<PaginationProps> = ({
                 key={item}
                 onClick={() => {
                   setCurrentPage(item as number);
-                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                  if ((window as any).lenis) { (window as any).lenis.scrollTo(0, { immediate: true }); } else { window.scrollTo(0, 0); }
                 }}
                 className={`w-9 h-9 rounded-md text-xs font-black border transition-all cursor-pointer select-none ${
                   currentPage === item
@@ -70,7 +70,7 @@ export const Pagination: React.FC<PaginationProps> = ({
         <button
           onClick={() => {
             setCurrentPage((p: number) => Math.min(totalPages, p + 1));
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+            if ((window as any).lenis) { (window as any).lenis.scrollTo(0, { immediate: true }); } else { window.scrollTo(0, 0); }
           }}
           disabled={currentPage === totalPages}
           className="px-3.5 py-2 rounded-md text-xs font-black border border-slate-200 text-slate-600 hover:bg-slate-100 hover:text-slate-800 disabled:opacity-40 disabled:cursor-not-allowed transition-all cursor-pointer select-none"

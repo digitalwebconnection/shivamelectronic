@@ -26,9 +26,13 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
   onBack,
 }) => {
   const allProducts = products;
-  // Scroll to top when product changes
+  // Force scroll to top when product changes using Lenis
   useEffect(() => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    if ((window as any).lenis) {
+      (window as any).lenis.scrollTo(0, { immediate: true });
+    } else {
+      window.scrollTo(0, 0);
+    }
   }, [product.id]);
 
   const isWishlisted = wishlist.some(item => item.id === product.id);
@@ -64,15 +68,15 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
         <div className="mb-4 lg:mb-6">
           <button 
             onClick={onBack}
-            className="inline-flex items-center justify-center w-8 h-8 lg:w-auto lg:h-auto lg:px-4 lg:py-2 bg-white lg:hover:bg-slate-50 border border-slate-200 text-slate-700 text-xs font-bold rounded-full lg:rounded-md transition-all shadow-sm cursor-pointer active:scale-95"
+            className="inline-flex items-center justify-center px-4 py-2.5 bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 text-xs font-bold rounded-md transition-all shadow-sm cursor-pointer active:scale-95"
           >
-            <ArrowLeft className="w-4 h-4 lg:w-3.5 lg:h-3.5 lg:mr-1.5" />
-            <span className="hidden lg:inline">Back to Products</span>
+            <ArrowLeft className="w-4 h-4 mr-1.5 text-slate-600" />
+            <span className="text-slate-700">Back to Products</span>
           </button>
         </div>
 
         {/* Product Split Details */}
-        <div className="bg-white lg:bg-transparent rounded-2xl lg:rounded-none shadow-sm lg:shadow-none border border-slate-100 lg:border-none p-4 sm:p-6 lg:p-0 grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-12 mb-10 lg:mb-16 relative overflow-hidden">
+        <div className=" lg:bg-transparent lg:border lg:border-slate-100 lg:p-0 grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-12 mb-10 lg:mb-16 relative overflow-hidden">
           {/* Ambient background decoration - Desktop only */}
           <div className="hidden lg:block absolute top-0 right-0 w-96 h-96 bg-blue-500/5 rounded-full blur-3xl pointer-events-none" />
 
@@ -81,7 +85,7 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
             <img 
               src={product.image} 
               alt={product.name} 
-              className="w-full h-full object-contain p-2 lg:p-0 transition-transform duration-700"
+              className="w-full h-full object-fill  transition-transform duration-700"
             />
             {product.isHot && (
               <span className="absolute top-4 left-4 bg-linear-to-r from-red-600 to-rose-500 text-white text-[9px] font-black uppercase tracking-widest px-3 py-1 rounded-full lg:rounded-md shadow-md shadow-red-500/10 z-10">
@@ -204,8 +208,8 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
                 onClick={() => onSelectProduct(relProduct)}
                 className="shrink-0 w-36 sm:w-48 lg:w-56 flex flex-col bg-white border border-slate-200 rounded-xl overflow-hidden cursor-pointer snap-start hover:shadow-lg transition-all group"
               >
-                <div className="w-full aspect-square bg-white relative p-3 flex items-center justify-center border-b border-slate-100">
-                  <img src={relProduct.image} alt={relProduct.name} className="max-w-full max-h-full object-contain group-hover:scale-105 transition-transform duration-300" />
+                <div className="w-full aspect-square bg-slate-50 relative overflow-hidden border-b border-slate-100">
+                  <img src={relProduct.image} alt={relProduct.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
                   {relProduct.isHot && (
                     <span className="absolute top-2 left-2 bg-rose-500 text-white text-[8px] font-black uppercase tracking-widest px-2 py-0.5 rounded-sm z-10">
                       Hot

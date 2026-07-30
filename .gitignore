@@ -1,24 +1,30 @@
-# Dependency directories
+# ── Dependencies ──
 node_modules/
 backend/node_modules/
 frontend/node_modules/
 
-# Environment files
+# ── Environment ──
 .env
 .env.local
 .env.development.local
 .env.test.local
 .env.production.local
 backend/.env
+frontend/.env
 
-# Build output directories
+# ── Build Output ──
 dist/
 build/
 backend/dist/
 frontend/dist/
 frontend/build/
 
-# IDE files and workspace configuration
+# ── Coverage ──
+coverage/
+backend/coverage/
+frontend/coverage/
+
+# ── IDE ──
 .vscode/
 .idea/
 *.suo
@@ -27,13 +33,13 @@ frontend/build/
 *.sln
 *.swp
 
-# OS files
+# ── OS ──
 Thumbs.db
 ehthumbs.db
 Desktop.ini
 .DS_Store
 
-# Temporary files & logs
+# ── Logs ──
 logs/
 *.log
 npm-debug.log*
@@ -42,11 +48,9 @@ yarn-error.log*
 pnpm-debug.log*
 .npm/
 
-# Cloudinary / local uploads
+# ── Uploads ──
 uploads/
 
+# ── Misc ──
 AI_INSTRUCTION/
-
 ai_int/
-
-CHANGELOG.md

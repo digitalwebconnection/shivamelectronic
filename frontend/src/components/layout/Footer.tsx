@@ -138,6 +138,13 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
         {/* Bottom Footer block */}
         <div className="pt-8 border-t border-slate-800 flex flex-col sm:flex-row justify-between items-center text-[12px] text-slate-500 gap-4">
           <p>© 2026 Shivam Electronic World. All rights reserved.</p>
+          
+          <div className="text-center text-[14px]">
+            <span className="text-slate-400">Developed by </span>
+            <a href="https://digitalwebconnection.com/" target="_blank" rel="noopener noreferrer" className="text-amber-500 font-bold hover:text-amber-400 transition-colors">
+              Digital Web Connection
+            </a>
+          </div>
           <div className="flex gap-4">
             <a href="#" className="hover:text-slate-300">Privacy Policy</a>
             <span>•</span>

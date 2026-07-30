@@ -49,8 +49,23 @@ export const ProductsPage: React.FC<ProductsPageProps> = ({
     setSelectedBrands([]);
   }, [selectedCategory]);
 
-  const ITEMS_PER_PAGE = 12;
+  const [itemsPerPage, setItemsPerPage] = useState(20);
   const [currentPage, setCurrentPage] = useState(1);
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth < 768) {
+        setItemsPerPage(12);
+      } else if (window.innerWidth < 1024) {
+        setItemsPerPage(16);
+      } else {
+        setItemsPerPage(20);
+      }
+    };
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   useEffect(() => {
     setCurrentPage(1);
@@ -116,13 +131,13 @@ export const ProductsPage: React.FC<ProductsPageProps> = ({
       });
   }, [products, selectedCategory, searchQuery, selectedBrands, sortBy]);
 
-  const totalPages = Math.max(1, Math.ceil(filteredProducts.length / ITEMS_PER_PAGE));
+  const totalPages = Math.max(1, Math.ceil(filteredProducts.length / itemsPerPage));
   const paginatedProducts = useMemo(() => {
     return filteredProducts.slice(
-      (currentPage - 1) * ITEMS_PER_PAGE,
-      currentPage * ITEMS_PER_PAGE
+      (currentPage - 1) * itemsPerPage,
+      currentPage * itemsPerPage
     );
-  }, [filteredProducts, currentPage]);
+  }, [filteredProducts, currentPage, itemsPerPage]);
 
   const isWishlisted = (productId: string) => {
     return wishlist.some(item => item.id === productId);
@@ -232,7 +247,7 @@ export const ProductsPage: React.FC<ProductsPageProps> = ({
 
             {filteredProducts.length > 0 ? (
               <>
-                <div className="grid grid-cols-3 sm:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 gap-2 sm:gap-4 md:gap-5">
+                <div className="grid grid-cols-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 gap-2 sm:gap-4 md:gap-5">
                   {paginatedProducts.map((product) => (
                     <ProductCard
                       key={product.id}
@@ -250,7 +265,7 @@ export const ProductsPage: React.FC<ProductsPageProps> = ({
                   currentPage={currentPage}
                   totalPages={totalPages}
                   totalItems={filteredProducts.length}
-                  itemsPerPage={ITEMS_PER_PAGE}
+                  itemsPerPage={itemsPerPage}
                   setCurrentPage={setCurrentPage}
                 />
               </>

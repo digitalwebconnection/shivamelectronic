@@ -3,12 +3,11 @@ import { CheckCircle2 } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import Lenis from 'lenis';
 import { ErrorBoundary } from './components/ErrorBoundary';
-import { Navbar } from './components/Navbar';
+import { Navbar } from './components/layout/Navbar';
 import { AuthModal } from './components/AuthModal';
 import { CartDrawer } from './components/CartDrawer';
 import { WishlistDrawer } from './components/WishlistDrawer';
 import { API_URL } from './config';
-
 
 // Pages
 import { Home } from './pages/home/Home';
@@ -20,8 +19,7 @@ import { ProfilePage } from './pages/profile/ProfilePage';
 import { AdminPage } from './pages/admin/AdminPage';
 
 // Footer (globally at bottom of active page layout)
-import { Footer } from './components/sections/Footer';
-
+import { Footer } from './components/layout/Footer';
 import type { Product, CartItem, User, Order } from './types';
 import './App.css';
 
@@ -44,9 +42,13 @@ function App() {
     }
 
     rafId = requestAnimationFrame(raf);
+    
+    // Expose lenis globally for programmatic scrolling
+    (window as any).lenis = lenis;
 
     return () => {
       cancelAnimationFrame(rafId);
+      delete (window as any).lenis;
       lenis.destroy();
     };
   }, []);
@@ -57,10 +59,12 @@ function App() {
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [sortBy, setSortBy] = useState('default');
 
-  const setCurrentPage = (page: 'home' | 'products' | 'about' | 'contact' | 'product-details' | 'profile' | 'admin') => {
+  const setCurrentPage = (page: 'home' | 'products' | 'about' | 'contact' | 'product-details' | 'profile' | 'admin', urlSuffix?: string) => {
     setCurrentPageState(page);
     if (page === 'home') {
       navigate('/');
+    } else if (page === 'product-details' && urlSuffix) {
+      navigate(`/products/product-details/${urlSuffix}`);
     } else {
       navigate(`/${page}`);
     }
@@ -80,7 +84,7 @@ function App() {
     } else if (path === '/contact') {
       setCurrentPageState('contact');
       setSelectedCategory('All');
-    } else if (path === '/product-details') {
+    } else if (path.startsWith('/products/product-details')) {
       setCurrentPageState('product-details');
     } else if (path === '/profile') {
       setCurrentPageState('profile');
@@ -88,6 +92,13 @@ function App() {
     } else if (path === '/admin') {
       setCurrentPageState('admin');
       setSelectedCategory('All');
+    }
+    
+    // Force scroll to top on any page change using Lenis if available
+    if ((window as any).lenis) {
+      (window as any).lenis.scrollTo(0, { immediate: true });
+    } else {
+      window.scrollTo(0, 0);
     }
   }, [location.pathname]);
 
@@ -166,6 +177,22 @@ function App() {
   const [isWishlistOpen, setIsWishlistOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
 
+  // Handle URL slug to product mapping (must be after products and selectedProduct are declared)
+  useEffect(() => {
+    const path = location.pathname;
+    if (path.startsWith('/products/product-details') && products.length > 0) {
+      const parts = path.split('/');
+      if (parts.length > 3) {
+        const slug = parts[3];
+        const toSlug = (str: string) => str.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+        const matchedProduct = products.find(p => toSlug(p.name) === slug);
+        if (matchedProduct && (!selectedProduct || selectedProduct.id !== matchedProduct.id)) {
+          setSelectedProduct(matchedProduct);
+        }
+      }
+    }
+  }, [location.pathname, products, selectedProduct]);
+
   // Toast state
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const showToast = (message: string) => {
@@ -230,8 +257,16 @@ function App() {
   // Product Selection Details Page
   const handleSelectProduct = (product: Product) => {
     setSelectedProduct(product);
-    setCurrentPage('product-details');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    
+    // Create a clean URL slug from the product name
+    const productSlug = product.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+    setCurrentPage('product-details', productSlug);
+    
+    if ((window as any).lenis) {
+      (window as any).lenis.scrollTo(0, { immediate: true });
+    } else {
+      window.scrollTo(0, 0);
+    }
   };
 
   return (

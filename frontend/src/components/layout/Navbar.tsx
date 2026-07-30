@@ -4,8 +4,8 @@ import {
   Menu, X,
 
 } from 'lucide-react';
-import type { Product, CartItem, User as UserType } from '../types';
-import logo from "../assets/logo.png"
+import type { Product, CartItem, User as UserType } from '../../types';
+import logo from "../../assets/logo.png"
 
 interface NavbarProps {
   cartItems: CartItem[];
@@ -384,7 +384,18 @@ export const Navbar: React.FC<NavbarProps> = ({
               >
                 About
               </a>
-
+<button
+                onClick={() => {
+                  if (setCurrentPage) setCurrentPage('products');
+                }}
+                className={`relative h-full flex items-center text-sm font-bold py-2 after:absolute after:bottom-0 after:left-0 after:w-full after:h-0.75 after:bg-linear-to-r after:from-[#e11d48] after:to-[#0057ff] after:transition-transform after:duration-300 ${currentPage === 'products'
+                  ? 'text-slate-950 after:scale-x-100'
+                  : 'text-slate-800 hover:text-slate-900 after:scale-x-0 hover:after:scale-x-100 after:origin-left cursor-pointer'
+                  }`}
+              >
+                Products
+              </button>
+              
               <a
                 href="#contact"
                 onClick={(e) => {
@@ -399,17 +410,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                 Contact
               </a>
 
-              <button
-                onClick={() => {
-                  if (setCurrentPage) setCurrentPage('products');
-                }}
-                className={`relative h-full flex items-center text-sm font-bold py-2 after:absolute after:bottom-0 after:left-0 after:w-full after:h-0.75 after:bg-linear-to-r after:from-[#e11d48] after:to-[#0057ff] after:transition-transform after:duration-300 ${currentPage === 'products'
-                  ? 'text-slate-950 after:scale-x-100'
-                  : 'text-slate-800 hover:text-slate-900 after:scale-x-0 hover:after:scale-x-100 after:origin-left cursor-pointer'
-                  }`}
-              >
-                Products
-              </button>
+              
             </nav>
           </div>
 

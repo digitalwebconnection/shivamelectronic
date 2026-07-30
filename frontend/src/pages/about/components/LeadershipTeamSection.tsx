@@ -27,7 +27,7 @@ export const LeadershipTeamSection: React.FC = () => {
 
   return (
     <section className="py-12 relative bg-white border-t border-slate-200/60 overflow-hidden">
-      <div className="absolute bottom-0 left-1/2 w-[800px] h-[300px] bg-blue-400/5 rounded-full blur-[100px] -translate-x-1/2 pointer-events-none"></div>
+      <div className="absolute bottom-0 left-1/2 w-200 h-75 bg-blue-400/5 rounded-full blur-[100px] -translate-x-1/2 pointer-events-none"></div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="text-center max-w-3xl mx-auto mb-10 sm:mb-16 md:mb-24 space-y-3 sm:space-y-4">
