@@ -14,7 +14,7 @@ export const AboutPage: React.FC = () => {
   }, []);
 
   return (
-    <div className={`min-h-screen bg-slate-50 text-slate-800 selection:bg-blue-500/20 transition-opacity duration-1000 ${isVisible ? 'opacity-100' : 'opacity-0'}`}>
+    <div className={`overflow-x-hidden min-h-screen bg-slate-50 text-slate-800 selection:bg-blue-500/20 transition-opacity duration-1000 ${isVisible ? 'opacity-100' : 'opacity-0'}`}>
       <HeroSection />
       <TrustStatsSection />
       <ShowroomSection />

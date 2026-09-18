@@ -1,5 +1,6 @@
 # Shivam Electronic World
 
+<<<<<<< HEAD
 Welcome to the **Shivam Electronic World** project! This is a comprehensive full-stack e-commerce application designed to provide a seamless shopping experience for electronics alongside a powerful management system for administrators.
 
 ## 🚀 Key Features
@@ -77,10 +78,59 @@ Create a `.env` file in the `frontend` directory based on the provided `.env.exa
 ```env
 VITE_API_URL=http://localhost:5000
 VITE_SENTRY_DSN=your_sentry_dsn
+=======
+> Premium e-commerce platform for electronic components & accessories, built with **React + Vite** (frontend) and **Express + MongoDB** (backend).
+
+[![CI](https://github.com/your-org/shivamelectronicworld/actions/workflows/ci.yml/badge.svg)](https://github.com/your-org/shivamelectronicworld/actions/workflows/ci.yml)
+
+---
+
+## Tech Stack
+
+| Layer     | Technology                              |
+| --------- | --------------------------------------- |
+| Frontend  | React 19, TypeScript, Vite, Tailwind v4 |
+| Backend   | Express.js, MongoDB, Mongoose           |
+| Auth      | JWT, bcryptjs                           |
+| Storage   | Cloudinary (product images)             |
+| Payments  | WhatsApp Quote (planned: Razorpay)      |
+| Hosting   | Vercel (frontend), Render (backend)     |
+| Monitoring| Sentry                                  |
+
+---
+
+## Folder Structure
+
+```
+shivamelectronicworld/
+├── .github/workflows/    # CI/CD pipelines
+├── docker/               # Docker & Compose configs
+├── docs/                 # Architecture, API reference, deployment guide
+├── backend/              # Express REST API
+│   └── src/
+│       ├── config/       # DB, Cloudinary, CORS, Sentry
+│       ├── controllers/  # Request handlers
+│       ├── services/     # Business logic
+│       ├── models/       # Mongoose schemas
+│       ├── routes/       # Express routers
+│       ├── middleware/    # Auth, error handler, rate limiter
+│       ├── validators/   # Input validation
+│       ├── errors/       # Custom error classes
+│       └── utils/        # Logger, email
+└── frontend/             # React SPA
+    └── src/
+        ├── api/          # API client & service modules
+        ├── context/      # React Context providers
+        ├── hooks/        # Custom hooks
+        ├── components/   # Reusable UI components
+        ├── pages/        # Page-level components
+        └── routes/       # Centralized routing
+>>>>>>> 46a708687d2af5b566c0c4ec62450f24e577fb66
 ```
 
 ---
 
+<<<<<<< HEAD
 ## 🚀 Local Setup and Installation
 
 Follow these steps to get the project running locally:
@@ -127,3 +177,67 @@ The frontend application will start on `http://localhost:5173`.
 ---
 
 **Happy Coding!** 🎉
+=======
+## Quick Start
+
+### Prerequisites
+- Node.js ≥ 18
+- MongoDB (local or Atlas)
+- Cloudinary account (for image uploads)
+
+### 1. Clone & Install
+
+```bash
+git clone https://github.com/your-org/shivamelectronicworld.git
+cd shivamelectronicworld
+npm install        # installs root + all workspaces
+```
+
+### 2. Configure Environment
+
+```bash
+cp .env.example backend/.env
+cp .env.example frontend/.env
+# Edit both .env files with your credentials
+```
+
+### 3. Run Development Servers
+
+```bash
+npm run dev        # starts both backend (port 5000) & frontend (port 5173)
+```
+
+Or run individually:
+```bash
+npm run dev:backend
+npm run dev:frontend
+```
+
+### 4. Build for Production
+
+```bash
+npm run build      # builds frontend
+```
+
+---
+
+## API Overview
+
+| Method | Endpoint              | Description               |
+| ------ | --------------------- | ------------------------- |
+| POST   | `/api/auth/register`  | Register a new user       |
+| POST   | `/api/auth/login`     | Login and receive JWT     |
+| GET    | `/api/products`       | List all products         |
+| POST   | `/api/products`       | Create product (admin)    |
+| GET    | `/api/categories`     | List all categories       |
+| POST   | `/api/orders`         | Place an order            |
+| GET    | `/api/orders/:userId` | Get user's order history  |
+
+See [docs/api-reference.md](docs/api-reference.md) for complete documentation.
+
+---
+
+## License
+
+MIT © Shivam Electronic World
+>>>>>>> 46a708687d2af5b566c0c4ec62450f24e577fb66

@@ -34,7 +34,7 @@ export const PillarsOfServiceSection: React.FC = () => {
   ];
 
   return (
-    <section className="py-12 relative">
+    <section className="py-12 relative overflow-hidden">
       {/* Decorative background elements */}
       <div className="absolute top-0 right-1/4 w-125 h-125 bg-blue-500/10 rounded-full blur-[120px] pointer-events-none"></div>
       <div className="absolute bottom-0 left-1/4 w-100 h-100 bg-purple-500/10 rounded-full blur-[100px] pointer-events-none"></div>

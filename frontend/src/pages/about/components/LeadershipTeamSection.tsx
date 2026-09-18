@@ -26,7 +26,7 @@ export const LeadershipTeamSection: React.FC = () => {
   const [selectedMember, setSelectedMember] = useState<{name: string, role: string, bio: string, image: string} | null>(null);
 
   return (
-    <section className="py-12 relative bg-white border-t border-slate-200/60">
+    <section className="py-12 relative bg-white border-t border-slate-200/60 overflow-hidden">
       <div className="absolute bottom-0 left-1/2 w-200 h-75 bg-blue-400/5 rounded-full blur-[100px] -translate-x-1/2 pointer-events-none"></div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">

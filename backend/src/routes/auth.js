@@ -1,14 +1,11 @@
 import express from 'express';
-import jwt from 'jsonwebtoken';
-import dotenv from 'dotenv';
-import User from '../models/User.js';
 import { protectAdmin } from '../middleware/auth.js';
-import { sendOtpEmail } from '../utils/sendEmail.js';
-
-dotenv.config();
+import { validateSignup, validateLogin } from '../validators/auth.validator.js';
+import * as authController from '../controllers/auth.controller.js';
 
 const router = express.Router();
 
+<<<<<<< HEAD
 const generateToken = (payload) => {
   return jwt.sign(
     payload,
@@ -255,5 +252,14 @@ router.post('/reset-password', async (req, res) => {
     res.status(500).json({ success: false, message: 'Server error resetting password' });
   }
 });
+=======
+router.post('/signup', validateSignup, authController.signupUser);
+router.post('/login', validateLogin, authController.loginUser);
+router.get('/verify', protectAdmin, authController.verifyToken);
+router.get('/users', protectAdmin, authController.getUsers);
+router.post('/forgot-password', authController.forgotPassword);
+router.post('/verify-otp', authController.verifyOtp);
+router.post('/reset-password', authController.resetPassword);
+>>>>>>> 46a708687d2af5b566c0c4ec62450f24e577fb66
 
 export default router;

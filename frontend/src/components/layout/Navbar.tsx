@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import {
   Search, ShoppingCart, Heart, LogOut, ChevronDown,
-  Menu, X, 
+  Menu, X,
 
 } from 'lucide-react';
-import type { Product, CartItem, User as UserType } from '../types';
-import logo from "../assets/logo.png"
+import type { Product, CartItem, User as UserType } from '../../types';
+import logo from "../../assets/logo.png"
 
 interface NavbarProps {
   cartItems: CartItem[];
@@ -384,7 +384,18 @@ export const Navbar: React.FC<NavbarProps> = ({
               >
                 About
               </a>
-
+<button
+                onClick={() => {
+                  if (setCurrentPage) setCurrentPage('products');
+                }}
+                className={`relative h-full flex items-center text-sm font-bold py-2 after:absolute after:bottom-0 after:left-0 after:w-full after:h-0.75 after:bg-linear-to-r after:from-[#e11d48] after:to-[#0057ff] after:transition-transform after:duration-300 ${currentPage === 'products'
+                  ? 'text-slate-950 after:scale-x-100'
+                  : 'text-slate-800 hover:text-slate-900 after:scale-x-0 hover:after:scale-x-100 after:origin-left cursor-pointer'
+                  }`}
+              >
+                Products
+              </button>
+              
               <a
                 href="#contact"
                 onClick={(e) => {
@@ -399,17 +410,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                 Contact
               </a>
 
-              <button
-                onClick={() => {
-                  if (setCurrentPage) setCurrentPage('products');
-                }}
-                className={`relative h-full flex items-center text-sm font-bold py-2 after:absolute after:bottom-0 after:left-0 after:w-full after:h-0.75 after:bg-linear-to-r after:from-[#e11d48] after:to-[#0057ff] after:transition-transform after:duration-300 ${currentPage === 'products'
-                  ? 'text-slate-950 after:scale-x-100'
-                  : 'text-slate-800 hover:text-slate-900 after:scale-x-0 hover:after:scale-x-100 after:origin-left cursor-pointer'
-                  }`}
-              >
-                Products
-              </button>
+              
             </nav>
           </div>
 
@@ -426,8 +427,8 @@ export const Navbar: React.FC<NavbarProps> = ({
               <img src={logo} alt="logo" className="h-13 sm:h-12 md:h-12 lg:h-14 w-auto object-contain" />
             </a>
 
-            {/* Center: Search Bar (ONLY shown when scrolled on desktop) */}
-            {isScrolled && (
+            {/* Center: Search Bar (ONLY shown when scrolled on desktop, except on products page where the main one is sticky) */}
+            {isScrolled && currentPage !== 'products' && (
               <div className="hidden lg:flex grow justify-center max-w-125 ml-4 animate-in fade-in duration-200">
                 {renderSearchBar(true)}
               </div>
@@ -604,13 +605,18 @@ export const Navbar: React.FC<NavbarProps> = ({
         </div>
       </div>
 
-      {/* ROW 2 & ROW 3 (Non-sticky, scrolls away naturally) */}
+      {/* ROW 2 & ROW 3 (Non-sticky, scrolls away naturally except on products page) */}
       {currentPage !== 'profile' && (
         <div
-          className={`w-full bg-slate-50/50 transition-all duration-300 ease-in-out relative z-20 ${isScrolled
-            ? 'opacity-0 h-0 overflow-hidden pointer-events-none'
-            : 'opacity-100 h-17.25 overflow-visible border-b border-gray-300 shadow-sm'
-            }`}
+          className={`w-full transition-all duration-300 ease-in-out ${
+            currentPage === 'products'
+              ? 'sticky top-16 z-20 bg-slate-50/95 backdrop-blur-md border-b border-gray-300 shadow-sm'
+              : `bg-slate-50/50 relative z-20 ${
+                  isScrolled
+                    ? 'opacity-0 h-0 overflow-hidden pointer-events-none'
+                    : 'opacity-100 h-17.25 overflow-visible border-b border-gray-300 shadow-sm'
+                }`
+          }`}
         >
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 w-full">
             {renderSearchBar(false)}
