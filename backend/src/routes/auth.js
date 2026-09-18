@@ -12,7 +12,7 @@ const router = express.Router();
 const generateToken = (payload) => {
   return jwt.sign(
     payload,
-    process.env.JWT_SECRET || 'creasun_super_secret_jwt_key_2025',
+    process.env.JWT_SECRET,
     { expiresIn: '30d' }
   );
 };

@@ -15,7 +15,7 @@ export const protectAdmin = (req, res, next) => {
       token = req.headers.authorization.split(' ')[1];
 
       // Verify token
-      const decoded = jwt.verify(token, process.env.JWT_SECRET || 'creasun_super_secret_jwt_key_2025');
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
       // Check role
       if (decoded.role !== 'admin') {
